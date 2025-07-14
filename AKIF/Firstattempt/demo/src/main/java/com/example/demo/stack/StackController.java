@@ -1,9 +1,5 @@
-package com.example.demo;
-import javafx.event.ActionEvent;
+package com.example.demo.stack;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -13,13 +9,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import javafx.stage.Stage;
 import javafx.animation.ScaleTransition;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class StackController {

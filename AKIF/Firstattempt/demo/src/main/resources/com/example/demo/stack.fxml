@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1500.0" style="-fx-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.StackController">
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" style="-fx-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.stack.StackController">
     <children>
         <!-- Title -->
         <Label layoutX="529.0" layoutY="34.0" text="Stack Visualizer" textFill="#181373">
