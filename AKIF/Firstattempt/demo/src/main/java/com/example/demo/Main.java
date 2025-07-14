@@ -16,10 +16,10 @@ public class Main extends Application {
 //
         try{
             Parent root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Scene scene = new Scene(root);
-        Image icon = new Image("first.png");
-        stage.getIcons().add(icon);
-        stage.setTitle("LESSGOO!");
+            Scene scene = new Scene(root );
+            Image icon = new Image("first.png");
+            stage.getIcons().add(icon);
+            stage.setTitle("LESSGOO!");
             stage.setScene(scene);
             stage.show();
         }
