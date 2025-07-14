@@ -1,12 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.QueueController">
-   <children>
-      <Button layoutX="231.0" layoutY="27.0" mnemonicParsing="false" text="Welcome to queue" />
-      <StackPane layoutX="5.0" layoutY="168.0" prefHeight="203.0" prefWidth="590.0" />
-   </children>
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" style="-fx-background-color: linear-gradient(to bottom, #f9f9f9, #e0e0e0);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.queue.QueueController">
+
+    <children>
+        <!-- Card-style container -->
+        <VBox alignment="TOP_CENTER" spacing="20" style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 6);" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="150" AnchorPane.topAnchor="50">
+
+            <!-- Title -->
+            <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #37474F;" text="Circular Queue Visualizer" />
+
+            <!-- Queue size input -->
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5; -fx-padding: 10;">
+                <Label style="-fx-font-size: 14px; -fx-text-fill: #616161;" text="Queue Size:" />
+                <TextField fx:id="sizeField" prefWidth="150" promptText="e.g. 5" style="-fx-background-radius: 4; -fx-border-radius: 4;" />
+                <Button fx:id="createQueueButton" onAction="#createQueue" prefHeight="30" prefWidth="100" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 4;" text="Create" />
+            </HBox>
+
+            <!-- Enqueue/Dequeue controls -->
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #FFFFFF; -fx-background-radius: 5; -fx-padding: 10;">
+                <Label style="-fx-font-size: 14px; -fx-text-fill: #616161;" text="Value:" />
+                <TextField fx:id="inputField" prefWidth="150" promptText="e.g. 42" style="-fx-background-radius: 4; -fx-border-radius: 4;" />
+                <Button fx:id="enqueueButton" disable="true" onAction="#enqueue" prefHeight="30" prefWidth="80" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 4;" text="Enqueue" />
+                <Button fx:id="dequeueButton" disable="true" onAction="#dequeue" prefHeight="30" prefWidth="80" style="-fx-background-color: #D32F2F; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 4;" text="Dequeue" />
+                <Button fx:id="frontButton" disable="true" onAction="#showFront" prefHeight="30" prefWidth="60" style="-fx-background-color: #FFA000; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 4;" text="Front" />
+            </HBox>
+
+            <!-- Front display -->
+            <Label fx:id="frontLabel" style="-fx-font-size: 18px; -fx-text-fill: #37474F;" text="Front: null" />
+
+            <!-- Separator -->
+            <Separator prefWidth="600" />
+
+            <!-- Logical Queue View -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #37474F;" text="Logical Queue View:" />
+                <HBox fx:id="queueView" alignment="CENTER" prefHeight="29.0" prefWidth="1138.0" spacing="10" style="-fx-padding: 10; -fx-background-radius: 5;" />
+            </VBox>
+
+            <!-- Separator -->
+            <Separator prefWidth="600" />
+
+            <!-- Underlying Array View -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #37474F;" text="Underlying Array View:" />
+                <HBox fx:id="arrowLabelBox" alignment="CENTER" spacing="10" style="-fx-padding: 5;" />
+                <HBox fx:id="arrayView" alignment="CENTER" spacing="10" style="-fx-padding: 10; -fx-background-color: rgba(255,255,255,0.7); -fx-background-radius: 5;" />
+            </VBox>
+
+        </VBox>
+    </children>
+
 </AnchorPane>
