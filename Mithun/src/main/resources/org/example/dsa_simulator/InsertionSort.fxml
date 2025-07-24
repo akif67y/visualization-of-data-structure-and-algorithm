@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="900.0" spacing="15.0" styleClass="root" stylesheets="@SortStyles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.sort.InsertionSortController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label styleClass="title-label" text="Insertion Sort Visualizer" />
+        <HBox alignment="CENTER" spacing="10.0">
+            <children>
+                <Label text="Array:" />
+                <TextField fx:id="arrayInput" prefWidth="300.0" promptText="e.g., 64, 34, 25, 12, 22" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" spacing="15.0">
+            <children>
+                <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSort" text="Start" />
+                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseSort" text="Pause" />
+                <Button fx:id="resumeButton" mnemonicParsing="false" onAction="#resumeSort" text="Resume" />
+                <Button fx:id="nextStepButton" mnemonicParsing="false" onAction="#doNextStep" text="Next Step" />
+                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetSort" styleClass="reset-button" text="Reset" />
+            </children>
+        </HBox>
+        <Pane fx:id="arrayContainer" prefHeight="350.0" prefWidth="860.0" styleClass="pane" />
+        <Label fx:id="statusLabel" alignment="CENTER" prefHeight="40.0" styleClass="status-label" text="Enter an array and click 'Start'" wrapText="true">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+    </children>
+</VBox>

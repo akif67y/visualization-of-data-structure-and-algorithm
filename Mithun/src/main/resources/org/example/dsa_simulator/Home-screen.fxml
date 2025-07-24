@@ -8,5 +8,11 @@
       <Button layoutX="510.0" layoutY="172.0" mnemonicParsing="false" onAction="#openGraphWindow" prefHeight="25.0" prefWidth="78.0" text="Graphs" />
       <Button layoutX="511.0" layoutY="216.0" mnemonicParsing="false" onAction="#openHeapWindow" prefHeight="25.0" prefWidth="78.0" text="Heap" />
       <Button layoutX="511.0" layoutY="257.0" mnemonicParsing="false" onAction="#openAiAssistantWindow" text="AI Assistant" />
+      <Button fx:id="BubbleSort" layoutX="511.0" layoutY="302.0" mnemonicParsing="false" onAction="#openBubbleSortWindow" text="Bubble Sort" />
+      <Button layoutX="511.0" layoutY="346.0" mnemonicParsing="false" onAction="#openSelectionSortWindow" text="Selection Sort" />
+      <Button layoutX="511.0" layoutY="391.0" mnemonicParsing="false" onAction="#openInsertionSortWindow" text="Insertion Sort" />
+      <Button layoutX="511.0" layoutY="130.0" mnemonicParsing="false" onAction="#openMergeSortWindow" text="Merge Sort" />
+      <Button layoutX="511.0" layoutY="89.0" mnemonicParsing="false" onAction="#openArrayWindow" prefHeight="25.0" prefWidth="66.0" text="Array" />
+      <Button layoutX="510.0" layoutY="51.0" mnemonicParsing="false" onAction="#onBSTButtonClicked" prefHeight="25.0" prefWidth="66.0" text="BST" />
    </children>
 </AnchorPane>
