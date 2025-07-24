@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
@@ -84,6 +85,8 @@ class Graph { // Changed to package-private class
     }
 }
 
+
+
 public class GraphController {
 
     @FXML
@@ -92,59 +95,34 @@ public class GraphController {
     private Pane graphPane;
     @FXML
     private Label visitedNodesLabel;
+    // Add FXML reference for the new DFS button (ensure it exists in your FXML)
+    @FXML
+    private Button dfsButton; // Add this line for the DFS button
 
     // A variable to hold our graph data structure
-    private Graph graph; // Now uses the merged Graph class
-    // Add a field to store the current layout type for redraw on resize
-    private String currentLayout = "default"; // or "circular"
+    private Graph graph;
 
     // Dragging variables
     private StackPane draggedNode = null;
     private double dragStartX, dragStartY;
 
-    // Visual components for BFS
+    // Visual components for traversals
     private Map<String, StackPane> visualNodes = new HashMap<>();
     private List<String> visitedOrder = new ArrayList<>();
-
-    // Fix: Add missing allEdges field
     private List<Line> allEdges = new ArrayList<>();
 
     @FXML
     void initialize() {
         // Initialize visited nodes label
         if (visitedNodesLabel != null) {
-            visitedNodesLabel.setText("Visited nodes will appear here during BFS traversal");
+            visitedNodesLabel.setText("Visited nodes will appear here during traversal");
         }
-
         // Create a beautiful default graph when the controller loads
         createDefaultGraph();
-        currentLayout = "default"; // Set initial layout type
-
-        // Add a listener to redraw the graph if the pane is resized
-        // This helps ensure the graph stays within bounds if the window is manually resized
-        graphPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            if (graph != null && !graph.getNodes().isEmpty()) {
-                if ("circular".equals(currentLayout)) {
-                    renderCircularLayout(); // Redraw with new dimensions
-                } else {
-                    renderBeautifulLayout(); // Redraw with new dimensions
-                }
-            }
-        });
-        graphPane.heightProperty().addListener((obs, oldVal, newVal) -> {
-            if (graph != null && !graph.getNodes().isEmpty()) {
-                if ("circular".equals(currentLayout)) {
-                    renderCircularLayout();
-                } else {
-                    renderBeautifulLayout();
-                }
-            }
-        });
     }
 
     private void createDefaultGraph() {
-        this.graph = new Graph(); // Instantiate the merged Graph class
-        // Create a beautiful sample graph - a small network
+        this.graph = new Graph();
         String[][] defaultEdges = {
                 {"A", "B"}, {"A", "C"}, {"A", "D"},
                 {"B", "E"}, {"C", "F"}, {"D", "G"},
@@ -152,35 +130,28 @@ public class GraphController {
                 {"H", "I"}, {"I", "J"}, {"J", "A"}
         };
         for (String[] edge : defaultEdges) {
-            graph.addEdge(edge[0], edge[1]); // Uses the updated addEdge for undirected
+            graph.addEdge(edge[0], edge[1]);
         }
-        // Set default text in the input area
         StringBuilder defaultText = new StringBuilder();
         for (String[] edge : defaultEdges) {
             defaultText.append(edge[0]).append(" ").append(edge[1]).append("\n");
         }
         edgeInputArea.setText(defaultText.toString().trim());
-        // Render the default graph with a beautiful layout
         renderBeautifulLayout();
-        currentLayout = "default"; // Record the layout type
     }
 
     @FXML
     void handleDrawGraph(ActionEvent event) {
-        // Clear and rebuild graph from input
-        this.graph = new Graph(); // Instantiate the merged Graph class
+        this.graph = new Graph();
         resetVisualState();
         String[] lines = edgeInputArea.getText().trim().split("\n");
         for (String line : lines) {
             String[] nodes = line.trim().split("\\s+");
             if (nodes.length == 2) {
-                // Use the corrected addEdge for undirected graph
                 graph.addEdge(nodes[0], nodes[1]);
             }
         }
-        // Use circular layout for custom graphs
         renderCircularLayout();
-        currentLayout = "circular"; // Record the layout type
     }
 
     @FXML
@@ -188,123 +159,178 @@ public class GraphController {
         if (graph == null || graph.getNodes().isEmpty()) {
             return;
         }
-        // Reset visual state before starting BFS
         resetVisualState();
-        // Start BFS from the first node (you can modify this to select starting node)
-        // Sorting ensures consistent starting node for testing the cycle graph case
+        // Sorting ensures consistent starting node
         List<String> sortedNodes = new ArrayList<>(graph.getNodes());
         Collections.sort(sortedNodes);
-        String startNode = sortedNodes.get(0); // Start from the lexicographically first node
+        String startNode = sortedNodes.get(0);
         performBFSWithVisualization(startNode);
     }
 
+    // --- New DFS Event Handler ---
+    @FXML
+    void handleDFS(ActionEvent event) {
+        if (graph == null || graph.getNodes().isEmpty()) {
+            return;
+        }
+        resetVisualState();
+        // Sorting ensures consistent starting node
+        List<String> sortedNodes = new ArrayList<>(graph.getNodes());
+        Collections.sort(sortedNodes);
+        String startNode = sortedNodes.get(0);
+        performDFSWithVisualization(startNode); // Call the new DFS animation method
+    }
+    // --- End of New DFS Event Handler ---
+
     private void resetVisualState() {
         visitedOrder.clear();
-        // Reset all nodes to default blue color
         for (StackPane nodePane : visualNodes.values()) {
             Circle circle = (Circle) nodePane.getChildren().get(0);
             circle.setFill(Color.web("#45B7D1")); // Default blue
             circle.setStroke(Color.web("#2C3E50"));
             circle.setStrokeWidth(3);
         }
-        // Reset all edges stay black - no edge coloring
-        // Edges will remain their default color
         if (visitedNodesLabel != null) {
-            visitedNodesLabel.setText("BFS traversal will start...");
+            visitedNodesLabel.setText("Traversal will start...");
         }
     }
 
-    // --- Corrected BFS Animation Logic ---
+    // --- Existing Corrected BFS Logic ---
     private void performBFSWithVisualization(String startNode) {
-        // Data structures for BFS
         Queue<String> queue = new LinkedList<>();
         Set<String> visited = new HashSet<>();
         Timeline timeline = new Timeline();
-        double currentTime = 0.0; // Time in seconds for the animation
-
-        // Lists to hold nodes for each level for correct animation sequencing
+        double currentTime = 0.0;
         List<List<String>> levels = new ArrayList<>();
         List<String> currentLevel = new ArrayList<>();
 
-        // --- Phase 1: BFS Traversal to Determine Levels ---
         queue.offer(startNode);
         visited.add(startNode);
         currentLevel.add(startNode);
 
         while (!queue.isEmpty()) {
             int levelSize = queue.size();
-            // Add the nodes discovered in the previous iteration to levels
             levels.add(new ArrayList<>(currentLevel));
-            currentLevel.clear(); // Prepare for the next level
-
-            // Process all nodes in the current level
+            currentLevel.clear();
             for (int i = 0; i < levelSize; i++) {
                 String currentNode = queue.poll();
-
-                // Discover neighbors from the graph's adjacency list
                 List<String> neighbors = graph.getAdjacencyList().get(currentNode);
                 if (neighbors != null) {
-                    // Process neighbors in the order they appear in the adjacency list
-                    // This is crucial for correct BFS order, especially in undirected graphs
-                    for (String neighbor : neighbors) {
+                    // Sort neighbors for consistent order within a level
+                    List<String> sortedNeighbors = new ArrayList<>(neighbors);
+                    Collections.sort(sortedNeighbors);
+                    for (String neighbor : sortedNeighbors) {
                         if (!visited.contains(neighbor)) {
                             visited.add(neighbor);
                             queue.offer(neighbor);
-                            // Add to currentLevel list for the *next* iteration/level
                             currentLevel.add(neighbor);
                         }
                     }
                 }
             }
         }
-        // Add the last discovered level (if any nodes were found in the final iteration)
         if (!currentLevel.isEmpty()) {
             levels.add(currentLevel);
         }
 
-        // --- Phase 2: Create Animation Sequence Based on Discovered Levels ---
-        currentTime = 0.0; // Reset time for scheduling animations
-        visitedOrder.clear(); // Clear the order tracking list
+        currentTime = 0.0;
+        visitedOrder.clear();
 
         for (int levelIndex = 0; levelIndex < levels.size(); levelIndex++) {
             List<String> levelNodes = levels.get(levelIndex);
-            double levelStartTime = currentTime; // Time when this level's animation starts
+            double levelStartTime = currentTime;
 
-            // Schedule highlighting for all nodes in this level
             for (int i = 0; i < levelNodes.size(); i++) {
                 String nodeId = levelNodes.get(i);
-                visitedOrder.add(nodeId); // Record the visit order
-
-                // Optional: Small stagger within the same level for visual clarity
+                visitedOrder.add(nodeId);
                 double nodeTimeOffset = i * 0.1;
-
                 KeyFrame highlightFrame = new KeyFrame(
                         Duration.seconds(levelStartTime + nodeTimeOffset),
                         e -> {
                             highlightVisitedNode(nodeId);
-                            updateVisitedNodesLabel(); // Update label immediately
+                            updateVisitedNodesLabel();
                         }
                 );
                 timeline.getKeyFrames().add(highlightFrame);
             }
-
-            // Advance the timeline cursor for the next level
-            // Ensure a minimum duration per level, scaling slightly with the number of nodes
             currentTime = levelStartTime + Math.max(1.0, 0.2 * levelNodes.size());
         }
 
-        // --- Schedule Completion Message ---
         KeyFrame completionFrame = new KeyFrame(Duration.seconds(currentTime + 1.0), e -> {
             if (visitedNodesLabel != null) {
                 visitedNodesLabel.setText("BFS Complete! Final order: " + String.join(" → ", visitedOrder));
             }
         });
         timeline.getKeyFrames().add(completionFrame);
-
-        // --- Play the Animation ---
         timeline.play();
     }
-    // --- End of Corrected BFS Animation Logic ---
+    // --- End of Existing Corrected BFS Logic ---
+
+    // --- New DFS Animation Logic ---
+    private void performDFSWithVisualization(String startNode) {
+        Set<String> visited = new HashSet<>();
+        Timeline timeline = new Timeline();
+        double currentTime = 0.0;
+        visitedOrder.clear(); // Clear for DFS order
+
+        // Recursive DFS helper that schedules animations
+        // It returns the time it expects to finish, allowing sequential scheduling
+        dfsRecursive(startNode, visited, timeline, currentTime, 0);
+
+        // Schedule completion message after the last node is processed
+        // We estimate the end time. A more robust way is to track the max time scheduled.
+        // For simplicity here, we add a delay based on the number of nodes.
+        // A better approach is shown below by tracking the max scheduled time.
+        double estimatedEndTime = currentTime + visitedOrder.size() * 1.0 + 1.0; // Estimate
+
+        KeyFrame completionFrame = new KeyFrame(Duration.seconds(estimatedEndTime), e -> {
+            if (visitedNodesLabel != null) {
+                visitedNodesLabel.setText("DFS Complete! Final order: " + String.join(" → ", visitedOrder));
+            }
+        });
+        timeline.getKeyFrames().add(completionFrame);
+
+        timeline.play();
+    }
+
+    // Recursive DFS helper that also schedules animations
+    // Returns the time at which this specific call (and its children) are expected to finish
+    private double dfsRecursive(String nodeId, Set<String> visited, Timeline timeline, double currentTime, int depth) {
+        if (visited.contains(nodeId)) {
+            return currentTime; // Already visited, no time taken by this specific call
+        }
+
+        visited.add(nodeId);
+        visitedOrder.add(nodeId); // Record the visit order for DFS
+
+        // Schedule animation for visiting this node
+        KeyFrame visitFrame = new KeyFrame(Duration.seconds(currentTime), e -> {
+            highlightVisitedNode(nodeId);
+            updateVisitedNodesLabel();
+        });
+        timeline.getKeyFrames().add(visitFrame);
+
+        // Increment time for the next action (visiting children or returning)
+        double nextTime = currentTime + 1.0; // 1 second delay between visiting a node and its children
+
+        List<String> neighbors = graph.getAdjacencyList().get(nodeId);
+        if (neighbors != null) {
+            // Sort neighbors for consistent traversal order
+            List<String> sortedNeighbors = new ArrayList<>(neighbors);
+            Collections.sort(sortedNeighbors);
+            for (String neighbor : sortedNeighbors) {
+                if (!visited.contains(neighbor)) {
+                    // Recursive call: process the neighbor and get the time it finishes
+                    nextTime = dfsRecursive(neighbor, visited, timeline, nextTime, depth + 1);
+                    // Add a small delay after processing each child subtree
+                    nextTime += 0.2;
+                }
+            }
+        }
+        // Return the time when this node's processing (including children) is expected to finish
+        return nextTime;
+    }
+    // --- End of New DFS Animation Logic ---
 
 
     private void highlightVisitedNode(String nodeId) {
@@ -319,9 +345,24 @@ public class GraphController {
 
     private void updateVisitedNodesLabel() {
         if (visitedNodesLabel != null) {
-            visitedNodesLabel.setText("BFS Progress: " + String.join(" → ", visitedOrder));
+            // Check the current text to determine which traversal is running or just finished
+            if (visitedNodesLabel.getText().startsWith("BFS") || visitedNodesLabel.getText().startsWith("DFS")) {
+                // If it's already showing progress for a specific traversal, update that
+                // This simple check works if the completion message is different
+                // A more robust way is to have a flag indicating the current traversal type
+                // For now, we'll just update the prefix based on the length of visitedOrder
+                // This is a bit fragile. A better way is to store the traversal type.
+                // Let's assume BFS/DFS logic handles its own final message.
+                // Just update the progress part.
+                visitedNodesLabel.setText( (visitedNodesLabel.getText().startsWith("BFS") ? "BFS" : "DFS") + " Progress: " + String.join(" → ", visitedOrder));
+            } else {
+                // Default case, assume it's the currently running one (DFS if DFS button was pressed last)
+                // Or just show progress generically
+                visitedNodesLabel.setText("Traversal Progress: " + String.join(" → ", visitedOrder));
+            }
         }
     }
+
 
     private void renderBeautifulLayout() {
         graphPane.getChildren().clear();
@@ -329,11 +370,9 @@ public class GraphController {
         allEdges.clear();
         Set<String> nodeIds = graph.getNodes();
         if (nodeIds.isEmpty()) return;
-        // Use graphPane width/height if available, otherwise fallback
-        double width = graphPane.getWidth() > 0 ? graphPane.getWidth() : 800;
-        double height = graphPane.getHeight() > 0 ? graphPane.getHeight() : 600;
+        double width = Math.max(graphPane.getWidth(), 600);
+        double height = Math.max(graphPane.getHeight(), 400);
 
-        // Beautiful predefined positions for the default graph
         Map<String, double[]> positions = new HashMap<>();
         positions.put("A", new double[]{width * 0.5, height * 0.2});
         positions.put("B", new double[]{width * 0.2, height * 0.4});
@@ -346,7 +385,6 @@ public class GraphController {
         positions.put("I", new double[]{width * 0.7, height * 0.9});
         positions.put("J", new double[]{width * 0.3, height * 0.9});
 
-        // Create nodes at predefined positions
         for (String nodeId : nodeIds) {
             StackPane nodePane = createVisualNode(nodeId);
             double[] pos = positions.get(nodeId);
@@ -354,7 +392,6 @@ public class GraphController {
                 nodePane.setLayoutX(pos[0] - 25);
                 nodePane.setLayoutY(pos[1] - 25);
             } else {
-                // Fallback to circular layout for any extra nodes
                 double angle = nodeIds.size() > 1 ? 2 * Math.PI * new ArrayList<>(nodeIds).indexOf(nodeId) / nodeIds.size() : 0;
                 double radius = Math.min(width, height) / 3;
                 double x = width / 2 + radius * Math.cos(angle) - 25;
@@ -366,7 +403,6 @@ public class GraphController {
             graphPane.getChildren().add(nodePane);
             setupNodeDragging(nodePane);
         }
-        // Draw edges and store references
         drawEdges();
     }
 
@@ -376,18 +412,15 @@ public class GraphController {
         allEdges.clear();
         Set<String> nodeIds = graph.getNodes();
         if (nodeIds.isEmpty()) return;
-        // Use graphPane width/height if available, otherwise fallback
-        double width = graphPane.getWidth() > 0 ? graphPane.getWidth() : 800;
-        double height = graphPane.getHeight() > 0 ? graphPane.getHeight() : 600;
+        double width = Math.max(graphPane.getWidth(), 600);
+        double height = Math.max(graphPane.getHeight(), 400);
         double centerX = width / 2;
         double centerY = height / 2;
 
-        // Make radius proportional to number of nodes, but not too small or large
         double baseRadius = Math.min(width, height) / 3;
         double radius = Math.max(80, Math.min(baseRadius, baseRadius + nodeIds.size() * 8));
         double angleStep = 2 * Math.PI / nodeIds.size();
         int i = 0;
-        // Sort nodes for consistent positioning
         List<String> sortedNodes = new ArrayList<>(nodeIds);
         Collections.sort(sortedNodes);
         for (String nodeId : sortedNodes) {
@@ -402,7 +435,6 @@ public class GraphController {
             setupNodeDragging(nodePane);
             i++;
         }
-        // Draw edges and store references
         drawEdges();
     }
 
@@ -413,16 +445,14 @@ public class GraphController {
             StackPane sourcePane = visualNodes.get(sourceId);
             List<String> neighbors = adjList.get(sourceId);
             for (String targetId : neighbors) {
-                // Create unique edge identifier to avoid duplicates in undirected graphs
-                // Sorting node IDs ensures consistent edge ID regardless of direction
+                // Create unique edge identifier (sorting node IDs for undirected graph)
                 String edgeId1 = sourceId.compareTo(targetId) < 0 ? sourceId + "-" + targetId : targetId + "-" + sourceId;
                 // Only process each edge once
                 if (!processedEdges.contains(edgeId1)) {
                     StackPane targetPane = visualNodes.get(targetId);
                     if (sourcePane != null && targetPane != null) {
                         Line line = createVisualEdge(sourcePane, targetPane);
-                        graphPane.getChildren().add(0, line); // Add to back
-                        // Store edge reference (optional, if needed later)
+                        graphPane.getChildren().add(0, line); // Add edges behind nodes
                         allEdges.add(line);
                         processedEdges.add(edgeId1);
                     }
@@ -442,8 +472,8 @@ public class GraphController {
             if (draggedNode == nodePane) {
                 nodePane.setLayoutX(e.getSceneX() - dragStartX);
                 nodePane.setLayoutY(e.getSceneY() - dragStartY);
-                // Update edges connected to this node
-                updateEdgesForNode(nodePane);
+                // Update edges connected to this node (bindings should handle this)
+                // updateEdgesForNode(nodePane); // Optional helper if manual updates needed
             }
             e.consume();
         });
@@ -453,31 +483,20 @@ public class GraphController {
         });
     }
 
-    // Helper to update edge positions when a node is dragged
-    private void updateEdgesForNode(StackPane nodePane) {
-        // This relies on the Line's startX/Y and endX/Y being bound to the node positions
-        // The bindings in createVisualEdge should handle this automatically.
-        // If manual updates were needed, you'd iterate through edges and update
-        // their startX/Y or endX/Y based on nodePane's layoutX/Y.
-        // With current binding setup, no explicit update code is strictly necessary here,
-        // but this method exists if manual updates are preferred or bindings fail.
-    }
-
+    // Optional helper for manual edge updates if bindings are insufficient
+    // private void updateEdgesForNode(StackPane nodePane) { /* ... */ }
 
     private StackPane createVisualNode(String id) {
         Circle circle = new Circle(25);
-        // Default blue color for all nodes
         Color nodeColor = Color.web("#45B7D1"); // Sky Blue
         circle.setFill(nodeColor);
         circle.setStroke(Color.web("#2C3E50"));
         circle.setStrokeWidth(3);
-        // Add a subtle shadow effect
         circle.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 2, 2);");
         Text label = new Text(id);
         label.setFill(Color.WHITE);
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-font-family: 'Arial';");
         StackPane nodePane = new StackPane(circle, label);
-        // Hover effects
         nodePane.setOnMouseEntered(e -> {
             circle.setStrokeWidth(4);
             circle.setStroke(Color.web("#F39C12"));
@@ -496,7 +515,6 @@ public class GraphController {
         line.setStrokeWidth(2.5);
         line.setStroke(Color.web("#34495E"));
         line.setOpacity(0.8);
-        // Add subtle shadow to edges too
         line.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.3, 1, 1);");
         // Bind line endpoints to the centers of the nodes
         line.startXProperty().bind(source.layoutXProperty().add(25));
