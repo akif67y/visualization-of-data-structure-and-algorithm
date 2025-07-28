@@ -18,6 +18,8 @@ public class Main extends Application {
 
         primaryStage.setTitle("DSA Simulator");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setHeight(1080);
+        primaryStage.setWidth(1920);
         primaryStage.show();
     }
 

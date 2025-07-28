@@ -161,6 +161,56 @@ public class MainController {
         launchBSTSimulation();
     }
 
+    @FXML
+
+    public void heapTry(ActionEvent event )
+    {
+        System.out.println("Heap Try was called");
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/HeapTry.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("PQ");
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+//            stage.setFullScreen(true);
+        } catch (java.io.IOException e) {
+            System.out.println("Error opening heap try");
+        }
+    }
+
+    public void QuickSort(ActionEvent event )
+    {
+        System.out.println("Quick Sort was called");
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/QuickSort.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("PQ");
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+//            stage.setFullScreen(true);
+        } catch (java.io.IOException e) {
+            System.out.println("Error opening Quick Sort");
+        }
+    }
+
+    public void TryBST(ActionEvent event )
+    {
+        System.out.println("BST was called");
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/TryBST.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("BST");
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+//            stage.setFullScreen(true);
+        } catch (java.io.IOException e) {
+            System.out.println("Error opening BST");
+        }
+    }
+
 
 
 }
