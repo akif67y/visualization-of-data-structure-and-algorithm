@@ -12,6 +12,7 @@ module org.example.dsa_simulator {
     requires com.almasb.fxgl.all;
     requires java.net.http;
     requires org.json;
+    requires annotations;
 
     opens org.example.dsa_simulator to javafx.fxml;
     opens org.example.dsa_simulator.graph to javafx.fxml;

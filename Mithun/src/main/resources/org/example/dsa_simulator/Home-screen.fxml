@@ -14,5 +14,8 @@
       <Button layoutX="511.0" layoutY="130.0" mnemonicParsing="false" onAction="#openMergeSortWindow" text="Merge Sort" />
       <Button layoutX="511.0" layoutY="89.0" mnemonicParsing="false" onAction="#openArrayWindow" prefHeight="25.0" prefWidth="66.0" text="Array" />
       <Button layoutX="510.0" layoutY="51.0" mnemonicParsing="false" onAction="#onBSTButtonClicked" prefHeight="25.0" prefWidth="66.0" text="BST" />
+      <Button layoutX="380.0" layoutY="51.0" mnemonicParsing="false" onAction="#heapTry" text="HeapTry" />
+      <Button layoutX="380.0" layoutY="102.0" mnemonicParsing="false" onAction="#QuickSort" text="Quick Sort" />
+      <Button layoutX="385.0" layoutY="155.0" mnemonicParsing="false" onAction="#TryBST" text="BSTTry" />
    </children>
 </AnchorPane>

@@ -76,7 +76,7 @@ public class MinHeap {
 
     @Override
     public String toString() {
-        return "MinHeap{" +
+        return "HeapTry{" +
                 "heap=" + heap +
                 '}';
     }

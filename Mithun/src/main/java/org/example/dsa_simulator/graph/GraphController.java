@@ -243,7 +243,7 @@ public class GraphController {
             for (int i = 0; i < levelNodes.size(); i++) {
                 String nodeId = levelNodes.get(i);
                 visitedOrder.add(nodeId);
-                double nodeTimeOffset = i * 0.1;
+                double nodeTimeOffset = i * 1.0;
                 KeyFrame highlightFrame = new KeyFrame(
                         Duration.seconds(levelStartTime + nodeTimeOffset),
                         e -> {
@@ -253,7 +253,7 @@ public class GraphController {
                 );
                 timeline.getKeyFrames().add(highlightFrame);
             }
-            currentTime = levelStartTime + Math.max(1.0, 0.2 * levelNodes.size());
+            currentTime = levelStartTime + Math.max(1.2, 1.1 * levelNodes.size());
         }
 
         KeyFrame completionFrame = new KeyFrame(Duration.seconds(currentTime + 1.0), e -> {
