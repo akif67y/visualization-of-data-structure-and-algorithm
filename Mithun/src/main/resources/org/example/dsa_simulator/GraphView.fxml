@@ -10,36 +10,49 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- Add the fx:controller attribute to link this FXML to your controller class -->
+<!-- Set pref dimensions for 1080p. fx:controller should match your actual controller class name -->
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.graph.GraphController">
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.graph.GraphController">
     <children>
         <!-- Left side panel for controls -->
-        <VBox layoutX="14.0" layoutY="14.0" prefHeight="572.0" prefWidth="250.0" spacing="10.0" style="-fx-background-color: #4baac4;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+        <!-- Adjusted topAnchor to 0 for full height -->
+        <VBox layoutX="14.0" layoutY="70.0" prefWidth="253.0" spacing="10.0" style="-fx-background-color: #4baac4;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="70.0">
             <children>
-            <Button fx:id="returnButton" mnemonicParsing="false" onAction="#returnToHome" style="-fx-background-radius: 5;" text="Return" />
+                <Button fx:id="returnButton" mnemonicParsing="false" onAction="#returnToHome" style="-fx-background-radius: 5;" text="Return" />
                 <Label style="-fx-background-color: #4baac4;" text="Graph Input">
                     <font>
                         <Font name="System Bold" size="18.0" />
                     </font>
                 </Label>
                 <Label text="Enter edges, one per line (e.g., 1 2):" wrapText="true" />
-                <!-- Add fx:id to the TextArea so the controller can access it -->
-                <TextArea fx:id="edgeInputArea" prefHeight="400.0" prefWidth="200.0" promptText="1 2&#10;" />
-                <!-- Add fx:id and onAction to the Button -->
+                <!-- TextArea adjusted to grow within VBox -->
+                <TextArea fx:id="edgeInputArea" prefHeight="400.0" prefWidth="200.0" promptText="1 2&#10;" VBox.vgrow="ALWAYS" />
                 <Button fx:id="drawButton" mnemonicParsing="false" onAction="#handleDrawGraph" prefHeight="40.0" prefWidth="250.0" style="-fx-background-radius: 8;" text="Draw Graph">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <effect>
-                  <Glow />
-               </effect></Button>
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                    <effect>
+                        <Glow />
+                    </effect>
+                </Button>
             </children>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </VBox>
+
+        <!-- BFS Button and Label -->
+        <!-- ... inside your control VBox ... -->
+        <Button fx:id="bfsButton" layoutX="14.0" layoutY="31.0" onAction="#handleBFS" text="BFS" />
+<!--        <Button fx:id="dfsButton" layoutX="14.0" layoutY="100.0" onAction="#handleDFS" text="DFS" /> &lt;!&ndash; Add this line &ndash;&gt;-->
+        <Label fx:id="visitedNodesLabel" layoutX="14.0" layoutY="14.0" text="Visited nodes will appear here" />
+        <!-- ... -->
+
         <!-- Right side panel for drawing the graph -->
-        <Pane fx:id="graphPane" layoutX="280.0" layoutY="14.0" prefHeight="572.0" prefWidth="606.0" style="-fx-background-color: white; -fx-border-color: lightgrey;" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+        <!-- CRITICAL CHANGE: Removed fixed prefHeight/prefWidth.
+             Used AnchorPane constraints to make it fill the remaining space. -->
+        <Pane fx:id="graphPane" layoutX="280.0" layoutY="70.0" style="-fx-background-color: white; -fx-border-color: lightgrey;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="70.0" />
+      <Button fx:id="dfsButton" layoutX="61.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleDFS" text="DFS" />
+
     </children>
 </AnchorPane>

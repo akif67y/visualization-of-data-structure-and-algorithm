@@ -6,15 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="javafx-demo (2)" />
+        <module name="javafx-demo" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-<<<<<<< HEAD
-      <module name="javafx-demo" target="17" />
-=======
-      <module name="javafx-demo (1)" target="17" />
->>>>>>> ef8b94492dda0d3b1818d00506c411bbc8758530
-    </bytecodeTargetLevel>
   </component>
 </project>
