@@ -138,6 +138,19 @@ public class MainController{
             e.printStackTrace();
         }
     }
+    @FXML
+    protected void primButtonClick(ActionEvent event) {
+        try {
+            // Load Scene 2
+            Parent root = FXMLLoader.load(getClass().getResource("primview.fxml"));
+            Scene scene2 = new Scene(root);
+            // Get the current stage and switch the scene
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(scene2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

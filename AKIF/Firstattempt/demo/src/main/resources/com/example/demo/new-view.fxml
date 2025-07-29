@@ -52,9 +52,14 @@
             </Button>
          </children>
       </VBox>
-      <VBox layoutX="166.0" layoutY="88.0" prefHeight="646.0" prefWidth="366.0">
+      <VBox layoutX="166.0" layoutY="88.0" prefHeight="646.0" prefWidth="366.0" spacing="30.0">
          <children>
             <Button onAction="#dijkstraButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="dijkstra">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+            <Button onAction="#primButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="Prim">
                <padding>
                   <Insets bottom="10" left="20" right="20" top="10" />
                </padding>
