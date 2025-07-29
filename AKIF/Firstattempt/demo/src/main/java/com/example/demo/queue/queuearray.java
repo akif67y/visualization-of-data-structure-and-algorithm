@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 
-public class QueueController {
+public class queuearray {
     @FXML private TextField inputField;
     @FXML private TextField sizeField;
     @FXML private Label frontLabel;

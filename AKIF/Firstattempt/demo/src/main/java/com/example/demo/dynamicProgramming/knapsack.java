@@ -1,0 +1,427 @@
+package com.example.demo.dynamicProgramming;
+
+import javafx.animation.*;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
+import javafx.util.Pair;
+
+import java.util.*;
+
+public class knapsack{
+
+    @FXML
+    private TextField weightsField;
+    @FXML
+    private TextField valuesField;
+    @FXML
+    private TextField capacityField;
+    @FXML
+    private Pane drawingPane;
+    @FXML
+    private Label resultLabel;
+    @FXML
+    private Label status;
+    @FXML
+    private Label pickedItems;
+
+    // Internal data
+    private List<Integer> weights = new ArrayList<>();
+    private List<Integer> values = new ArrayList<>();
+    private int capacity = 0;
+
+    // DP Table
+    private int[][] dpTable;
+    private int n = 0; // number of items
+
+    // Grid configuration
+    private static final double CELL_WIDTH = 60.0;
+    private static final double CELL_HEIGHT = 30.0;
+    private static final double GRID_POS_X = 10.0;
+    private static final double GRID_POS_Y = 10.0;
+
+    // Cell map for animation
+    private final Map<Pair<Integer, Integer>, Label> cellMap = new HashMap<>();
+
+    // Animation speed
+    private final int ANIM_SPEED = 400;
+
+    @FXML
+    public void onWeightsEnter(ActionEvent event) {
+        parseIntegerList(weightsField.getText(), weights, "Weights");
+    }
+
+    @FXML
+    public void onValuesEnter(ActionEvent event) {
+        parseIntegerList(valuesField.getText(), values, "Values");
+    }
+
+    @FXML
+    public void onCapacityEnter(ActionEvent event) {
+        try {
+            capacity = Integer.parseInt(capacityField.getText().trim());
+            if (capacity <= 0) {
+                throw new NumberFormatException();
+            }
+            status.setText("Capacity set: " + capacity);
+            showAlert("Success", "Knapsack capacity set to " + capacity);
+            capacityField.clear();
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Please enter a valid positive integer for capacity");
+            capacityField.clear();
+        }
+    }
+
+    private void parseIntegerList(String input, List<Integer> list, String name) {
+        list.clear();
+        try {
+            String[] parts = input.trim().split(",");
+            for (String part : parts) {
+                list.add(Integer.parseInt(part.trim()));
+            }
+            if (list.isEmpty()) {
+                throw new NumberFormatException();
+            }
+            status.setText(name + " set: " + list);
+            showAlert("Success", name + " set: " + list);
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Invalid input for " + name + ". Use comma-separated integers.");
+            list.clear();
+        }
+    }
+
+    @FXML
+    private void onGenerate(ActionEvent event) {
+        if (drawingPane == null) {
+            System.err.println("Error: drawingPane is not initialized.");
+            showAlert("Error", "Drawing pane not initialized");
+            return;
+        }
+
+        if (weights.isEmpty() || values.isEmpty()) {
+            showAlert("Error", "Please set both weights and values.");
+            return;
+        }
+
+        if (weights.size() != values.size()) {
+            showAlert("Error", "Number of weights and values must be equal.");
+            return;
+        }
+
+        if (capacity <= 0) {
+            showAlert("Error", "Please set a valid capacity (> 0).");
+            return;
+        }
+
+        n = weights.size();
+        drawingPane.getChildren().clear();
+        cellMap.clear();
+
+        generateKnapsackTable();
+    }
+
+    private void generateKnapsackTable() {
+        int W = capacity;
+        int N = n;
+        System.out.println("weights: " + weights);
+        System.out.println("items count: " + N);
+
+        // Create GridPane
+        GridPane grid = new GridPane();
+        grid.setHgap(0);
+        grid.setVgap(0);
+        grid.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
+
+        // Column constraints: col0=values, col1=weights, col2=indices, col3->(3+W)=DP table
+        for (int col = 0; col <= W + 3; col++) {
+            ColumnConstraints colConstraint = new ColumnConstraints(CELL_WIDTH);
+            grid.getColumnConstraints().add(colConstraint);
+        }
+
+        // Row constraints: row0=headers, row1=base case (0 items), row2->(1+N)=items
+        for (int row = 0; row <= N + 1; row++) {
+            RowConstraints rowConstraint = new RowConstraints(CELL_HEIGHT);
+            grid.getRowConstraints().add(rowConstraint);
+        }
+
+        // Initialize cell map
+        cellMap.clear();
+
+        // Headers in row 0
+        Label valHeader = new Label("val");
+        styleHeaderCell(valHeader, grid, 0, 0);
+        cellMap.put(new Pair<>(0, 0), valHeader);
+
+        Label wtHeader = new Label("wt");
+        styleHeaderCell(wtHeader, grid, 1, 0);
+        cellMap.put(new Pair<>(0, 1), wtHeader);
+
+        Label indexHeader = new Label("i");
+        styleHeaderCell(indexHeader, grid, 2, 0);
+        cellMap.put(new Pair<>(0, 2), indexHeader);
+
+        // Weight capacity headers (columns 3 to 3+W)
+        for (int w = 0; w <= W; w++) {
+            Label capacityLabel = new Label(String.valueOf(w));
+            styleHeaderCell(capacityLabel, grid, 3 + w, 0);
+            cellMap.put(new Pair<>(0, 3 + w), capacityLabel);
+        }
+
+        // Row 1: Base case (0 items) - empty cells for first 3 columns
+        Label emptyVal = new Label("");
+        styleDataCell(emptyVal, grid, 0, 1);
+        cellMap.put(new Pair<>(1, 0), emptyVal);
+
+        Label emptyWt = new Label("");
+        styleDataCell(emptyWt, grid, 1, 1);
+        cellMap.put(new Pair<>(1, 1), emptyWt);
+
+        Label indexZero = new Label("0");
+        styleDataCell(indexZero, grid, 2, 1);
+        cellMap.put(new Pair<>(1, 2), indexZero);
+
+        // Initialize DP table
+        dpTable = new int[N + 2][W + 4]; // Extra space for safety
+
+        // Base case: 0 items → 0 value for all capacities
+        for (int w = 0; w <= W; w++) {
+            dpTable[0][w] = 0; // Using 0-based indexing for DP table
+            Label baseCell = new Label("0");
+            styleDataCell(baseCell, grid, 3 + w, 1);
+            cellMap.put(new Pair<>(1, 3 + w), baseCell);
+        }
+
+        // Rows 2 to N+1: Items 1 to N
+        for (int i = 1; i <= N; i++) {
+            // Value column
+            Label valueLabel = new Label(String.valueOf(values.get(i - 1)));
+            styleDataCell(valueLabel, grid, 0, i + 1);
+            cellMap.put(new Pair<>(i + 1, 0), valueLabel);
+
+            // Weight column
+            Label weightLabel = new Label(String.valueOf(weights.get(i - 1)));
+            styleDataCell(weightLabel, grid, 1, i + 1);
+            cellMap.put(new Pair<>(i + 1, 1), weightLabel);
+
+            // Index column
+            Label indexLabel = new Label(String.valueOf(i));
+            styleDataCell(indexLabel, grid, 2, i + 1);
+            cellMap.put(new Pair<>(i + 1, 2), indexLabel);
+        }
+
+        // Animation sequence
+        SequentialTransition sequence = new SequentialTransition();
+
+        // Fill DP table with animation
+        for (int i = 1; i <= N; i++) { // Items 1 to N
+            for (int w = 0; w <= W; w++) { // Capacities 0 to W
+                final int itemIndex = i;
+                final int currentCapacity = w;
+                final int gridRow = i + 1;
+                final int gridCol = 3 + w;
+
+                // Calculate DP value
+                int currentWeight = weights.get(i - 1);
+                int currentValue = values.get(i - 1);
+
+                if (currentWeight > w) {
+                    // Item too heavy, take previous best
+                    dpTable[i][w] = dpTable[i - 1][w];
+                } else {
+                    // Take max of (skip item, take item)
+                    dpTable[i][w] = Math.max(
+                            dpTable[i - 1][w], // Skip item
+                            dpTable[i - 1][w - currentWeight] + currentValue // Take item
+                    );
+                }
+
+                // Create cell for this position
+                Label cell = new Label("");
+                styleDataCell(cell, grid, gridCol, gridRow);
+                cellMap.put(new Pair<>(gridRow, gridCol), cell);
+
+                // Highlight current cell
+                sequence.getChildren().add(createHighlightAnimation(cell));
+
+                // Highlight relevant headers
+                ParallelTransition headerHighlight = new ParallelTransition();
+                headerHighlight.getChildren().addAll(
+                        createHighlightAnimation(cellMap.get(new Pair<>(0, gridCol))), // Capacity header
+                        createHighlightAnimation(cellMap.get(new Pair<>(gridRow, 2)))  // Item index
+                );
+                sequence.getChildren().add(headerHighlight);
+
+                // Highlight dependencies
+                if (currentWeight > w) {
+                    // Only highlight the cell above
+                    sequence.getChildren().add(createHighlightAnimation(cellMap.get(new Pair<>(gridRow - 1, gridCol))));
+                } else {
+                    // Highlight both dependency cells
+                    ParallelTransition depHighlight = new ParallelTransition();
+                    Label upCell = cellMap.get(new Pair<>(gridRow - 1, gridCol));
+                    Label diagCell = cellMap.get(new Pair<>(gridRow - 1, 3 + (w - currentWeight)));
+
+                    if (upCell != null) {
+                        depHighlight.getChildren().add(createHighlightAnimation(upCell));
+                    }
+                    if (diagCell != null) {
+                        depHighlight.getChildren().add(createHighlightAnimation(diagCell));
+                    }
+                    sequence.getChildren().add(depHighlight);
+                }
+
+                // Update status
+                ParallelTransition cellHighlight = new ParallelTransition();
+                Timeline updateStatus = new Timeline(
+                        new KeyFrame(Duration.millis(ANIM_SPEED ), e -> {
+                            if (currentWeight > currentCapacity) {
+                                status.setText("Item " + itemIndex + " too heavy (" + currentWeight + " > " + currentCapacity + ")");
+                            } else {
+                                status.setText("Item " + itemIndex + ": max(skip=" + dpTable[itemIndex - 1][currentCapacity] +
+                                        ", take=" + (dpTable[itemIndex - 1][currentCapacity - currentWeight] + currentValue) + ")");
+                            }
+                        })
+                );
+                cellHighlight.getChildren().addAll(updateStatus);
+                cellHighlight.getChildren().addAll(createHighlightAnimation(status));
+                sequence.getChildren().add(cellHighlight);
+
+                // Set final cell value
+                Timeline setValue = new Timeline(
+                        new KeyFrame(Duration.millis(ANIM_SPEED / 2), e -> cell.setText(String.valueOf(dpTable[itemIndex][currentCapacity])))
+                );
+                sequence.getChildren().add(setValue);
+                sequence.getChildren().add(new PauseTransition(Duration.millis(ANIM_SPEED / 4)));
+            }
+        }
+
+        grid.setLayoutX(GRID_POS_X);
+        grid.setLayoutY(GRID_POS_Y);
+        drawingPane.getChildren().add(grid);
+
+        sequence.setOnFinished(e -> {
+            resultLabel.setText(String.valueOf(dpTable[N][W]));
+            status.setText("DP Table Complete. Max value: " + dpTable[N][W]);
+        });
+
+        if (!sequence.getChildren().isEmpty()) {
+            System.out.println("Starting Knapsack animation...");
+            sequence.play();
+        }
+    }
+
+    @FXML
+    private void extractItems() {
+        if (dpTable == null || n == 0 || capacity == 0) {
+            showAlert("Error", "Generate the table first!");
+            return;
+        }
+
+        List<Integer> selected = new ArrayList<>();
+        String trace = "";
+        SequentialTransition sequence = new SequentialTransition();
+
+        int i = n;
+        int w = capacity;
+        while (i > 0 && w > 0) {
+            int gridRow = i + 1;
+            int gridCol = 3 + w;
+
+            // Highlight current cell
+            sequence.getChildren().add(createHighlightAnimation(cellMap.get(new Pair<>(gridRow, gridCol))));
+
+            final int itemIndex = i;
+            final int weight = weights.get(i - 1);
+            final int value = values.get(i - 1);
+
+            if (w >= weight && dpTable[i][w] == dpTable[i - 1][w - weight] + value) {
+                // Item i was included
+                selected.add(itemIndex);
+                trace = trace +  "Item " + itemIndex + "(wt=" + weight + ", val=" + value + ") \n";
+                String finalTrace = trace;
+                Timeline tl = new Timeline(
+                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
+                            pickedItems.setText(finalTrace);
+                            status.setText("Selected item " + itemIndex);
+                        })
+                );
+                sequence.getChildren().add(tl);
+                w -= weight;
+            } else {
+                // Item was not included
+                Timeline tl = new Timeline(
+                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
+                            status.setText("Skipped item " + itemIndex);
+                        })
+                );
+                sequence.getChildren().add(tl);
+            }
+            i--;
+        }
+
+        if (selected.isEmpty()) {
+            Timeline finalStatus = new Timeline(
+                    new KeyFrame(Duration.millis(ANIM_SPEED), e -> pickedItems.setText("No items selected"))
+            );
+            sequence.getChildren().add(finalStatus);
+        }
+
+        if (!sequence.getChildren().isEmpty()) {
+            sequence.play();
+        } else {
+            pickedItems.setText("No items selected");
+        }
+    }
+
+    private void styleHeaderCell(Label cell, GridPane grid, int col, int row) {
+        cell.setPrefSize(CELL_WIDTH, CELL_HEIGHT);
+        cell.setStyle("-fx-alignment: center; -fx-border-color: black; -fx-border-width: 1px; " +
+                "-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+        grid.add(cell, col, row);
+    }
+
+    private void styleDataCell(Label cell, GridPane grid, int col, int row) {
+        cell.setPrefSize(CELL_WIDTH, CELL_HEIGHT);
+        cell.setStyle("-fx-alignment: center; -fx-border-color: gray; -fx-border-width: 1px; -fx-background-color: #f9f9f9;");
+        grid.add(cell, col, row);
+    }
+
+    private SequentialTransition createHighlightAnimation(Label label) {
+        if (label == null) return new SequentialTransition();
+
+        String originalStyle = label.getStyle();
+        String highlightBg = "#ffeb3b";
+        String highlightBorder = "#f57c00";
+
+        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(ANIM_SPEED / 4), label);
+        scaleUp.setFromX(1.0);
+        scaleUp.setFromY(1.0);
+        scaleUp.setToX(1.2);
+        scaleUp.setToY(1.2);
+        scaleUp.setOnFinished(e -> label.setStyle(originalStyle + " -fx-background-color: " + highlightBg +
+                "; -fx-border-color: " + highlightBorder + "; -fx-border-width: 2px; -fx-font-weight: bold;"));
+
+        PauseTransition pause = new PauseTransition(Duration.millis(ANIM_SPEED / 2));
+
+        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(ANIM_SPEED / 4), label);
+        scaleDown.setFromX(1.2);
+        scaleDown.setFromY(1.2);
+        scaleDown.setToX(1.0);
+        scaleDown.setToY(1.0);
+        scaleDown.setOnFinished(e -> label.setStyle(originalStyle));
+
+        return new SequentialTransition(scaleUp, pause, scaleDown);
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}

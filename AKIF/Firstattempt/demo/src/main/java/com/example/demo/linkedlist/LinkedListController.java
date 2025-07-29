@@ -1,6 +1,5 @@
 package com.example.demo.linkedlist;
 
-// LinkedListController.java
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -15,66 +14,53 @@ import javafx.scene.effect.DropShadow;
 import javafx.animation.ScaleTransition;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class LinkedListController implements Initializable {
-
     @FXML
     private TextField inputField;
-
     @FXML
     private Button addButton;
-
     @FXML
     private Button clearButton;
-
     @FXML
     private TextField deleteField;
-
     @FXML
     private Button deleteButton;
-
     @FXML
     private TextField insertValueField;
-
     @FXML
     private TextField insertPositionField;
-
     @FXML
     private Button insertButton;
-
     @FXML
     private TextField swapField1;
-
     @FXML
     private TextField swapField2;
-
     @FXML
     private Button swapButton;
-
     @FXML
     private Label sizeLabel;
-
     @FXML
     private Pane drawingPane;
 
     private List<Button> nodeButtons;
     private List<Line> connectionLines;
     private List<Polygon> arrowHeads;
-    private double currentX = 30;
-    private double currentY = 30;
-    private final double BUTTON_WIDTH = 100;
-    private final double BUTTON_HEIGHT = 50;
-    private final double SPACING = 140;
-    private final double ROW_SPACING = 100;
-    private final double MARGIN = 30;
+
+    private double currentX = 20; // Updated initial margin
+    private double currentY = 20; // Updated initial margin
+    private final double BUTTON_WIDTH = 70; // Reduced width
+    private final double BUTTON_HEIGHT = 35; // Reduced height
+    private final double SPACING = 100; // Reduced horizontal spacing
+    private final double ROW_SPACING = 60; // Reduced vertical spacing between rows
+    private final double MARGIN = 20; // Reduced margin
     private int currentRow = 0;
     private int nodesInCurrentRow = 0;
-    private final int MAX_NODES_PER_ROW = 4;
+    private final int MAX_NODES_PER_ROW = 8; // Increased max nodes per row
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -89,7 +75,6 @@ public class LinkedListController implements Initializable {
         deleteButton.setOnAction(e -> deleteNode());
         insertButton.setOnAction(e -> insertNode());
         swapButton.setOnAction(e -> swapNodes());
-
         inputField.setOnAction(e -> addNode());
         deleteField.setOnAction(e -> deleteNode());
         insertValueField.setOnAction(e -> insertNode());
@@ -100,8 +85,8 @@ public class LinkedListController implements Initializable {
         deleteField.setPromptText("Value to delete");
         insertValueField.setPromptText("New value");
         insertPositionField.setPromptText("Insert after position");
-        swapField1.setPromptText("First position");
-        swapField2.setPromptText("Second position");
+        swapField1.setPromptText("Pos 1");
+        swapField2.setPromptText("Pos 2");
 
         // Style the input fields
         styleInputField(inputField);
@@ -112,53 +97,53 @@ public class LinkedListController implements Initializable {
         styleInputField(swapField2);
 
         // Style the buttons
-        styleControlButton(addButton, "#4CAF50");
-        styleControlButton(clearButton, "#f44336");
-        styleControlButton(deleteButton, "#FF9800");
-        styleControlButton(insertButton, "#2196F3");
-        styleControlButton(swapButton, "#9C27B0");
+        styleControlButton(addButton, "#38a169"); // Updated colors
+        styleControlButton(clearButton, "#e53e3e");
+        styleControlButton(deleteButton, "#dd6b20");
+        styleControlButton(insertButton, "#3182ce");
+        styleControlButton(swapButton, "#805ad5");
 
         // Update size label
         updateSizeLabel();
     }
 
     private void styleInputField(TextField field) {
-        field.setStyle("-fx-background-color: white; -fx-border-color: #2196F3; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-font-size: 14px;");
+        // Slightly refined styling
+        field.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;");
     }
 
     private void styleControlButton(Button button, String color) {
+        // Updated styling with refined colors and smaller radius
         button.setStyle(String.format(
                 "-fx-background-color: %s; " +
                         "-fx-text-fill: white; " +
                         "-fx-font-weight: bold; " +
-                        "-fx-font-size: 14px; " +
-                        "-fx-border-radius: 8; " +
-                        "-fx-background-radius: 8; " +
-                        "-fx-padding: 10 20 10 20; " +
+                        "-fx-font-size: 13px; " +
+                        "-fx-border-radius: 6; " +
+                        "-fx-background-radius: 6; " +
+                        "-fx-padding: 8 16 8 16; " + // Reduced padding
                         "-fx-cursor: hand;", color));
-
         // Add hover effects
         button.setOnMouseEntered(e -> {
             button.setStyle(String.format(
                     "-fx-background-color: derive(%s, -10%%); " +
                             "-fx-text-fill: white; " +
                             "-fx-font-weight: bold; " +
-                            "-fx-font-size: 14px; " +
-                            "-fx-border-radius: 8; " +
-                            "-fx-background-radius: 8; " +
-                            "-fx-padding: 10 20 10 20; " +
+                            "-fx-font-size: 13px; " +
+                            "-fx-border-radius: 6; " +
+                            "-fx-background-radius: 6; " +
+                            "-fx-padding: 8 16 8 16; " +
                             "-fx-cursor: hand;", color));
         });
-
         button.setOnMouseExited(e -> {
             button.setStyle(String.format(
                     "-fx-background-color: %s; " +
                             "-fx-text-fill: white; " +
                             "-fx-font-weight: bold; " +
-                            "-fx-font-size: 14px; " +
-                            "-fx-border-radius: 8; " +
-                            "-fx-background-radius: 8; " +
-                            "-fx-padding: 10 20 10 20; " +
+                            "-fx-font-size: 13px; " +
+                            "-fx-border-radius: 6; " +
+                            "-fx-background-radius: 6; " +
+                            "-fx-padding: 8 16 8 16; " +
                             "-fx-cursor: hand;", color));
         });
     }
@@ -180,6 +165,7 @@ public class LinkedListController implements Initializable {
             currentRow++;
             nodesInCurrentRow = 0;
             currentX = MARGIN;
+            // Adjust Y position calculation for new row
             currentY = MARGIN + (currentRow * (BUTTON_HEIGHT + ROW_SPACING));
         }
 
@@ -273,7 +259,8 @@ public class LinkedListController implements Initializable {
 
         try {
             int position = Integer.parseInt(positionStr.trim());
-            if (position < 0 || position >= nodeButtons.size()) {
+            // Allow inserting at the end (position == size)
+            if (position < 0 || position > nodeButtons.size() - 1) {
                 showAlert("Error", "Position must be between 0 and " + (nodeButtons.size() - 1));
                 return;
             }
@@ -282,7 +269,7 @@ public class LinkedListController implements Initializable {
             Button newNodeButton = new Button(value.trim());
             newNodeButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 
-            // Insert at position + 1
+            // Insert at position + 1 (after the given position)
             nodeButtons.add(position + 1, newNodeButton);
 
             // Style the button
@@ -301,7 +288,6 @@ public class LinkedListController implements Initializable {
 
             insertValueField.clear();
             insertPositionField.clear();
-
         } catch (NumberFormatException e) {
             showAlert("Error", "Position must be a valid number.");
         }
@@ -336,7 +322,6 @@ public class LinkedListController implements Initializable {
             // Swap the button texts
             Button button1 = nodeButtons.get(pos1);
             Button button2 = nodeButtons.get(pos2);
-
             String temp = button1.getText();
             button1.setText(button2.getText());
             button2.setText(temp);
@@ -346,7 +331,6 @@ public class LinkedListController implements Initializable {
 
             swapField1.clear();
             swapField2.clear();
-
         } catch (NumberFormatException e) {
             showAlert("Error", "Positions must be valid numbers.");
         }
@@ -357,16 +341,16 @@ public class LinkedListController implements Initializable {
         ScaleTransition scale1 = new ScaleTransition(Duration.millis(200), button1);
         scale1.setFromX(1.0);
         scale1.setFromY(1.0);
-        scale1.setToX(1.2);
-        scale1.setToY(1.2);
+        scale1.setToX(1.15); // Slightly reduced scale for smaller buttons
+        scale1.setToY(1.15);
         scale1.setAutoReverse(true);
         scale1.setCycleCount(2);
 
         ScaleTransition scale2 = new ScaleTransition(Duration.millis(200), button2);
         scale2.setFromX(1.0);
         scale2.setFromY(1.0);
-        scale2.setToX(1.2);
-        scale2.setToY(1.2);
+        scale2.setToX(1.15);
+        scale2.setToY(1.15);
         scale2.setAutoReverse(true);
         scale2.setCycleCount(2);
 
@@ -399,6 +383,7 @@ public class LinkedListController implements Initializable {
                 currentRow++;
                 nodesInCurrentRow = 0;
                 currentX = MARGIN;
+                // Adjust Y position calculation for new row
                 currentY = MARGIN + (currentRow * (BUTTON_HEIGHT + ROW_SPACING));
             }
 
@@ -415,48 +400,48 @@ public class LinkedListController implements Initializable {
         redrawConnections();
     }
 
+
     private void styleNodeButton(Button nodeButton) {
-        // Create gradient background
+        // Updated gradient for smaller buttons
         String gradientStyle =
-                "-fx-background-color: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);" +
+                "-fx-background-color: linear-gradient(to bottom, #6366f1 0%, #4f46e5 100%);" + // Purple gradient
                         "-fx-text-fill: white;" +
                         "-fx-font-weight: bold;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-border-radius: 15;" +
-                        "-fx-background-radius: 15;" +
+                        "-fx-font-size: 12px;" + // Smaller font
+                        "-fx-border-radius: 10;" + // Adjusted radius
+                        "-fx-background-radius: 10;" +
                         "-fx-cursor: hand;";
 
         nodeButton.setStyle(gradientStyle);
 
         // Add drop shadow effect
         DropShadow dropShadow = new DropShadow();
-        dropShadow.setColor(Color.gray(0, 0.6));
-        dropShadow.setOffsetX(2);
-        dropShadow.setOffsetY(2);
-        dropShadow.setRadius(5);
+        dropShadow.setColor(Color.gray(0, 0.4)); // Slightly reduced shadow opacity
+        dropShadow.setOffsetX(1.5); // Reduced shadow offset
+        dropShadow.setOffsetY(1.5);
+        dropShadow.setRadius(3); // Reduced shadow radius
         nodeButton.setEffect(dropShadow);
 
         // Add hover effects
         nodeButton.setOnMouseEntered(e -> {
+            // Darker gradient on hover
             nodeButton.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom, #5a6fd8 0%, #6a4190 100%);" +
+                    "-fx-background-color: linear-gradient(to bottom, #4f46e5 0%, #4338ca 100%);" +
                             "-fx-text-fill: white;" +
                             "-fx-font-weight: bold;" +
-                            "-fx-font-size: 14px;" +
-                            "-fx-border-radius: 15;" +
-                            "-fx-background-radius: 15;" +
+                            "-fx-font-size: 12px;" +
+                            "-fx-border-radius: 10;" +
+                            "-fx-background-radius: 10;" +
                             "-fx-cursor: hand;");
-
-            // Scale animation on hover
+            // Scale animation on hover (slightly less for smaller buttons)
             ScaleTransition scaleUp = new ScaleTransition(Duration.millis(100), nodeButton);
-            scaleUp.setToX(1.1);
-            scaleUp.setToY(1.1);
+            scaleUp.setToX(1.08);
+            scaleUp.setToY(1.08);
             scaleUp.play();
         });
 
         nodeButton.setOnMouseExited(e -> {
             nodeButton.setStyle(gradientStyle);
-
             // Scale back to normal
             ScaleTransition scaleDown = new ScaleTransition(Duration.millis(100), nodeButton);
             scaleDown.setToX(1.0);
@@ -468,8 +453,8 @@ public class LinkedListController implements Initializable {
     private void addEntranceAnimation(Button nodeButton) {
         // Start invisible and small
         nodeButton.setOpacity(0);
-        nodeButton.setScaleX(0.5);
-        nodeButton.setScaleY(0.5);
+        nodeButton.setScaleX(0.3); // Adjusted scale for smaller button
+        nodeButton.setScaleY(0.3);
 
         // Fade in
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), nodeButton);
@@ -478,8 +463,8 @@ public class LinkedListController implements Initializable {
 
         // Scale up
         ScaleTransition scaleUp = new ScaleTransition(Duration.millis(300), nodeButton);
-        scaleUp.setFromX(0.5);
-        scaleUp.setFromY(0.5);
+        scaleUp.setFromX(0.3);
+        scaleUp.setFromY(0.3);
         scaleUp.setToX(1.0);
         scaleUp.setToY(1.0);
 
@@ -492,7 +477,7 @@ public class LinkedListController implements Initializable {
         Button fromButton = nodeButtons.get(fromIndex);
         Button toButton = nodeButtons.get(toIndex);
 
-        // Calculate connection points
+        // Calculate connection points (right edge of 'from' to left edge of 'to')
         double fromX = fromButton.getLayoutX() + BUTTON_WIDTH;
         double fromY = fromButton.getLayoutY() + BUTTON_HEIGHT / 2;
         double toX = toButton.getLayoutX();
@@ -509,14 +494,14 @@ public class LinkedListController implements Initializable {
     }
 
     private void createStraightConnection(double fromX, double fromY, double toX, double toY) {
-        // Create connection line
-        Line connectionLine = new Line(fromX, fromY, toX - 20, toY);
-        connectionLine.setStroke(Color.web("#2196F3"));
-        connectionLine.setStrokeWidth(3);
+        // Create connection line (shorten end point slightly before arrow)
+        Line connectionLine = new Line(fromX, fromY, toX - 15, toY); // Reduced arrow offset
+        connectionLine.setStroke(Color.web("#4a5568")); // Darker color
+        connectionLine.setStrokeWidth(2); // Thinner line
 
         // Create arrowhead
-        Polygon arrowHead = createArrowHead(toX - 20, toY, toX, toY);
-        arrowHead.setFill(Color.web("#2196F3"));
+        Polygon arrowHead = createArrowHead(toX - 15, toY, toX, toY); // Match line end
+        arrowHead.setFill(Color.web("#4a5568"));
 
         // Add to pane and collections
         drawingPane.getChildren().addAll(connectionLine, arrowHead);
@@ -525,41 +510,44 @@ public class LinkedListController implements Initializable {
     }
 
     private void createCurvedConnection(double fromX, double fromY, double toX, double toY) {
-        // Create a curved path using multiple line segments
-        double midX = fromX + 50; // Extend right from first node
-        double midY1 = fromY;
-        double midY2 = toY;
-        double midX2 = toX - 50; // Extend left to second node
+        // Calculate the vertical midpoint based on the actual ROW_SPACING
+        double verticalMidY = fromY + (ROW_SPACING / 2.0);
 
-        // First horizontal segment
-        Line line1 = new Line(fromX, fromY, midX, midY1);
-        line1.setStroke(Color.web("#2196F3"));
-        line1.setStrokeWidth(3);
+        // First horizontal segment: from node to the right
+        Line line1 = new Line(fromX, fromY, fromX + 20, fromY); // Extend right
+        line1.setStroke(Color.web("#4a5568"));
+        line1.setStrokeWidth(2);
 
-        // Vertical segment
-        Line line2 = new Line(midX, midY1, midX, midY2 - (ROW_SPACING/2));
-        line2.setStroke(Color.web("#2196F3"));
-        line2.setStrokeWidth(3);
+        // Vertical segment: down to the midpoint between rows
+        Line line2 = new Line(fromX + 20, fromY, fromX + 20, verticalMidY);
+        line2.setStroke(Color.web("#4a5568"));
+        line2.setStrokeWidth(2);
 
-        // Second horizontal segment
-        Line line3 = new Line(midX, midY2- (ROW_SPACING/2), toX - 20, midY2- (ROW_SPACING/2));
-        line3.setStroke(Color.web("#2196F3"));
-        line3.setStrokeWidth(3);
+        // Horizontal segment: across to the left of the target node
+        Line line3 = new Line(fromX + 20, verticalMidY, toX - 20, verticalMidY);
+        line3.setStroke(Color.web("#4a5568"));
+        line3.setStrokeWidth(2);
 
-        //vertical line
-        Line line4 = new Line(toX - 20, midY2- (ROW_SPACING/2),toX - 20, midY2);
-        line4.setStroke(Color.web("#2196F3"));
-        line4.setStrokeWidth(3);
+        // Vertical segment: down to the target node's level
+        Line line4 = new Line(toX - 20, verticalMidY, toX - 20, toY);
+        line4.setStroke(Color.web("#4a5568"));
+        line4.setStrokeWidth(2);
 
-        // Create arrowhead
-        Polygon arrowHead = createArrowHead(toX - 20, toY, toX, toY);
-        arrowHead.setFill(Color.web("#2196F3"));
+        // Final horizontal segment: to the target node (with arrow space)
+        Line line5 = new Line(toX - 20, toY, toX - 15, toY); // Short segment before arrow
+        line5.setStroke(Color.web("#4a5568"));
+        line5.setStrokeWidth(2);
+
+        // Create arrowhead pointing to the target node
+        Polygon arrowHead = createArrowHead(toX - 15, toY, toX, toY);
+        arrowHead.setFill(Color.web("#4a5568"));
 
         // Add to pane and collections
-        drawingPane.getChildren().addAll(line1, line2, line3, line4 ,arrowHead);
-        connectionLines.addAll(List.of(line1,line2, line3, line4));
+        drawingPane.getChildren().addAll(line1, line2, line3, line4, line5, arrowHead);
+        connectionLines.addAll(List.of(line1, line2, line3, line4, line5));
         arrowHeads.add(arrowHead);
     }
+
 
     private Polygon createArrowHead(double fromX, double fromY, double toX, double toY) {
         // Calculate arrow direction
@@ -567,13 +555,16 @@ public class LinkedListController implements Initializable {
         double dy = toY - fromY;
         double length = Math.sqrt(dx * dx + dy * dy);
 
-        // Normalize direction
+        // Normalize direction (avoid division by zero)
+        if (length == 0) {
+            return new Polygon(); // Return empty polygon if points are the same
+        }
         dx /= length;
         dy /= length;
 
-        // Arrow dimensions
-        double arrowLength = 20;
-        double arrowWidth = 10;
+        // Arrow dimensions (slightly smaller)
+        double arrowLength = 12;
+        double arrowWidth = 6;
 
         // Calculate arrow points
         double x1 = toX - arrowLength * dx + arrowWidth * dy;
@@ -594,42 +585,61 @@ public class LinkedListController implements Initializable {
 
     @FXML
     private void clearAll() {
-        // Fade out animation for all nodes
+        // Create lists to hold the transitions for all elements
+        List<FadeTransition> fadeTransitions = new ArrayList<>();
+
+        // Create fade out transitions for all node buttons
         for (Button nodeButton : nodeButtons) {
             FadeTransition fadeOut = new FadeTransition(Duration.millis(200), nodeButton);
             fadeOut.setFromValue(1);
             fadeOut.setToValue(0);
-            fadeOut.play();
+            fadeTransitions.add(fadeOut);
         }
-        for (Line nodeButton : connectionLines) {
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), nodeButton);
+
+        // Create fade out transitions for all connection lines
+        for (Line line : connectionLines) {
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), line);
             fadeOut.setFromValue(1);
             fadeOut.setToValue(0);
-            fadeOut.play();
+            fadeTransitions.add(fadeOut);
         }
-        for (Polygon nodeButton : arrowHeads) {
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), nodeButton);
+
+        // Create fade out transitions for all arrowheads
+        for (Polygon arrowHead : arrowHeads) {
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), arrowHead);
             fadeOut.setFromValue(1);
             fadeOut.setToValue(0);
-            fadeOut.play();
+            fadeTransitions.add(fadeOut);
         }
 
-        drawingPane.getChildren().removeAll(nodeButtons);
-        drawingPane.getChildren().removeAll(connectionLines);
-        drawingPane.getChildren().removeAll(arrowHeads);
+        // Play all fade out animations in parallel
+        javafx.animation.ParallelTransition pt = new javafx.animation.ParallelTransition();
+        pt.getChildren().addAll(fadeTransitions);
 
-        // Clear collections
-        nodeButtons.clear();
-        connectionLines.clear();
-        arrowHeads.clear();
+        // Set the action to perform after all animations finish
+        pt.setOnFinished(e -> {
+            // Remove all graphical elements from the pane
+            drawingPane.getChildren().removeAll(nodeButtons);
+            drawingPane.getChildren().removeAll(connectionLines);
+            drawingPane.getChildren().removeAll(arrowHeads);
 
-        // Reset position
-        currentX = MARGIN;
-        currentY = MARGIN;
-        currentRow = 0;
-        nodesInCurrentRow = 0;
+            // Clear the collections
+            nodeButtons.clear();
+            connectionLines.clear();
+            arrowHeads.clear();
 
-        // Update size label
-        updateSizeLabel();
+            // Reset positioning variables
+            currentX = MARGIN;
+            currentY = MARGIN;
+            currentRow = 0;
+            nodesInCurrentRow = 0;
+
+            // Update the size label
+            updateSizeLabel();
+        });
+
+        // Start the parallel animation
+        pt.play();
     }
+    
 }

@@ -4,7 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6447a131-ffad-46bf-98e2-f14e59fcf4c8" name="Changes" comment="" />
+    <list default="true" id="6447a131-ffad-46bf-98e2-f14e59fcf4c8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/dynamicProgramming/editdistance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/dynamicProgramming/knapsack.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/dynamicProgramming/lcs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/heycontroller.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/queue/queuelist.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/stack/StackByArrayController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/edit.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/hey.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/knapsackview.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/longestcommonsubsequence.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/queuelist.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/stackbyArray.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/linkedlist/LinkedListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/linkedlist/LinkedListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/queue/QueueController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/queue/queuearray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/stack/StackController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/com/example/demo/stack/StackController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/hello-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/linkedlist.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/linkedlist.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/new-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/new-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/queue.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/queue.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/stack.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../AKIF/Firstattempt/demo/src/main/resources/com/example/demo/stack.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,6 +42,9 @@
         <option value="FxmlFile" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -33,18 +61,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.DSA_Simulator [test].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/MSI/Music/visualization-of-data-structure-and-algorithm/AKIF&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.HelloApplication.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Maven.DSA_Simulator [test].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/visualization-of-data-structure-and-algorithm/AKIF/Firstattempt/demo",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.dsa_simulator.Main" />
@@ -65,6 +101,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -73,7 +117,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1751216231330</updated>
+      <workItem from="1753780997707" duration="860000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
