@@ -10,101 +10,122 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.linkedlist.LinkedListController">
+<AnchorPane prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(to bottom, #f0f2f5 0%, #e4e7eb 100%);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.linkedlist.LinkedListController">
     <children>
-        <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="516.0" prefWidth="517.0" spacing="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="1063.0" AnchorPane.topAnchor="20.0">
+        <!-- Control Panel -->
+        <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="878.0" prefWidth="500.0" spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
 
-                <!-- Size Display -->
-                <Label fx:id="sizeLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Size: 0" textFill="#6c757d">
+                <!-- Title (within control panel) -->
+                <Label text="Enhanced Linked List Visualizer" textFill="#2d3748">
                     <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="22.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </Label>
+
+                <!-- Size Display -->
+                <Label fx:id="sizeLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Size: 0" textFill="#4a5568">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
                     </font>
                 </Label>
 
                 <!-- Add Node Section -->
-                <HBox alignment="CENTER" spacing="15.0" style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                <HBox alignment="CENTER_LEFT" spacing="12.0" style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f7fafc); -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1.5);">
                     <children>
-                        <Label text="Add Node:" textFill="#495057">
-                            <font>
-                                <Font name="System Bold" size="16.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="inputField" prefWidth="200.0" promptText="Enter node value" style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14px; -fx-text-fill: #495057;" />
-                        <Button fx:id="addButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);" text="Add Node" />
-                        <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);" text="Clear All" />
-                    </children>
-                    <padding>
-                        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
-                    </padding>
-                </HBox>
-
-                <!-- Delete Node Section -->
-                <HBox alignment="CENTER" spacing="15.0" style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
-                    <children>
-                        <Label text="Delete Node:" textFill="#495057">
-                            <font>
-                                <Font name="System Bold" size="16.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="deleteField" prefWidth="200.0" promptText="Value to delete" style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14px; -fx-text-fill: #495057;" />
-                        <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);" text="Delete Node" />
-                    </children>
-                    <padding>
-                        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
-                    </padding>
-                </HBox>
-
-                <!-- Insert Node Section -->
-                <HBox alignment="CENTER" prefHeight="82.0" prefWidth="799.0" spacing="15.0" style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
-                    <children>
-                        <Label prefHeight="26.0" prefWidth="73.0" text="Insert" textFill="#495057">
-                            <font>
-                                <Font name="System Bold" size="16.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="insertValueField" prefWidth="150.0" promptText="New value" style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14px; -fx-text-fill: #495057;" />
-                        <Label prefHeight="26.0" prefWidth="73.0" text="After" textFill="#495057">
+                        <Label prefHeight="30.0" prefWidth="90.0" text="Add Node:" textFill="#2d3748">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="insertPositionField" prefWidth="100.0" promptText="Position" style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14px; -fx-text-fill: #495057;" />
-                        <Button fx:id="insertButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);" text="Insert Node" />
+                        <TextField fx:id="inputField" onAction="#addNode" prefWidth="150.0" promptText="Enter node value" style="-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;" />
+                        <Button fx:id="addButton" mnemonicParsing="false" onAction="#addNode" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #38a169; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);" text="Add Node" />
+                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearAll" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #e53e3e; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);" text="Clear All" />
                     </children>
                     <padding>
-                        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                        <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                    </padding>
+                </HBox>
+
+                <!-- Delete Node Section -->
+                <HBox alignment="CENTER_LEFT" spacing="12.0" style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f7fafc); -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1.5);">
+                    <children>
+                        <!-- Corrected: prefWidth and prefHeight as direct attributes -->
+                        <Label prefHeight="30.0" prefWidth="90.0" text="Delete Node:" textFill="#2d3748">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="deleteField" prefWidth="150.0" promptText="Value to delete" style="-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;" />
+                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteNode" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #dd6b20; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);" text="Delete Node" />
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                    </padding>
+                </HBox>
+
+                <!-- Insert Node Section -->
+                <HBox alignment="CENTER_LEFT" prefHeight="70.0" prefWidth="480.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f7fafc); -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1.5);">
+                    <children>
+                        <Label prefHeight="25.0" prefWidth="50.0" text="Insert" textFill="#2d3748">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="insertValueField" onAction="#insertNode" prefWidth="120.0" promptText="New value" style="-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;" />
+                        <Label prefHeight="25.0" prefWidth="50.0" text="After" textFill="#2d3748">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="insertPositionField" onAction="#insertNode" prefWidth="80.0" promptText="Position" style="-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;" />
+                        <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertNode" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #3182ce; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);" text="Insert Node" />
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
                     </padding>
                 </HBox>
 
                 <!-- Swap Nodes Section -->
-                <HBox alignment="CENTER" prefHeight="300.0" prefWidth="517.0" spacing="15.0" style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                <HBox alignment="CENTER_LEFT" prefHeight="70.0" prefWidth="480.0" spacing="10.0" style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f7fafc); -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1.5);">
                     <children>
-                        <Label prefHeight="26.0" prefWidth="47.0" text="Swap" textFill="#495057">
+                        <Label prefHeight="25.0" prefWidth="50.0" text="Swap" textFill="#2d3748">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="swapField1" prefWidth="100.0" promptText="Pos 1" style="-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;" />
+                        <Label prefHeight="25.0" prefWidth="20.0" text="↔" textFill="#2d3748">
                             <font>
                                 <Font name="System Bold" size="16.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="swapField1" prefWidth="120.0" promptText="Position 1" style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14px; -fx-text-fill: #495057;" />
-                        <Label prefHeight="27.0" prefWidth="26.0" text="↔" textFill="#495057">
-                            <font>
-                                <Font name="System Bold" size="18.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="swapField2" prefWidth="120.0" promptText="Position 2" style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12; -fx-font-size: 14px; -fx-text-fill: #495057;" />
-                        <Button fx:id="swapButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);" text="Swap Nodes" />
+                        <TextField fx:id="swapField2" prefWidth="100.0" promptText="Pos 2" style="-fx-background-color: #f8f9fa; -fx-border-color: #cbd5e0; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13px; -fx-text-fill: #4a5568;" />
+                        <Button fx:id="swapButton" mnemonicParsing="false" onAction="#swapNodes" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #805ad5; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 3, 0, 0, 1);" text="Swap Nodes" />
                     </children>
                     <padding>
-                        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                        <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
                     </padding>
                 </HBox>
+                <Pane VBox.vgrow="ALWAYS" /> <!-- Spacer to push controls up -->
             </children>
+            <padding>
+                <Insets top="10.0" />
+            </padding>
         </VBox>
-        <Pane fx:id="drawingPane" layoutX="539.2" layoutY="71.2" prefHeight="831.0" prefWidth="1041.0" style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="539.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="71.0" />
-          <Label layoutX="683.0" text="Enhanced Linked List Visualizer" textFill="#343a40">
+
+        <!-- Drawing Area -->
+        <Pane fx:id="drawingPane" layoutX="530.0" layoutY="60.0" prefHeight="820.0" prefWidth="1050.0" style="-fx-background-color: white; -fx-border-color: #cbd5e0; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 1.5);" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="530.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0" />
+
+        <!-- Title inside Drawing Area (Optional visual element) -->
+        <!-- <Label layoutX="550.0" layoutY="20.0" text="Linked List Visualization" textFill="#343a40" AnchorPane.leftAnchor="550.0" AnchorPane.topAnchor="20.0">
               <font>
-                  <Font name="System Bold" size="28.0" />
+                  <Font name="System Bold" size="20.0" />
               </font>
-          </Label>
+          </Label> -->
+
     </children>
 </AnchorPane>

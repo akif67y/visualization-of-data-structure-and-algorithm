@@ -5,38 +5,58 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.demo.MainController"
-            prefWidth="1500.0" prefHeight="800.0">
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.MainController">
 
    <children>
-      <VBox layoutX="591.0" layoutY="181.0"
-            prefWidth="318.0" prefHeight="438.0"
-            spacing="30" alignment="CENTER">
+      <VBox alignment="CENTER" layoutX="590.0" layoutY="89.0" prefHeight="645.0" prefWidth="320.0" spacing="30">
          <children>
-            <Button text="LinkedList"
-                    onAction="#LinkedListButtonClick"
-                    prefWidth="200.0" prefHeight="60.0"
-                    style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);">
+            <Button onAction="#LinkedListButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="LinkedList">
                <padding>
-                  <Insets top="10" bottom="10" left="20" right="20"/>
+                  <Insets bottom="10" left="20" right="20" top="10" />
                </padding>
             </Button>
-            <Button text="Queue"
-                    onAction="#QueueButtonClick"
-                    prefWidth="200.0" prefHeight="60.0"
-                    style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);">
+            <Button onAction="#QueueButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="Queue(LL)">
                <padding>
-                  <Insets top="10" bottom="10" left="20" right="20"/>
+                  <Insets bottom="10" left="20" right="20" top="10" />
                </padding>
             </Button>
-            <Button text="STACK"
-                    onAction="#StackButtonClick"
-                    prefWidth="200.0" prefHeight="60.0"
-                    style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);">
+            <Button onAction="#Queue2ButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="Queue(Array)">
                <padding>
-                  <Insets top="10" bottom="10" left="20" right="20"/>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+            <Button onAction="#Stack2ButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="STACK(LL)">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+            <Button onAction="#StackButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="STACK(Array)">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+            <Button onAction="#lcsButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="LCS">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+            <Button onAction="#edtButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="Edit Distance">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+            <Button onAction="#knapsackButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="Knapsack">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
+               </padding>
+            </Button>
+         </children>
+      </VBox>
+      <VBox layoutX="166.0" layoutY="88.0" prefHeight="646.0" prefWidth="366.0">
+         <children>
+            <Button onAction="#dijkstraButtonClick" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);" text="dijkstra">
+               <padding>
+                  <Insets bottom="10" left="20" right="20" top="10" />
                </padding>
             </Button>
          </children>

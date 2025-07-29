@@ -21,6 +21,7 @@ public class Main extends Application {
             stage.getIcons().add(icon);
             stage.setTitle("LESSGOO!");
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.show();
         }
         catch(Exception e){

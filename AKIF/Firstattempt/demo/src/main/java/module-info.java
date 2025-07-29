@@ -12,5 +12,9 @@ module com.example.demo {
     opens com.example.demo.stack to javafx.fxml;
     exports com.example.demo.queue;
     opens com.example.demo.queue to javafx.fxml;
+    exports com.example.demo.dynamicProgramming;
+    opens com.example.demo.dynamicProgramming to javafx.fxml;
+    exports com.example.demo.dijkstra;
+    opens com.example.demo.dijkstra to javafx.fxml;
 
 }
