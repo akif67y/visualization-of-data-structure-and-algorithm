@@ -66,7 +66,6 @@ public class primController {
     private Circle firstEdgeNode = null;
     private Integer sourceForPrim = null;
     private int nodeCounter = 1;
-    private Timeline continuousPulse;
     private boolean isAnimating = false;
 
     // MST tracking
@@ -86,7 +85,6 @@ public class primController {
 
     @FXML
     public void initialize() {
-        setupContinuousAnimation();
         initializeMstPanel();
 
         // Setup speed slider
@@ -105,27 +103,6 @@ public class primController {
         currentEdgeLabel.setText("Current Edge: None");
         mstWeightLabel.setText("MST Weight: 0.0");
         edgeTableBox.getChildren().clear();
-    }
-
-    private void setupContinuousAnimation() {
-        continuousPulse = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-            // Pulse cut edges
-            for (String edgeKey : cutEdges) {
-                Line edge = edgeMap.get(edgeKey);
-                if (edge != null && edge.getStroke().equals(CUT_EDGE_COLOR)) {
-                    ScaleTransition pulse = new ScaleTransition(Duration.millis(500), edge);
-                    pulse.setFromX(1.0);
-                    pulse.setFromY(1.0);
-                    pulse.setToX(1.1);
-                    pulse.setToY(1.1);
-                    pulse.setAutoReverse(true);
-                    pulse.setCycleCount(2);
-                    pulse.play();
-                }
-            }
-        }));
-        continuousPulse.setCycleCount(Timeline.INDEFINITE);
-        continuousPulse.play();
     }
 
     @FXML
