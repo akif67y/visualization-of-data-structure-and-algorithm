@@ -47,10 +47,10 @@ public class StackController {
             onAddClicked();
         }
     }
-    @FXML
-    private void displaypos(MouseEvent event) {
-        status.setText("X: "+ event.getX() + " Y: "+ event.getY());
-    }
+//    @FXML
+//    private void displaypos(MouseEvent event) {
+//        status.setText("X: "+ event.getX() + " Y: "+ event.getY());
+//    }
 
     @FXML
     private void onAddClicked() throws InterruptedException {

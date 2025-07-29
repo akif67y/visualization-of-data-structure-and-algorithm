@@ -188,7 +188,7 @@ public class dijkstraController {
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
                 row.setPadding(new Insets(5, 10, 5, 10));
-                row.setStyle("-fx-background-color: #1115a9; -fx-border-color: #ce8924; -fx-border-width: 1; -fx-border-radius: 3; -fx-text-fill: black;");
+                row.setStyle("-fx-background-color: #a4b2a3; -fx-border-color: #ce8924; -fx-border-width: 1; -fx-border-radius: 3; -fx-text-fill: black;");
                 Pane indicator = new Pane();
                 indicator.setPrefSize(12, 12);
                 indicator.setStyle("-fx-background-color: #b7531a; -fx-background-radius: 6;");
@@ -223,14 +223,14 @@ public class dijkstraController {
                     distLabel.setText(String.format("%.1f", distance));
                 }
                 String indicatorColor = "#bdc3c7";
-                String rowStyle = "-fx-background-color: #d30f0f; -fx-border-color: #145ed0; -fx-border-width: 1; -fx-border-radius: 3;";
+                String rowStyle = "-fx-background-color: #145ed0; -fx-border-color: #0c0c0c; -fx-border-width: 1; -fx-border-radius: 3;";
                 switch (status) {
                     case "source":
                         indicatorColor = "#27ae60";
                         break;
                     case "current":
                         indicatorColor = "#e74c3c";
-                        rowStyle = "-fx-background-color: #bb7ad9; -fx-border-color: #e74c3c; -fx-border-width: 2; -fx-border-radius: 3;";
+                        rowStyle = "-fx-background-color: #d30f0f; -fx-border-color: #e74c3c; -fx-border-width: 2; -fx-border-radius: 3;";
                         break;
                     case "neighbor":
                         indicatorColor = "#f39c12";

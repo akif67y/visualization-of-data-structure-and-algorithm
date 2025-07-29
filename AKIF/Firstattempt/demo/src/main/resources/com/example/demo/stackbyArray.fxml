@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainthingy" onDragDetected="#displaypos" onMouseClicked="#displaypos" onMouseDragged="#displaypos" prefHeight="800.0" prefWidth="1500.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.stack.StackByArrayController">
+<AnchorPane fx:id="mainthingy" prefHeight="800.0" prefWidth="1500.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.stack.StackByArrayController">
    <children>
       <!-- Array Representation Section -->
       <VBox layoutX="50.0" layoutY="50.0" prefHeight="200.0" prefWidth="1000.0" spacing="10.0">
@@ -86,6 +86,5 @@
             </Label>
          </children>
       </VBox>
-      <Label fx:id="pos" layoutX="178.0" layoutY="228.0" prefHeight="40.0" prefWidth="93.0" />
    </children>
 </AnchorPane>

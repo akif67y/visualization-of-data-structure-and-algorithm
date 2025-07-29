@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class queuelist {
 
     @FXML private Text status;
-    @FXML private VBox buttonContainer;
+    @FXML private HBox buttonContainer;
     @FXML private TextField inputField;
     @FXML private AnchorPane linkedListContainer;
     @FXML private Label nullLabel;
@@ -45,10 +46,10 @@ public class queuelist {
         }
     }
 
-    @FXML
-    private void displaypos(MouseEvent event) {
-        status.setText("X: " + event.getX() + " Y: " + event.getY());
-    }
+//    @FXML
+//    private void displaypos(MouseEvent event) {
+//        status.setText("X: " + event.getX() + " Y: " + event.getY());
+//    }
 
     @FXML
     private void onEnqueueClicked() {
@@ -64,8 +65,8 @@ public class queuelist {
                         "-fx-font-size: 16px;" +
                         "-fx-font-weight: bold;" +
                         "-fx-padding: 15 25;" +
-                        "-fx-min-width: 200;" +
-                        "-fx-max-width: 200;" +
+                        "-fx-min-width: 70;" +
+                        "-fx-max-width: 70;" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 4);" +
                         "-fx-cursor: hand;"
         );
@@ -77,8 +78,8 @@ public class queuelist {
                         "-fx-font-size: 16px;" +
                         "-fx-font-weight: bold;" +
                         "-fx-padding: 15 25;" +
-                        "-fx-min-width: 200;" +
-                        "-fx-max-width: 200;" +
+                        "-fx-min-width: 70;" +
+                        "-fx-max-width: 70;" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 15, 0, 0, 6);" +
                         "-fx-cursor: hand;"
         ));
@@ -89,8 +90,8 @@ public class queuelist {
                         "-fx-font-size: 16px;" +
                         "-fx-font-weight: bold;" +
                         "-fx-padding: 15 25;" +
-                        "-fx-min-width: 200;" +
-                        "-fx-max-width: 200;" +
+                        "-fx-min-width: 70;" +
+                        "-fx-max-width: 70;" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 4);" +
                         "-fx-cursor: hand;"
         ));
