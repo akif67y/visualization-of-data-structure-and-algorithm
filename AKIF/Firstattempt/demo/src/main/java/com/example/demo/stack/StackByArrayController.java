@@ -29,8 +29,7 @@ public class StackByArrayController {
     private List<Label> indexLabels = new ArrayList<>();
     @FXML
     Label status;
-    @FXML
-    Label pos;
+
 
     @FXML
     AnchorPane mainthingy;
@@ -213,8 +212,8 @@ public class StackByArrayController {
         status.setText("Top element: " + dynamicButtons.peek().getText());
     }
 
-    @FXML
-    private void displaypos(MouseEvent event) {
-        pos.setText("X: " + (int) event.getX() + " Y: " + (int) event.getY());
-    }
+//    @FXML
+//    private void displaypos(MouseEvent event) {
+//        pos.setText("X: " + (int) event.getX() + " Y: " + (int) event.getY());
+//    }
 }
