@@ -16,5 +16,7 @@ module com.example.demo {
     opens com.example.demo.dynamicProgramming to javafx.fxml;
     exports com.example.demo.dijkstra;
     opens com.example.demo.dijkstra to javafx.fxml;
+    exports com.example.demo.prim;
+    opens com.example.demo.prim to javafx.fxml;
 
 }

@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.dijkstra.dijkstraController">
+<BorderPane prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.prim.primController">
     <top>
-        <VBox prefHeight="254.0" prefWidth="1500.0" spacing="12.0" style="-fx-background-color: linear-gradient(to bottom, #e8f4fd, #f0f8ff); -fx-border-color: #cccccc; -fx-border-width: 0 0 1 0;">
+        <VBox prefHeight="254.0" prefWidth="1500.0" spacing="12.0" style="-fx-background-color: linear-gradient(to bottom, #e8f5e8, #f0f8f0); -fx-border-color: #cccccc; -fx-border-width: 0 0 1 0;">
             <padding>
                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
             </padding>
@@ -23,10 +23,10 @@
             <HBox alignment="CENTER_LEFT" spacing="20.0">
                 <Button mnemonicParsing="false" onAction="#setCreateNodeMode" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Create Node" />
                 <Button mnemonicParsing="false" onAction="#setCreateEdgeMode" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Create Edge" />
-                <Button mnemonicParsing="false" onAction="#runDijkstra" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Run Dijkstra" />
+                <Button mnemonicParsing="false" onAction="#runPrim" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Run Prim's MST" />
 
                 <!-- Pause Animation Button -->
-                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseDijkstra" style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="⏸️ Pause" />
+                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pausePrim" style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="⏸️ Pause" />
 
                 <!-- Animation Speed Control -->
                 <Label style="-fx-font-weight: bold; -fx-text-fill: #333333;" text="Speed:" />
@@ -46,7 +46,7 @@
     </top>
 
     <center>
-        <!-- Main content with graph canvas and distance panel -->
+        <!-- Main content with graph canvas and MST panel -->
         <HBox>
             <!-- Canvas Pane for drawing graph -->
             <Pane fx:id="canvasPane" onMouseClicked="#handleCanvasClick" prefHeight="621.0" prefWidth="1090.0" style="-fx-background-color: #fafafa; -fx-border-color: #dddddd; -fx-border-width: 2px;">
@@ -55,8 +55,8 @@
                 </HBox.margin>
             </Pane>
 
-            <!-- Distance Display Panel -->
-            <VBox prefWidth="390.0" style="-fx-background-color: #f8f9fa; -fx-border-color: #dddddd; -fx-border-width: 2px; -fx-border-radius: 5;">
+            <!-- MST Display Panel -->
+            <VBox prefWidth="390.0" style="-fx-background-color: #f0f8f0; -fx-border-color: #dddddd; -fx-border-width: 2px; -fx-border-radius: 5;">
                 <HBox.margin>
                     <Insets bottom="10.0" left="5.0" right="10.0" top="5.0" />
                 </HBox.margin>
@@ -64,23 +64,23 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </padding>
 
-                <!-- Distance Panel Header -->
-                <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 0 0 10 0;" text="📊 Dijkstra Progress" />
+                <!-- MST Panel Header -->
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 0 0 10 0;" text="🌳 Prim's MST Progress" />
                 <Separator style="-fx-background-color: #bdc3c7;" />
 
                 <!-- Current Processing Info -->
                 <VBox fx:id="currentProcessingBox" spacing="8.0" style="-fx-padding: 10 0 10 0;">
-                    <Label fx:id="currentNodeLabel" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" text="Current Node: None" />
-                    <Label fx:id="visitedCountLabel" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" text="Visited: 0 nodes" />
+                    <Label fx:id="currentEdgeLabel" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" text="Current Edge: None" />
+                    <Label fx:id="mstWeightLabel" style="-fx-font-size: 12px; -fx-text-fill: #27ae60; -fx-font-weight: bold;" text="MST Weight: 0.0" />
                 </VBox>
 
                 <Separator style="-fx-background-color: #bdc3c7;" />
 
-                <!-- Distance Table -->
-                <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 10 0 5 0;" text="🎯 Shortest Distances:" />
+                <!-- Edge Table -->
+                <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 10 0 5 0;" text="📊 Edge Status:" />
 
-                <ScrollPane fx:id="distanceScrollPane" fitToWidth="true" prefHeight="400.0" style="-fx-background-color: transparent; -fx-background: transparent;">
-                    <VBox fx:id="distanceTableBox" spacing="5.0" style="-fx-padding: 5;" />
+                <ScrollPane fx:id="edgeScrollPane" fitToWidth="true" prefHeight="400.0" style="-fx-background-color: transparent; -fx-background: transparent;">
+                    <VBox fx:id="edgeTableBox" spacing="5.0" style="-fx-padding: 5;" />
                 </ScrollPane>
 
                 <!-- Legend -->
@@ -89,23 +89,23 @@
                 <VBox spacing="3.0" style="-fx-padding: 5 0 0 0;">
                     <HBox alignment="CENTER_LEFT" spacing="8.0">
                         <Pane prefHeight="12.0" prefWidth="12.0" style="-fx-background-color: #27ae60; -fx-background-radius: 6;" />
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Source Node" />
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="MST Node/Edge" />
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="8.0">
                         <Pane prefHeight="12.0" prefWidth="12.0" style="-fx-background-color: #e74c3c; -fx-background-radius: 6;" />
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Currently Processing" />
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Current Minimum Edge" />
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="8.0">
                         <Pane prefHeight="12.0" prefWidth="12.0" style="-fx-background-color: #f39c12; -fx-background-radius: 6;" />
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Neighbor Being Updated" />
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Cut Edge (Candidate)" />
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="8.0">
-                        <Pane prefHeight="12.0" prefWidth="12.0" style="-fx-background-color: #3498db; -fx-background-radius: 6;" />
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Visited (Finalized)" />
+                        <Pane prefHeight="12.0" prefWidth="12.0" style="-fx-background-color: #6c757d; -fx-background-radius: 6;" />
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Not Yet Considered" />
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="8.0">
                         <Pane prefHeight="12.0" prefWidth="12.0" style="-fx-background-color: #95a5a6; -fx-background-radius: 6;" />
-                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Unreachable" />
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #2c3e50;" text="Rejected (Creates Cycle)" />
                     </HBox>
                 </VBox>
             </VBox>
@@ -113,12 +113,12 @@
     </center>
 
     <bottom>
-        <VBox style="-fx-background-color: linear-gradient(to top, #f8f9fa, #ffffff); -fx-border-color: #cccccc; -fx-border-width: 1 0 0 0;">
+        <VBox style="-fx-background-color: linear-gradient(to top, #f0f8f0, #ffffff); -fx-border-color: #cccccc; -fx-border-width: 1 0 0 0;">
             <padding>
                 <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
             </padding>
-            <Label style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;" text="📌 Instructions: Create nodes by clicking on canvas → Create directed edges by selecting two nodes → Run Dijkstra to find shortest paths" wrapText="true" />
-            <Label style="-fx-font-size: 11px; -fx-text-fill: #888888; margin-top: 5;" text="✨ Features: Real-time distance updates, color-coded visualization, and detailed algorithm progress tracking" wrapText="true" />
+            <Label style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;" text="🌳 Instructions: Create nodes by clicking on canvas → Create undirected edges by selecting two nodes → Run Prim's to find Minimum Spanning Tree" wrapText="true" />
+            <Label style="-fx-font-size: 11px; -fx-text-fill: #888888; margin-top: 5;" text="✨ Features: Real-time MST construction, cut edge visualization, and step-by-step algorithm progress with total weight tracking" wrapText="true" />
         </VBox>
     </bottom>
 </BorderPane>
