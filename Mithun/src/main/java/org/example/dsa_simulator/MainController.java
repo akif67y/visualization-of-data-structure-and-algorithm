@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.dsa_simulator.bst.BSTController;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -51,6 +52,162 @@ public class MainController {
             stage.setTitle("AI Assistant");
         } catch (java.io.IOException e) {
             System.out.println("Error opening AI chat");
+        }
+    }
+
+    @FXML
+    void openSelectionSortWindow(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/dsa_simulator/SelectionSort.fxml"));
+        Parent root = loader.load();
+
+        // Create a new scene with the loaded root
+        Scene scene = new Scene(root);
+
+        // Add the CSS stylesheet to the scene
+        String css = Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/SortStyles.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+
+        // Get the current stage and set the new scene
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    void openBubbleSortWindow(ActionEvent event) throws IOException {
+        // Load the FXML file
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/dsa_simulator/BubbleSort.fxml"));
+        Parent root = loader.load();
+
+        // Create a new scene with the loaded root
+        Scene scene = new Scene(root);
+
+        // Add the CSS stylesheet to the scene
+        String css = Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/SortStyles.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+
+        // Get the current stage and set the new scene
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    void openInsertionSortWindow(ActionEvent event) throws IOException {
+        // Load the FXML file
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/dsa_simulator/InsertionSort.fxml"));
+        Parent root = loader.load();
+
+        // Create a new scene with the loaded root
+        Scene scene = new Scene(root);
+
+        // Add the CSS stylesheet to the scene
+        String css = Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/SortStyles.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+
+        // Get the current stage and set the new scene
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    void openMergeSortWindow(ActionEvent event) throws IOException {
+        // Load the FXML file
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/dsa_simulator/MergeSort.fxml"));
+        Parent root = loader.load();
+
+        // Create a new scene with the loaded root
+        Scene scene = new Scene(root);
+
+        // Add the CSS stylesheet to the scene
+        String css = Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/SortStyles.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+
+        // Get the current stage and set the new scene
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    public void openArrayWindow(ActionEvent event) throws IOException {
+        FXMLLoader loader= new FXMLLoader(getClass().getResource("/org/example/dsa_simulator/Array.fxml"));
+        Parent root=loader.load();
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    // Method to launch BST simulation in new window
+    public void launchBSTSimulation() {
+        try {
+            // Create new stage for BST simulation
+            Stage bstStage = new Stage();
+            bstStage.setTitle("BST Simulation");
+
+            // Create and start BST controller
+            BSTController bstController = new BSTController();
+            bstController.start(bstStage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error launching BST simulation: " + e.getMessage());
+        }
+    }
+    @FXML
+    // If you have a button in your main UI to launch BST
+    public void onBSTButtonClicked(ActionEvent event) {
+        launchBSTSimulation();
+    }
+
+    @FXML
+
+    public void heapTry(ActionEvent event )
+    {
+        System.out.println("Heap Try was called");
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/HeapTry.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("PQ");
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+//            stage.setFullScreen(true);
+        } catch (java.io.IOException e) {
+            System.out.println("Error opening heap try");
+        }
+    }
+
+    public void QuickSort(ActionEvent event )
+    {
+        System.out.println("Quick Sort was called");
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/QuickSort.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("PQ");
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+//            stage.setFullScreen(true);
+        } catch (java.io.IOException e) {
+            System.out.println("Error opening Quick Sort");
+        }
+    }
+
+    public void TryBST(ActionEvent event )
+    {
+        System.out.println("BST was called");
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/TryBST.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("BST");
+            stage.setWidth(1920);
+            stage.setHeight(1080);
+//            stage.setFullScreen(true);
+        } catch (java.io.IOException e) {
+            System.out.println("Error opening BST");
         }
     }
 
