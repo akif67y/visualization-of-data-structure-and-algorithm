@@ -7,15 +7,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.dynamicProgramming.knapsack">
+<AnchorPane prefHeight="700.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.dynamicProgramming.knapsack">
 
     <!-- Background -->
     <children>
-        <Pane prefHeight="900" prefWidth="1600" style="-fx-background-color: #f8f9fa;">
+        <Pane prefHeight="0.0" prefWidth="1500.0" style="-fx-background-color: #f8f9fa;">
             <children>
 
                 <!-- Header -->
-                <Label layoutX="50.0" layoutY="30.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="0/1 Knapsack Problem (DP)">
+                <Label layoutX="131.0" layoutY="34.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="0/1 Knapsack Problem (DP)">
                     <font>
                         <Font name="Segoe UI" />
                     </font>
@@ -81,10 +81,7 @@
                 <Label layoutX="828.0" layoutY="81.0" prefHeight="38.0" prefWidth="100.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Items Picked:" />
 
                 <Label fx:id="pickedItems" layoutX="749.0" layoutY="122.0" prefHeight="138.0" prefWidth="300.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" />
-
-                <Label layoutX="1346.0" layoutY="28.0" prefHeight="35.0" prefWidth="120.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Status:" />
-
-                <Label fx:id="status" layoutX="1260.0" layoutY="84.0" prefHeight="72.0" prefWidth="291.0" style="-fx-font-size: 13; -fx-text-fill: #7f8c8d; -fx-padding: 10; -fx-background-color: #ffffff; -fx-border-color: #dce0e4; -fx-border-width: 1; -fx-background-radius: 6;" text="Ready to compute..." wrapText="true" />
+            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Button" />
 
             </children>
         </Pane>
@@ -93,7 +90,11 @@
         <Label layoutX="50.0" layoutY="250.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="DP Table: Value vs. Weight Capacity" />
 
         <!-- Drawing Pane -->
-        <Pane fx:id="drawingPane" layoutX="50.0" layoutY="280.0" prefHeight="550.0" prefWidth="1500.0" style="-fx-background-color: #ffffff; -fx-border-color: #bdc3c7; -fx-border-width: 2; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);" />
+        <Pane fx:id="drawingPane" layoutX="50.0" layoutY="273.0" prefHeight="537.0" prefWidth="1362.0" style="-fx-background-color: #ffffff; -fx-border-color: #bdc3c7; -fx-border-width: 2; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);" />
+
+          <Label fx:id="status" layoutX="1116.0" layoutY="138.0" prefHeight="72.0" prefWidth="291.0" style="-fx-font-size: 13; -fx-text-fill: #7f8c8d; -fx-padding: 10; -fx-background-color: #ffffff; -fx-border-color: #dce0e4; -fx-border-width: 1; -fx-background-radius: 6;" text="Ready to compute..." wrapText="true" />
+
+          <Label layoutX="1150.0" layoutY="88.0" prefHeight="35.0" prefWidth="120.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Status:" />
 
     </children>
 </AnchorPane>

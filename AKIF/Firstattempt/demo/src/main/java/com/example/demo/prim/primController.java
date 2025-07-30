@@ -54,47 +54,43 @@ public class primController {
     private final Map<Integer, Text> nodeLabels = new ConcurrentHashMap<>();
     private final List<Line> edgeLines = new ArrayList<>();
     private final List<Text> edgeWeights = new ArrayList<>();
-    private final Map<String, Line> edgeMap = new HashMap<>(); // For tracking specific edges
+    private final Map<String, Line> edgeMap = new HashMap<>();
     private final Map<String, Text> edgeWeightMap = new HashMap<>();
 
-    // MST display components
     private final Map<String, HBox> edgeRows = new ConcurrentHashMap<>();
     private final Map<String, Label> edgeStatusLabels = new ConcurrentHashMap<>();
     private final Map<String, Pane> edgeIndicators = new ConcurrentHashMap<>();
 
-    private String selectedMode = "NODE"; // "NODE", "EDGE", "PRIM_SELECT"
+    private String selectedMode = "NODE";
     private Circle firstEdgeNode = null;
     private Integer sourceForPrim = null;
     private int nodeCounter = 1;
     private boolean isAnimating = false;
 
-    // MST tracking
     private final Set<Integer> mstNodes = new HashSet<>();
     private final Set<String> mstEdges = new HashSet<>();
     private final Set<String> cutEdges = new HashSet<>();
     private double totalMstWeight = 0.0;
 
-    // Algorithm colors
-    private static final Color MST_NODE_COLOR = Color.web("#27ae60");        // Green - MST nodes
-    private static final Color CURRENT_EDGE_COLOR = Color.web("#e74c3c");    // Red - Current minimum edge
-    private static final Color CUT_EDGE_COLOR = Color.web("#f39c12");        // Orange - Cut edges
-    private static final Color MST_EDGE_COLOR = Color.web("#2ecc71");        // Bright green - MST edges
-    private static final Color NORMAL_EDGE_COLOR = Color.web("#34495e");     // Dark gray - Normal edges
-    private static final Color CANDIDATE_NODE_COLOR = Color.web("#3498db");  // Blue - Candidate nodes
+    private static final Color MST_NODE_COLOR = Color.web("#27ae60");
+    private static final Color CURRENT_EDGE_COLOR = Color.web("#e74c3c");
+    private static final Color CUT_EDGE_COLOR = Color.web("#f39c12");
+    private static final Color MST_EDGE_COLOR = Color.web("#2ecc71");
+    private static final Color NORMAL_EDGE_COLOR = Color.web("#34495e");
+    private static final Color CANDIDATE_NODE_COLOR = Color.web("#3498db");
     private static final Color DEFAULT_NODE_COLOR = Color.LIGHTBLUE;
 
     @FXML
     public void initialize() {
         initializeMstPanel();
 
-        // Setup speed slider
+
         speedSlider.setMin(0.5);
         speedSlider.setMax(3.0);
         speedSlider.setValue(1.0);
         speedSlider.setShowTickMarks(true);
         speedSlider.setShowTickLabels(true);
 
-        // Disable pause button initially
         pauseButton.setDisable(true);
         pauseButton.setText("⏸️ Pause");
     }
@@ -176,18 +172,15 @@ public class primController {
             edgeStatusLabels.clear();
             edgeIndicators.clear();
 
-            // Add all edges to the display
             List<Edge> allEdges = new ArrayList<>();
             for (Integer nodeId : graph.getNodes()) {
                 for (com.example.demo.prim.Edge edge : graph.getNeighbors(nodeId)) {
-                    // Only add each undirected edge once
                     if (nodeId < edge.target) {
                         allEdges.add(new Edge(nodeId, edge.target, edge.weight));
                     }
                 }
             }
 
-            // Sort edges by weight
             allEdges.sort(Comparator.comparingDouble(e -> e.weight));
 
             for (Edge edge : allEdges) {
@@ -234,11 +227,9 @@ public class primController {
                 String indicatorColor = "#6c757d";
                 String rowStyle = "-fx-background-color: #ffffff; -fx-border-color: #dee2e6; -fx-border-width: 1; -fx-border-radius: 3;";
 
-                // Also get the edge and weight labels to update their colors
                 Label edgeLabel = null;
                 Label weightLabel = null;
 
-                // Find the edge and weight labels in the row
                 for (var child : row.getChildren()) {
                     if (child instanceof Label) {
                         Label label = (Label) child;
@@ -259,7 +250,6 @@ public class primController {
                         statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #f39c12; -fx-font-weight: bold;");
                         rowStyle = "-fx-background-color: #fff8e1; -fx-border-color: #f39c12; -fx-border-width: 1; -fx-border-radius: 3;";
 
-                        // Update other labels for better visibility
                         if (edgeLabel != null) {
                             edgeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #e65100;");
                         }
@@ -274,7 +264,6 @@ public class primController {
                         statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
                         rowStyle = "-fx-background-color: #e74c3c; -fx-border-color: #c0392b; -fx-border-width: 2; -fx-border-radius: 3;";
 
-                        // White text for dark background
                         if (edgeLabel != null) {
                             edgeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #ffffff;");
                         }
@@ -289,7 +278,6 @@ public class primController {
                         statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
                         rowStyle = "-fx-background-color: #27ae60; -fx-border-color: #229954; -fx-border-width: 1; -fx-border-radius: 3;";
 
-                        // White text for dark green background
                         if (edgeLabel != null) {
                             edgeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #ffffff;");
                         }
@@ -304,7 +292,6 @@ public class primController {
                         statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #7f8c8d;");
                         rowStyle = "-fx-background-color: #ecf0f1; -fx-border-color: #bdc3c7; -fx-border-width: 1; -fx-border-radius: 3;";
 
-                        // Muted colors for rejected edges
                         if (edgeLabel != null) {
                             edgeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
                         }
@@ -314,7 +301,6 @@ public class primController {
                         break;
 
                     default:
-                        // Reset to default styling
                         if (edgeLabel != null) {
                             edgeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #000000;");
                         }
@@ -359,7 +345,6 @@ public class primController {
 
         canvasPane.getChildren().addAll(circle, label);
 
-        // Entrance animation
         circle.setScaleX(0);
         circle.setScaleY(0);
         label.setScaleX(0);
@@ -414,7 +399,6 @@ public class primController {
                 weight = 1.0;
             }
 
-            // Add undirected edge (both directions)
             graph.addEdge(sourceId, targetId, weight);
             graph.addEdge(targetId, sourceId, weight);
             drawUndirectedEdge(firstEdgeNode, second, weight);
@@ -431,7 +415,6 @@ public class primController {
         double toX = to.getCenterX();
         double toY = to.getCenterY();
 
-        // Calculate line endpoints (stop at circle edge)
         double dx = toX - fromX;
         double dy = toY - fromY;
         double length = Math.sqrt(dx * dx + dy * dy);
@@ -447,7 +430,6 @@ public class primController {
         line.setStroke(NORMAL_EDGE_COLOR);
         line.setStrokeWidth(3);
 
-        // Weight label
         double midX = (startX + endX) / 2;
         double midY = (startY + endY) / 2;
         Text weightText = new Text(midX + 10, midY - 5, String.format("%.1f", weight));
@@ -457,7 +439,6 @@ public class primController {
         edgeLines.add(line);
         edgeWeights.add(weightText);
 
-        // Store for easy access
         Integer fromId = getNodeById(from);
         Integer toId = getNodeById(to);
         String edgeKey = getEdgeKey(fromId, toId);
@@ -466,7 +447,6 @@ public class primController {
 
         canvasPane.getChildren().addAll(line, weightText);
 
-        // Entrance animation
         line.setOpacity(0);
         weightText.setOpacity(0);
 
@@ -518,7 +498,6 @@ public class primController {
         cutEdges.clear();
         totalMstWeight = 0.0;
 
-        // Add starting node to MST
         mstNodes.add(sourceForPrim);
 
         initializeMstDisplay();
@@ -536,10 +515,8 @@ public class primController {
                 return;
             }
 
-            // Find all cut edges (edges between MST and non-MST nodes)
             updateCutEdges();
 
-            // Find minimum weight cut edge
             Edge minEdge = findMinimumCutEdge();
             if (minEdge == null) {
                 currentPrimTimeline.stop();
@@ -548,7 +525,6 @@ public class primController {
                 return;
             }
 
-            // Highlight the minimum edge
             String minEdgeKey = getEdgeKey(minEdge.source, minEdge.target);
             highlightEdge(minEdgeKey, CURRENT_EDGE_COLOR, 4);
             updateEdgeDisplay(minEdgeKey, "minimum");
@@ -559,15 +535,12 @@ public class primController {
 
             PauseTransition delay = new PauseTransition(scaledDuration(1500));
             delay.setOnFinished(ev -> {
-                // Add the edge to MST
                 mstEdges.add(minEdgeKey);
                 totalMstWeight += minEdge.weight;
 
-                // Add the new node to MST
                 Integer newNode = mstNodes.contains(minEdge.source) ? minEdge.target : minEdge.source;
                 mstNodes.add(newNode);
 
-                // Update displays
                 highlightEdge(minEdgeKey, MST_EDGE_COLOR, 4);
                 updateEdgeDisplay(minEdgeKey, "mst");
                 highlightNode(nodeCircles.get(newNode), MST_NODE_COLOR);
@@ -576,7 +549,6 @@ public class primController {
                     mstWeightLabel.setText("MST Weight: " + String.format("%.1f", totalMstWeight));
                 });
 
-                // Animate the new node joining
                 Circle newNodeCircle = nodeCircles.get(newNode);
                 ScaleTransition pulse = new ScaleTransition(scaledDuration(600), newNodeCircle);
                 pulse.setFromX(1.0);
@@ -590,7 +562,6 @@ public class primController {
             delay.play();
         });
 
-        // Update speed on slider change
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             animationSpeedFactor = newVal.doubleValue();
             statusLabel.setText("Speed: " + String.format("%.1fx", animationSpeedFactor));
@@ -650,7 +621,6 @@ public class primController {
             statusLabel.setText("Prim's algorithm completed! MST found with weight: " + String.format("%.1f", totalMstWeight));
         });
 
-        // Final celebration animation
         Timeline celebration = new Timeline();
         int delay = 0;
         for (Integer nodeId : mstNodes) {
@@ -743,7 +713,6 @@ public class primController {
         return Math.min(node1, node2) + "-" + Math.max(node1, node2);
     }
 
-    // Helper class for edges with source information
     private static class Edge {
         final Integer source;
         final Integer target;
