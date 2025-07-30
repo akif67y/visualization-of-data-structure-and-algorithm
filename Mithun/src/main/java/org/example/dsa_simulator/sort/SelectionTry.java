@@ -1,8 +1,15 @@
 package org.example.dsa_simulator.sort;
 
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -10,14 +17,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class SelectionSortController implements Initializable {
+public class SelectionTry implements Initializable {
 
     // FXML Components
     @FXML private TextField arrayInput;
@@ -28,6 +35,10 @@ public class SelectionSortController implements Initializable {
     @FXML private Button resetButton;
     @FXML private Pane arrayContainer;
     @FXML private Label statusLabel;
+    @FXML private ListView<String> pseudoCodeList;
+    // Add this with your other FXML components at the top of the class
+    @FXML private Button backButton;
+    @FXML private Slider speedSlider;
 
     // Sorting and Visualization State
     private int[] array;
@@ -46,10 +57,10 @@ public class SelectionSortController implements Initializable {
     private PauseTransition pause;
     private final double barWidth = 60;
     private final double barSpacing = 10;
-    private final double maxBarHeight = 300;
-    private final double baseY = 310; // Base line for bars
-    private final Duration animationDuration = Duration.millis(1000);
-    private boolean showingComparisonBar = false;
+    private final double maxBarHeight = 500;
+    private final double baseY = 700; // Base line for bars
+    private  Duration animationDuration = Duration.millis(1000);
+
 
     // Color scheme - simplified to 4 colors
     private final Color UNSORTED_COLOR = Color.LIGHTBLUE;    // Light blue for unsorted elements
@@ -64,12 +75,59 @@ public class SelectionSortController implements Initializable {
     }
     private Phase currentPhase = Phase.FINDING_MIN;
 
+    private final String[] selectionSortPseudoCode = {
+            "procedure selectionSort(A : list of sortable items)",
+            "   n = length(A)",
+            "   for i from 0 to n-2",
+            "      minIndex = i",
+            "      for j from i+1 to n-1",
+            "         if A[j] < A[minIndex]",
+            "            minIndex = j",
+            "      end if",
+            "   end for",
+            "   swap(A[i], A[minIndex])",
+            "  end for",
+            "end procedure"
+    };
+    private void highlightPseudoCode(int lineNumber) {
+        if (lineNumber >= 0 && lineNumber < pseudoCodeList.getItems().size()) {
+            // Selects the line in the list, which highlights it
+            pseudoCodeList.getSelectionModel().select(lineNumber);
+            // Scroll to the selected line to make sure it's visible
+            pseudoCodeList.scrollTo(lineNumber);
+        } else {
+            // Clear selection if no line should be highlighted
+            pseudoCodeList.getSelectionModel().clearSelection();
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         arrayInput.setText("64,34,25,12,22,11,90");
         pause = new PauseTransition(animationDuration);
+        speedSlider.setMin(1);
+        speedSlider.setMax(100);
+        speedSlider.setValue(50); // Start in the middle
 
-        parseAndVisualize();
+        // Add a listener to the slider's value property
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            // Map the slider value (1-100) to a duration in milliseconds (e.g., 2000ms to 50ms)
+            // A higher slider value should result in a shorter duration (faster animation)
+            double maxDuration = 2000.0; // Slowest
+            double minDuration = 50.0;   // Fastest
+
+            // Invert the slider's percentage
+            double newDurationMillis = maxDuration - (newVal.doubleValue() / speedSlider.getMax()) * (maxDuration - minDuration);
+
+            // Update the animation duration
+            animationDuration = Duration.millis(newDurationMillis);
+
+            // IMPORTANT: Update the duration of the existing pause transition
+            pause.setDuration(animationDuration);
+        });
+        arrayContainer.widthProperty().addListener((obs, oldVal, newVal) -> parseAndVisualize());
+        arrayContainer.heightProperty().addListener((obs, oldVal, newVal) -> parseAndVisualize());
+       pseudoCodeList.getItems().addAll(selectionSortPseudoCode);
         updateButtonStates();
     }
 
@@ -89,7 +147,6 @@ public class SelectionSortController implements Initializable {
         minIndex = 0;
         arrayLength = array.length;
         currentPhase = Phase.FINDING_MIN;
-        showingComparisonBar = false;
 
         updateButtonStates();
         runSortingStep();
@@ -117,27 +174,77 @@ public class SelectionSortController implements Initializable {
     private void doNextStep() {
         if (isCompleted) return;
 
-        if (isSorting && !isPaused) {
-            pauseSort();
-            return;
-        }
-
+        // This handles the very first click on "Next Step"
         if (!isSorting) {
             if (!parseAndVisualize()) return;
             isSorting = true;
             isPaused = true;
-            isCompleted = false;
             currentI = 0;
             currentJ = 0;
             minIndex = 0;
             arrayLength = array.length;
             currentPhase = Phase.FINDING_MIN;
-            showingComparisonBar = false;
             updateButtonStates();
+
+            // Start the first pass
+            minIndex = currentI;
+            currentJ = currentI + 1;
+            statusLabel.setText("Pass " + (currentI + 1) + ": Finding minimum in unsorted part.");
+            highlightCurrentPass();
+            return;
         }
 
-        statusLabel.setText("Manual step...");
-        performSingleStepManual();
+        // If the last step was setting up for a swap, this click executes it
+        if (currentPhase == Phase.SWAPPING) {
+            if (minIndex != currentI) {
+                statusLabel.setText("Swapping elements at index " + currentI + " and " + minIndex + ".");
+                // Perform data swap and update visuals instantly for manual mode
+                int temp = array[currentI];
+                array[currentI] = array[minIndex];
+                array[minIndex] = temp;
+                updateBarVisualization(currentI);
+                updateBarVisualization(minIndex);
+            } else {
+                statusLabel.setText("Element is already in the correct sorted position.");
+            }
+
+            // Move to the next outer loop pass
+            currentI++;
+            if (currentI >= arrayLength - 1) {
+                finishSorting();
+                return;
+            }
+
+            currentJ = currentI;
+            currentPhase = Phase.FINDING_MIN;
+            minIndex = currentI; // Reset minIndex for the new pass
+            currentJ = currentI + 1;
+            statusLabel.setText("Pass " + (currentI + 1) + ": Finding minimum.");
+            highlightCurrentPass();
+            return;
+        }
+
+        // --- We are in the FINDING_MIN phase ---
+
+        // Check if the inner loop (j) has finished for this pass
+        if (currentJ >= arrayLength) {
+            // Set up for the swap on the *next* click
+            currentPhase = Phase.SWAPPING;
+            statusLabel.setText("Minimum found at index " + minIndex + ". Click 'Next Step' to swap.");
+            highlightSwap(currentI, minIndex);
+        } else {
+            // This is a normal comparison step
+            statusLabel.setText("Comparing element at index " + currentJ + " with minimum at index " + minIndex + ".");
+            highlightComparison(currentJ, minIndex);
+
+            // Perform the comparison logic
+            if (array[currentJ] < array[minIndex]) {
+                minIndex = currentJ;
+            }
+
+            // Advance j for the next step
+            currentJ++;
+        }
     }
 
     @FXML
@@ -146,8 +253,6 @@ public class SelectionSortController implements Initializable {
         isPaused = false;
         isCompleted = false;
         pause.stop();
-        showingComparisonBar = false;
-
         currentI = 0;
         currentJ = 0;
         minIndex = 0;
@@ -173,10 +278,12 @@ public class SelectionSortController implements Initializable {
                 currentJ = currentI + 1;
                 statusLabel.setText("Pass " + (currentI + 1) + ": Finding minimum in unsorted part starting from index " + currentI);
                 highlightCurrentPass();
+                highlightPseudoCode(2);
 
                 if (!isPaused) {
                     pause.setOnFinished(e -> runSortingStep());
                     pause.playFromStart();
+
                 }
                 return;
             }
@@ -197,10 +304,12 @@ public class SelectionSortController implements Initializable {
         statusLabel.setText("Comparing element at index " + currentJ + " (" + array[currentJ] + ") with current minimum at index " + minIndex + " (" + array[minIndex] + ")");
 
         highlightComparison(currentJ, minIndex);
+        highlightPseudoCode(5);
 
         pause.setOnFinished(e -> {
             if (array[currentJ] < array[minIndex]) {
                 minIndex = currentJ;
+                highlightPseudoCode(6);
                 statusLabel.setText("New minimum found at index " + minIndex + " (" + array[minIndex] + ")");
             } else {
                 statusLabel.setText("Current minimum remains at index " + minIndex + " (" + array[minIndex] + ")");
@@ -219,23 +328,62 @@ public class SelectionSortController implements Initializable {
     private void performSwap() {
         if (minIndex != currentI) {
             statusLabel.setText("Swapping minimum element " + array[minIndex] + " at index " + minIndex + " with element " + array[currentI] + " at index " + currentI);
-
-            // Highlight bars being swapped
             highlightSwap(currentI, minIndex);
+            highlightPseudoCode(9);
 
-            pause.setOnFinished(e -> {
-                // Perform the swap
+            // Get the nodes to be swapped
+            Rectangle bar1 = bars.get(currentI);
+            Rectangle bar2 = bars.get(minIndex);
+            Text valueText1 = valueTexts.get(currentI);
+            Text valueText2 = valueTexts.get(minIndex);
+            Text indexText1 = indexTexts.get(currentI);
+            Text indexText2 = indexTexts.get(minIndex);
+
+            // Calculate distance to move
+            double deltaX = bar2.getX() - bar1.getX();
+
+            // Create transitions for all nodes
+            TranslateTransition ttBar1 = new TranslateTransition(animationDuration, bar1);
+            ttBar1.setByX(deltaX);
+            TranslateTransition ttBar2 = new TranslateTransition(animationDuration, bar2);
+            ttBar2.setByX(-deltaX);
+
+            TranslateTransition ttValue1 = new TranslateTransition(animationDuration, valueText1);
+            ttValue1.setByX(deltaX);
+            TranslateTransition ttValue2 = new TranslateTransition(animationDuration, valueText2);
+            ttValue2.setByX(-deltaX);
+
+            TranslateTransition ttIndex1 = new TranslateTransition(animationDuration, indexText1);
+            ttIndex1.setByX(deltaX);
+            TranslateTransition ttIndex2 = new TranslateTransition(animationDuration, indexText2);
+            ttIndex2.setByX(-deltaX);
+
+            // Combine into one parallel transition
+            ParallelTransition parallelTransition = new ParallelTransition(
+                    ttBar1, ttBar2, ttValue1, ttValue2, ttIndex1, ttIndex2
+            );
+
+            // Define what happens AFTER the animation finishes
+            parallelTransition.setOnFinished(e -> {
+                // 1. Swap the data in the underlying array
                 int temp = array[currentI];
                 array[currentI] = array[minIndex];
                 array[minIndex] = temp;
 
-                // Update visualization
+                // 2. IMPORTANT: Reset translation to 0 BEFORE redrawing
+                bar1.setTranslateX(0);
+                bar2.setTranslateX(0);
+                valueText1.setTranslateX(0);
+                valueText2.setTranslateX(0);
+                indexText1.setTranslateX(0);
+                indexText2.setTranslateX(0);
+
+                // 3. Update the visualization of the two bars to reflect their new heights/values
                 updateBarVisualization(currentI);
                 updateBarVisualization(minIndex);
 
+                // 4. Update status and continue sorting
                 statusLabel.setText("Swap completed. Position " + currentI + " is now sorted.");
-
-                // Move to next position
                 currentI++;
                 currentJ = currentI;
                 currentPhase = Phase.FINDING_MIN;
@@ -245,11 +393,13 @@ public class SelectionSortController implements Initializable {
                     runSortingStep();
                 }
             });
-            pause.playFromStart();
-        } else {
-            statusLabel.setText("Element " + array[currentI] + " at index " + currentI + " is already in correct position.");
 
-            // Move to next position
+            // Play the swap animation
+            parallelTransition.play();
+
+        } else {
+            // This part remains the same
+            statusLabel.setText("Element " + array[currentI] + " at index " + currentI + " is already in correct position.");
             currentI++;
             currentJ = currentI;
             currentPhase = Phase.FINDING_MIN;
@@ -262,6 +412,7 @@ public class SelectionSortController implements Initializable {
         }
     }
 
+
     private void finishSorting() {
         // Set all bars to green since sorting is complete
         for (int i = 0; i < bars.size(); i++) {
@@ -269,6 +420,7 @@ public class SelectionSortController implements Initializable {
         }
 
         statusLabel.setText("Selection sort completed!");
+        highlightPseudoCode(-1);
 
         isSorting = false;
         isPaused = false;
@@ -321,7 +473,7 @@ public class SelectionSortController implements Initializable {
         }
 
         double totalWidth = array.length * barWidth + (array.length - 1) * barSpacing;
-        double startX = (arrayContainer.getPrefWidth() - totalWidth) / 2;
+        double startX = (arrayContainer.getWidth() - totalWidth) / 2-200;
 
         for (int i = 0; i < array.length; i++) {
             double x = startX + i * (barWidth + barSpacing);
@@ -336,9 +488,9 @@ public class SelectionSortController implements Initializable {
 
             // Create value text (at bottom of bar)
             Text valueText = new Text(String.valueOf(array[i]));
-            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 18));
             valueText.setX(x + barWidth / 2 - valueText.getBoundsInLocal().getWidth() / 2);
-            valueText.setY(baseY - 5);
+            valueText.setY(baseY - 10);
 
             // Create index text (below value text)
             Text indexText = new Text(String.valueOf(i));
@@ -387,12 +539,12 @@ public class SelectionSortController implements Initializable {
 
     private void highlightComparison(int compareIndex, int minIndex) {
         resetBarColors();
-        // Highlight element being compared with red
         if (compareIndex >= 0 && compareIndex < bars.size()) {
-            bars.get(compareIndex).setFill(COMPARING_COLOR);
-            bars.get(compareIndex).setStrokeWidth(3);
+            Rectangle bar = bars.get(compareIndex);
+            bar.setFill(COMPARING_COLOR);
+            bar.setStrokeWidth(3);
+//            new Pulse(bar).setSpeed(2).play(); // AnimateFX Pulse effect
         }
-        // Highlight current minimum with purple (pointer)
         if (minIndex >= 0 && minIndex < bars.size()) {
             bars.get(minIndex).setFill(POINTER_COLOR);
             bars.get(minIndex).setStrokeWidth(3);
@@ -432,51 +584,7 @@ public class SelectionSortController implements Initializable {
         }
     }
 
-    private void performSingleStepManual() {
-        if (!isSorting) return;
 
-        if (currentI >= arrayLength - 1) {
-            finishSorting();
-            return;
-        }
-
-        if (currentPhase == Phase.FINDING_MIN) {
-            if (currentJ == currentI) {
-                // Start of new pass
-                minIndex = currentI;
-                currentJ = currentI + 1;
-                statusLabel.setText("Pass " + (currentI + 1) + ": Finding minimum in unsorted part starting from index " + currentI);
-                highlightCurrentPass();
-                return;
-            }
-
-            if (currentJ >= arrayLength) {
-                // Found minimum for this pass, now swap
-                currentPhase = Phase.SWAPPING;
-                performSwap();
-                return;
-            }
-
-            if (!showingComparisonBar) {
-                // First click: show comparison
-                statusLabel.setText("Comparing element at index " + currentJ + " (" + array[currentJ] + ") with current minimum at index " + minIndex + " (" + array[minIndex] + ")");
-                highlightComparison(currentJ, minIndex);
-                showingComparisonBar = true;
-            } else {
-                // Second click: perform comparison
-                if (array[currentJ] < array[minIndex]) {
-                    minIndex = currentJ;
-                    statusLabel.setText("New minimum found at index " + minIndex + " (" + array[minIndex] + ")");
-                } else {
-                    statusLabel.setText("Current minimum remains at index " + minIndex + " (" + array[minIndex] + ")");
-                }
-
-                currentJ++;
-                resetBarColors();
-                showingComparisonBar = false;
-            }
-        }
-    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -484,5 +592,18 @@ public class SelectionSortController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    void returnHome(ActionEvent event) {
+        try {
+            Parent homeScreenRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/Home-screen.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(homeScreenRoot));
+            stage.setTitle("DSA Simulator");
+        } catch (
+                IOException e) {
+            e.printStackTrace();
+        }
     }
 }

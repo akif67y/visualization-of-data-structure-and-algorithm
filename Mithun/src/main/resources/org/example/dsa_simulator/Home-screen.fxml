@@ -1,21 +1,210 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="654.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.MainController">
-   <children>
-      <Button layoutX="510.0" layoutY="172.0" mnemonicParsing="false" onAction="#openGraphWindow" prefHeight="25.0" prefWidth="78.0" text="Graphs" />
-      <Button layoutX="511.0" layoutY="216.0" mnemonicParsing="false" onAction="#openHeapWindow" prefHeight="25.0" prefWidth="78.0" text="Heap" />
-      <Button layoutX="511.0" layoutY="257.0" mnemonicParsing="false" onAction="#openAiAssistantWindow" text="AI Assistant" />
-      <Button fx:id="BubbleSort" layoutX="511.0" layoutY="302.0" mnemonicParsing="false" onAction="#openBubbleSortWindow" text="Bubble Sort" />
-      <Button layoutX="511.0" layoutY="346.0" mnemonicParsing="false" onAction="#openSelectionSortWindow" text="Selection Sort" />
-      <Button layoutX="511.0" layoutY="391.0" mnemonicParsing="false" onAction="#openInsertionSortWindow" text="Insertion Sort" />
-      <Button layoutX="511.0" layoutY="130.0" mnemonicParsing="false" onAction="#openMergeSortWindow" text="Merge Sort" />
-      <Button layoutX="511.0" layoutY="89.0" mnemonicParsing="false" onAction="#openArrayWindow" prefHeight="25.0" prefWidth="66.0" text="Array" />
-      <Button layoutX="510.0" layoutY="51.0" mnemonicParsing="false" onAction="#onBSTButtonClicked" prefHeight="25.0" prefWidth="66.0" text="BST" />
-      <Button layoutX="380.0" layoutY="51.0" mnemonicParsing="false" onAction="#heapTry" text="HeapTry" />
-      <Button layoutX="380.0" layoutY="102.0" mnemonicParsing="false" onAction="#QuickSort" text="Quick Sort" />
-      <Button layoutX="385.0" layoutY="155.0" mnemonicParsing="false" onAction="#TryBST" text="BSTTry" />
-   </children>
-</AnchorPane>
+<BorderPane prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.MainController">
+   <top>
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="CSE 108 Project: DSA Simulator" HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <GridPane alignment="CENTER" hgap="20.0" vgap="20.0" BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="160.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="160.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="160.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="160.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="160.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Button fx:id="BubbleSort" contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#openBubbleSortWindow" text="Bubble Sort" GridPane.columnIndex="0" GridPane.rowIndex="0">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Bubble Sort.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#openSelectionSortWindow" text="Selection Sort" GridPane.columnIndex="1" GridPane.rowIndex="0">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Selection Sort.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#openInsertionSortWindow" text="Insertion Sort" GridPane.columnIndex="2" GridPane.rowIndex="0">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Insertion Sort.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#openMergeSortWindow" text="Merge Sort" GridPane.columnIndex="3" GridPane.rowIndex="0">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/MergeSort.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#LinkedList" text="Linked List" GridPane.columnIndex="4" GridPane.rowIndex="0">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Singly%20LinkedList.png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#heapTry" text="Heap" GridPane.columnIndex="0" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Heap (PriorityQueue).png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#TryBST" text="BST" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Binary Search Tree.png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#BFS" text="BFS" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Graph Representations.png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#PracticeKruskal" text="Kruskal" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Kruskal's.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#openAiAssistantWindow" text="AI Assistant" GridPane.columnIndex="4" GridPane.rowIndex="3">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/noto--panda.png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#DFS" text="DFS" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Depth-First Search.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#Dijkstra" text="Dijkstra" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Dijkstra's.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#Prim" text="Prim" GridPane.columnIndex="0" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Prim's.gif" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#LCS" text="LCS" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/LCS.png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#Edit" text="Edit Distance" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/edit.png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#Knapsack" text="Knapsack" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/knapsack.jpg" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#StackL" text="Stack(Linked-List)" GridPane.columnIndex="0" GridPane.rowIndex="3">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Stack%20(LinkedList).png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#StackA" text="Stack(Array)" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Stack%20(Array).png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#QueueL" text="Queue(Linked-List)" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Queue%20(LinkedList).png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+            <Button contentDisplay="BOTTOM" maxHeight="Infinity" maxWidth="Infinity" onAction="#QueueA" text="Queue(Array)" GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <graphic>
+                  <ImageView fitHeight="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image><Image url="@icons/Queue%20(Array).png" /></image>
+                  </ImageView>
+               </graphic>
+               <font><Font name="System Bold" size="18.0" /></font>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </GridPane>
+   </center>
+</BorderPane>

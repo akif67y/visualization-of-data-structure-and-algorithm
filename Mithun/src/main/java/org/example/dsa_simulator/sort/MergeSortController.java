@@ -1,8 +1,15 @@
 package org.example.dsa_simulator.sort;
 
 import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.ParallelTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -10,8 +17,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -37,22 +46,26 @@ public class MergeSortController implements Initializable {
     private boolean isPaused = false;
     private boolean isCompleted = false;
     private PauseTransition pause;
-    private final double smallBoxWidth = 40;
-    private final double smallBoxHeight = 40;
-    private final double boxSpacing = 5;
-    private final double levelSpacing = 80;
+    private final double smallBoxWidth = 60;
+    private final double smallBoxHeight = 60;
+    private final double boxSpacing = 10;
+    private final double levelSpacing = 100;
     private final double baseY = 50;
     private Duration animationDuration = Duration.millis(1200); // Will be updated by slider
+
+    // Animation control
+    private SequentialTransition currentMergeAnimation;
+    private boolean isAnimating = false;
 
     // Color scheme for merge sort
     private final Color ORIGINAL_COLOR = Color.LIGHTBLUE;
     private final Color LEFT_SUBARRAY_COLOR = Color.LIGHTCORAL;
-    private final Color RIGHT_SUBARRAY_COLOR = Color.LIGHTGREEN;
+    private final Color RIGHT_SUBARRAY_COLOR = Color.CYAN;
     private final Color MERGING_PARENT_COLOR = Color.YELLOW; // Parent during merge
     private final Color COMPARE_COLOR = Color.DARKORANGE;     // Elements being compared
     private final Color PLACED_COLOR = Color.LIGHTSEAGREEN;   // Elements placed in parent
     private final Color MERGED_CHILD_COLOR = Color.GRAY.brighter(); // Children after merge
-    private final Color COMPLETED_COLOR = Color.GOLDENROD;
+    private final Color COMPLETED_COLOR = Color.LIGHTGREEN;
     private final Color INACTIVE_LEVEL_COLOR = Color.GRAY.deriveColor(0, 1, 1, 0.4); // Dimmed levels
 
     // Merge sort phases
@@ -61,7 +74,6 @@ public class MergeSortController implements Initializable {
         MERGING
     }
     private Phase currentPhase = Phase.DIVIDING;
-
 
     // Data structure to represent each level of merge sort
     private static class MergeLevel {
@@ -101,7 +113,7 @@ public class MergeSortController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        arrayInput.setText("38,27,43,3,9,82,10");
+        arrayInput.setText("12,23,14,16,18,67,34,65");
         pause = new PauseTransition(animationDuration);
 
         // Setup speed slider listener
@@ -139,7 +151,13 @@ public class MergeSortController implements Initializable {
     private void pauseSort() {
         if (!isSorting || isPaused) return;
         isPaused = true;
-        pause.pause();
+
+        // Pause current animations
+        if (pause != null) pause.pause();
+        if (currentMergeAnimation != null && isAnimating) {
+            currentMergeAnimation.pause();
+        }
+
         statusLabel.setText("Sorting paused. Press 'Resume' or 'Next Step'.");
         updateButtonStates();
     }
@@ -150,10 +168,13 @@ public class MergeSortController implements Initializable {
         isPaused = false;
         statusLabel.setText("Resuming sort...");
         updateButtonStates();
-        // Resume the currently set transition
-        // The logic for what happens next is handled by the setOnFinished handler
-        // which was set when the transition was started.
-        pause.play();
+
+        // Resume current animations
+        if (currentMergeAnimation != null && isAnimating) {
+            currentMergeAnimation.play();
+        } else if (pause != null) {
+            pause.play();
+        }
     }
 
     @FXML
@@ -183,9 +204,15 @@ public class MergeSortController implements Initializable {
         isSorting = false;
         isPaused = false;
         isCompleted = false;
-        if (pause != null) {
-            pause.stop();
+        isAnimating = false;
+
+        // Stop all animations
+        if (pause != null) pause.stop();
+        if (currentMergeAnimation != null) {
+            currentMergeAnimation.stop();
+            currentMergeAnimation = null;
         }
+
         currentLevel = 0;
         currentPairIndex = 0;
         currentPhase = Phase.DIVIDING;
@@ -252,7 +279,6 @@ public class MergeSortController implements Initializable {
         }
     }
 
-
     private void runSortingStep() {
         if (!isSorting) return;
 
@@ -267,6 +293,7 @@ public class MergeSortController implements Initializable {
                 currentLevel = mergeLevels.size() - 1;
                 currentPairIndex = 0; // Start with the first pair (index 0 in the parent level)
                 statusLabel.setText("Division complete. Starting merge phase...");
+
                 runSortingStep(); // Proceed to merging
             }
         } else if (currentPhase == Phase.MERGING) {
@@ -342,88 +369,157 @@ public class MergeSortController implements Initializable {
         highlightSubArray(leftChild, LEFT_SUBARRAY_COLOR);
         highlightSubArray(rightChild, RIGHT_SUBARRAY_COLOR);
 
-        // --- Perform the actual merge logic visually ---
+        // --- Perform the actual merge logic with animations ---
         pause.setOnFinished(e -> {
-            // This is the core merge logic executed after the initial highlight pause
-            performSimpleVisualMerge(parentSubArray, leftChild, rightChild);
+            // This is the core merge logic executed with visual animations
+            performAnimatedMerge(parentSubArray, leftChild, rightChild, () -> {
+                // Callback executed after all merge animations complete
 
-            // Mark children as merged after the merge logic
-            highlightSubArray(leftChild, MERGED_CHILD_COLOR);
-            highlightSubArray(rightChild, MERGED_CHILD_COLOR);
+                // Mark children as merged after the merge logic
+                highlightSubArray(leftChild, MERGED_CHILD_COLOR);
+                highlightSubArray(rightChild, MERGED_CHILD_COLOR);
 
-            // Move to the next parent in the same parent level
-            currentPairIndex++;
+                // Move to the next parent in the same parent level
+                currentPairIndex++;
 
-            // Check if we need to move to the next level up for merging
-            if (currentPairIndex >= parentLevel.subArrays.size()) {
-                currentLevel--; // Move up one level (e.g., from level 3 children to level 2 parents)
-                currentPairIndex = 0; // Reset pair index for the new parent level
-            }
+                // Check if we need to move to the next level up for merging
+                if (currentPairIndex >= parentLevel.subArrays.size()) {
+                    currentLevel--; // Move up one level (e.g., from level 3 children to level 2 parents)
+                    currentPairIndex = 0; // Reset pair index for the new parent level
+                }
 
-            if (!isPaused) {
-                runSortingStep();
-            }
-            // If paused, the next click of Resume/Next Step will call runSortingStep again
+                if (!isPaused) {
+                    runSortingStep();
+                }
+                // If paused, the next click of Resume/Next Step will call runSortingStep again
+            });
         });
         pause.playFromStart(); // Plays with the current duration set by the slider
     }
 
+    // Performs the merge logic with visual animations
+    private void performAnimatedMerge(SubArray parent, SubArray leftChild, SubArray rightChild, Runnable onComplete) {
+        isAnimating = true;
+        currentMergeAnimation = new SequentialTransition();
 
-    // Performs the merge logic with visual updates in a single step (simpler than before)
-    private void performSimpleVisualMerge(SubArray parent, SubArray leftChild, SubArray rightChild) {
         int i = 0, j = 0, k = 0;
         int[] leftArr = leftChild.elements;
         int[] rightArr = rightChild.elements;
         int[] parentArr = parent.elements;
 
-        // Standard merge algorithm with immediate visual updates
+        // Create all the individual merge step animations
         while (i < leftArr.length && j < rightArr.length) {
-            // Highlight elements being compared (briefly)
-            highlightElement(leftChild, i, COMPARE_COLOR);
-            highlightElement(rightChild, j, COMPARE_COLOR);
+            final int finalI = i, finalJ = j, finalK = k;
 
-            // Determine smaller element and place it
             if (leftArr[i] <= rightArr[j]) {
+                // Create animation for moving element from left array to parent
                 parentArr[k] = leftArr[i];
-                updateParentElement(parent, k, leftArr[i]);
-                highlightElement(parent, k, PLACED_COLOR);
+                ParallelTransition moveAnimation = createMoveAnimation(leftChild, finalI, parent, finalK, leftArr[i]);
+                currentMergeAnimation.getChildren().add(moveAnimation);
                 i++;
             } else {
+                // Create animation for moving element from right array to parent
                 parentArr[k] = rightArr[j];
-                updateParentElement(parent, k, rightArr[j]);
-                highlightElement(parent, k, PLACED_COLOR);
+                ParallelTransition moveAnimation = createMoveAnimation(rightChild, finalJ, parent, finalK, rightArr[j]);
+                currentMergeAnimation.getChildren().add(moveAnimation);
                 j++;
             }
             k++;
-
-            // Small delay or logic for visual flow could be added here if needed,
-            // but often the sequential execution within the single pause is enough.
-            // Adding nested transitions here was causing the memory issues.
         }
 
         // Copy remaining elements from left array
         while (i < leftArr.length) {
+            final int finalI = i, finalK = k;
             parentArr[k] = leftArr[i];
-            updateParentElement(parent, k, leftArr[i]);
-            highlightElement(parent, k, PLACED_COLOR);
-            // highlightElement(leftChild, i, COMPARE_COLOR); // Optional: show source
+            ParallelTransition moveAnimation = createMoveAnimation(leftChild, finalI, parent, finalK, leftArr[i]);
+            currentMergeAnimation.getChildren().add(moveAnimation);
             i++; k++;
         }
 
         // Copy remaining elements from right array
         while (j < rightArr.length) {
+            final int finalJ = j, finalK = k;
             parentArr[k] = rightArr[j];
-            updateParentElement(parent, k, rightArr[j]);
-            highlightElement(parent, k, PLACED_COLOR);
-            // highlightElement(rightChild, j, COMPARE_COLOR); // Optional: show source
+            ParallelTransition moveAnimation = createMoveAnimation(rightChild, finalJ, parent, finalK, rightArr[j]);
+            currentMergeAnimation.getChildren().add(moveAnimation);
             j++; k++;
         }
 
-        // Reset comparison highlights if any were left
-        // This is a simplification, ideally you'd reset them after a short delay
-        // or track which ones were highlighted. For now, let the final merged color take over.
+        // Set completion callback
+        currentMergeAnimation.setOnFinished(e -> {
+            isAnimating = false;
+            currentMergeAnimation = null;
+            onComplete.run();
+        });
+
+        // Start the animation sequence
+        currentMergeAnimation.play();
     }
 
+    // Creates an animation for moving an element from source to destination
+    private ParallelTransition createMoveAnimation(SubArray sourceArray, int sourceIndex,
+                                                   SubArray destArray, int destIndex, int value) {
+        ParallelTransition moveAnimation = new ParallelTransition();
+
+        // Get source and destination positions
+        Rectangle sourceBox = sourceArray.boxes[sourceIndex];
+        Text sourceText = sourceArray.valueTexts[sourceIndex];
+        Rectangle destBox = destArray.boxes[destIndex];
+        Text destText = destArray.valueTexts[destIndex];
+
+        if (sourceBox == null || destBox == null) return moveAnimation;
+
+        // Calculate translation distances
+        double deltaX = destBox.getX() - sourceBox.getX();
+        double deltaY = destBox.getY() - sourceBox.getY();
+
+        // Create clone elements for animation (so original stays in place initially)
+        Rectangle animBox = new Rectangle(sourceBox.getX(), sourceBox.getY(),
+                sourceBox.getWidth(), sourceBox.getHeight());
+        animBox.setFill(COMPARE_COLOR);
+        animBox.setStroke(Color.BLACK);
+        animBox.setStrokeWidth(2);
+
+        Text animText = new Text(sourceBox.getX() + smallBoxWidth / 2 - 5,
+                sourceBox.getY() + smallBoxHeight / 2 + 4,
+                String.valueOf(value));
+        animText.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        animText.setFill(Color.BLACK);
+
+        // Add animated elements to container
+        arrayContainer.getChildren().addAll(animBox, animText);
+
+        // Create translation animations
+        TranslateTransition boxTransition = new TranslateTransition(
+                Duration.millis(animationDuration.toMillis() * 0.6), animBox);
+        boxTransition.setByX(deltaX);
+        boxTransition.setByY(deltaY);
+
+        TranslateTransition textTransition = new TranslateTransition(
+                Duration.millis(animationDuration.toMillis() * 0.6), animText);
+        textTransition.setByX(deltaX);
+        textTransition.setByY(deltaY);
+
+        moveAnimation.getChildren().addAll(boxTransition, textTransition);
+
+        // When animation completes, update destination and remove animated elements
+        moveAnimation.setOnFinished(e -> {
+            // Update destination element
+            updateParentElement(destArray, destIndex, value);
+
+            // Remove animated elements
+            arrayContainer.getChildren().removeAll(animBox, animText);
+
+            // Briefly highlight the placed element
+            highlightElement(destArray, destIndex, PLACED_COLOR);
+
+            // Create a brief pause to show the placed element
+            PauseTransition briefPause = new PauseTransition(Duration.millis(100));
+            briefPause.play();
+        });
+
+        return moveAnimation;
+    }
 
     // Visualizes all levels up to a given level index
     private void visualizeAllLevelsUpTo(int maxLevelIndex) {
@@ -457,7 +553,6 @@ public class MergeSortController implements Initializable {
         }
     }
 
-
     private void createSubArrayVisualization(SubArray subArray, double startX, double y, boolean isDimmed) {
         subArray.x = startX;
         subArray.y = y;
@@ -472,7 +567,7 @@ public class MergeSortController implements Initializable {
             box.setStrokeWidth(1);
 
             Text valueText = new Text(String.valueOf(subArray.elements[i]));
-            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
             if (isDimmed) {
                 valueText.setFill(Color.GRAY.brighter()); // Lighter gray text for dimmed
             } else {
@@ -482,7 +577,7 @@ public class MergeSortController implements Initializable {
             valueText.setY(y + smallBoxHeight / 2 + 4);
 
             Text indexText = new Text(String.valueOf(subArray.startIndex + i));
-            indexText.setFont(Font.font("Arial", FontWeight.NORMAL, 10));
+            indexText.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
             indexText.setFill(Color.GRAY);
             if (isDimmed) {
                 indexText.setFill(Color.GRAY.darker()); // Darker gray index for dimmed
@@ -523,7 +618,6 @@ public class MergeSortController implements Initializable {
         }
     }
 
-
     // Update the visual representation of an element in the parent subarray
     private void updateParentElement(SubArray parentSubArray, int index, int value) {
         if (parentSubArray == null || index < 0 || index >= parentSubArray.boxes.length) return;
@@ -536,10 +630,7 @@ public class MergeSortController implements Initializable {
             double boxX = parentSubArray.boxes[index].getX();
             valueText.setX(boxX + smallBoxWidth / 2 - valueText.getBoundsInLocal().getWidth() / 2);
         }
-        // Optionally highlight the placed element
-        highlightElement(parentSubArray, index, PLACED_COLOR);
     }
-
 
     private double calculateTotalWidth(MergeLevel level) {
         double totalWidth = 0;
@@ -564,6 +655,7 @@ public class MergeSortController implements Initializable {
         isSorting = false;
         isPaused = false;
         isCompleted = true;
+        isAnimating = false;
         updateButtonStates();
     }
 
@@ -573,16 +665,15 @@ public class MergeSortController implements Initializable {
         if (arrayInput != null) arrayInput.setDisable(isSorting);
         if (pauseButton != null) pauseButton.setDisable(!isSorting || isPaused || isCompleted);
         if (resumeButton != null) resumeButton.setDisable(!isSorting || !isPaused || isCompleted);
-        if (nextStepButton != null) nextStepButton.setDisable((isSorting && !isPaused) || isCompleted);
+        if (nextStepButton != null) nextStepButton.setDisable((isSorting && !isPaused) || isCompleted || isAnimating);
         // if (speedSlider != null) speedSlider.setDisable(isSorting && !isPaused); // Optional
     }
-
 
     private boolean parseAndVisualize() {
         try {
             String input = arrayInput.getText().trim();
             if (input.isEmpty()) {
-                originalArray = new int[]{38, 27, 43, 3, 9, 82, 10};
+                originalArray = new int[]{12,23,14,16,18,67,34,65};
             } else {
                 String[] parts = input.split(",");
                 originalArray = new int[parts.length];
@@ -595,6 +686,18 @@ public class MergeSortController implements Initializable {
         } catch (NumberFormatException e) {
             showAlert();
             return false;
+        }
+    }
+    @FXML
+    void returnHome(ActionEvent event) {
+        try {
+            Parent homeScreenRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/Home-screen.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(homeScreenRoot));
+            stage.setTitle("DSA Simulator");
+        } catch (
+                IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -618,13 +721,13 @@ public class MergeSortController implements Initializable {
             box.setStrokeWidth(1);
 
             Text valueText = new Text(String.valueOf(originalArray[i]));
-            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
             valueText.setFill(Color.BLACK);
             valueText.setX(x + smallBoxWidth / 2 - valueText.getBoundsInLocal().getWidth() / 2);
             valueText.setY(y + smallBoxHeight / 2 + 4);
 
             Text indexText = new Text(String.valueOf(i));
-            indexText.setFont(Font.font("Arial", FontWeight.NORMAL, 10));
+            indexText.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
             indexText.setFill(Color.GRAY);
             indexText.setX(x + smallBoxWidth / 2 - indexText.getBoundsInLocal().getWidth() / 2);
             indexText.setY(y + smallBoxHeight + 15);
@@ -646,4 +749,5 @@ public class MergeSortController implements Initializable {
         alert.setContentText("Please enter valid, comma-separated numbers.");
         alert.showAndWait();
     }
+
 }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" style="-fx-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.queue.queuelist">
+    <children>
+        <Label layoutX="515.0" layoutY="14.0" text="Queue Visualizer" textFill="#181373">
+            <font><Font name="System Bold" size="32.0" /></font>
+        </Label>
+
+        <VBox layoutX="14.0" layoutY="123.0" prefHeight="400.0" prefWidth="300.0" spacing="25.0" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius:20; -fx-padding:30;">
+            <children>
+                <VBox spacing="10.0">
+                    <Label text="Enter Value:" textFill="#181373">
+                        <font><Font name="System Bold" size="16.0" /></font>
+                    </Label>
+                    <TextField fx:id="inputField" onKeyPressed="#handleTextFieldKeyPressed" prefHeight="45.0" promptText="Input a Number" style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius:10; -fx-padding:0 15; -fx-font-size:14px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2),5,0,0,2);">
+                        <font><Font size="14.0" /></font>
+                    </TextField>
+                </VBox>
+                <VBox spacing="15.0">
+                    <Button fx:id="enqueueBtn" mnemonicParsing="false" onAction="#onEnqueueClicked" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color:#2196F3; -fx-background-radius:15; -fx-text-fill:white; -fx-font-size:16px; -fx-font-weight:bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3),8,0,0,3); -fx-cursor:hand;" text="➕ ENQUEUE">
+                        <font><Font name="System Bold" size="16.0" /></font>
+                    </Button>
+                    <Button fx:id="dequeueBtn" mnemonicParsing="false" onAction="#onDequeueClicked" prefHeight="50.0" prefWidth="240.0" style="-fx-background-color:#f44336; -fx-background-radius:15; -fx-text-fill:white; -fx-font-size:16px; -fx-font-weight:bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3),8,0,0,3); -fx-cursor:hand;" text="➖ DEQUEUE">
+                        <font><Font name="System Bold" size="16.0" /></font>
+                    </Button>
+                </VBox>
+                <VBox spacing="10.0">
+                    <Label text="Queue Operations:" textFill="#181373">
+                        <font><Font name="System Bold" size="14.0" /></font>
+                    </Label>
+                    <Label text="• ENQUEUE: Add element at rear" textFill="#181373cc">
+                        <font><Font size="12.0" /></font>
+                    </Label>
+                    <Label text="• DEQUEUE: Remove element from front" textFill="#181373cc">
+                        <font><Font size="12.0" /></font>
+                    </Label>
+                </VBox>
+            </children>
+        </VBox>
+
+        <VBox layoutX="2.0" layoutY="554.0" prefHeight="237.0" prefWidth="1119.0" style="-fx-background-color: rgba(255,255,255,0.15); -fx-background-radius:20; -fx-padding:20;">
+            <children>
+                <Label text="Linked List Representation" textFill="#181373">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+                <HBox alignment="CENTER" prefHeight="30.0" />
+                <AnchorPane fx:id="linkedListContainer" prefHeight="191.0" prefWidth="1075.0" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius:15; -fx-padding:15;">
+                    <children>
+                        <Label layoutX="10.0" layoutY="10.0" text="HEAD →" textFill="#FFD700">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                        </Label>
+                        <Label fx:id="nullLabel" layoutX="70.0" layoutY="60.0" text="NULL" textFill="#18137399">
+                            <font><Font name="System Bold" size="12.0" /></font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+            </children>
+        </VBox>
+        <Label layoutX="603.0" layoutY="101.0" text="Queue Visualization" textFill="#a128d9">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+
+        <HBox fx:id="buttonContainer" layoutX="423.0" layoutY="181.0" prefHeight="238.0" prefWidth="1069.0" />
+
+        <Label fx:id="frontPointer" layoutX="423.0" layoutY="150.0" style="-fx-font-weight: bold; -fx-text-fill: #E91E63;" text="FRONT ▼">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="rearPointer" layoutX="523.0" layoutY="150.0" style="-fx-font-weight: bold; -fx-text-fill: #00BCD4;" text="REAR ▼">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+      <Button contentDisplay="GRAPHIC_ONLY" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="27.0" prefWidth="31.0" style="-fx-background-color: transparent;" text="Button">
+         <graphic>
+            <ImageView fitHeight="35.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons/Back.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+    </children>
+</AnchorPane>
