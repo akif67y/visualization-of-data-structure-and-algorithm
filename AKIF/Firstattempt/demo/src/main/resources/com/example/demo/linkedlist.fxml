@@ -13,7 +13,7 @@
 <AnchorPane prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(to bottom, #f0f2f5 0%, #e4e7eb 100%);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.linkedlist.LinkedListController">
     <children>
         <!-- Control Panel -->
-        <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="878.0" prefWidth="500.0" spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <VBox alignment="TOP_CENTER" layoutX="18.4" layoutY="60.0" prefHeight="820.0" prefWidth="502.0" spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="60.0">
             <children>
 
                 <!-- Title (within control panel) -->
@@ -119,6 +119,7 @@
 
         <!-- Drawing Area -->
         <Pane fx:id="drawingPane" layoutX="530.0" layoutY="60.0" prefHeight="820.0" prefWidth="1050.0" style="-fx-background-color: white; -fx-border-color: #cbd5e0; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 1.5);" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="530.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0" />
+      <Button layoutX="37.0" layoutY="25.0" mnemonicParsing="false" text="Button" />
 
         <!-- Title inside Drawing Area (Optional visual element) -->
         <!-- <Label layoutX="550.0" layoutY="20.0" text="Linked List Visualization" textFill="#343a40" AnchorPane.leftAnchor="550.0" AnchorPane.topAnchor="20.0">

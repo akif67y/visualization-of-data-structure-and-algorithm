@@ -29,6 +29,8 @@ public class StackByArrayController {
     private List<Label> indexLabels = new ArrayList<>();
     @FXML
     Label status;
+//    @FXML
+//    Label pos;
 
 
     @FXML
@@ -133,11 +135,12 @@ public class StackByArrayController {
         indexLabels.clear();
         // Draw lines for array representation
         double startX = 60.0; // Starting X position
-        double startY = 100.0; // Starting Y position (adjusted for array container)
+        double startY = 250.0; // Starting Y position (adjusted for array container)
         double cellWidth = 80.0; // Button width + spacing
         double cellHeight = 40.0; // Button height + spacing
 
         // Draw outer rectangle and grid lines
+        if(arrayNodes.size()== 0){return;}
         for (int i = 0; i <= arrayNodes.size(); i++) {
             // Vertical lines
             Line verticalLine = new Line(

@@ -19,6 +19,22 @@ public class Graph {
         addNode(targetId);
         adjacencyList.get(sourceId).add(new Edge(targetId, weight));
     }
+    public void removeNode(Integer nodeId) {
+
+        for (List<Edge> edges : adjacencyList.values()) {
+            edges.removeIf(edge -> edge.target.equals(nodeId));
+        }
+
+        adjacencyList.remove(nodeId);
+    }
+
+    public void removeEdge(Integer source, Integer target) {
+        List<Edge> sourceNeighbors = adjacencyList.get(source);
+        if (sourceNeighbors != null) {
+
+            sourceNeighbors.removeIf(edge -> edge.target.equals(target));
+        }
+    }
 
     public boolean hasEdge(Integer sourceId, Integer targetId) {
         List<Edge> edges = adjacencyList.get(sourceId);
@@ -51,7 +67,7 @@ public class Graph {
         return adjacencyList.isEmpty();
     }
 
-    // Get all unique edges in the graph (for undirected graph)
+
     public List<WeightedEdge> getAllEdges() {
         List<WeightedEdge> allEdges = new ArrayList<>();
         Set<String> addedEdges = new HashSet<>();
@@ -59,7 +75,7 @@ public class Graph {
         for (Map.Entry<Integer, List<Edge>> entry : adjacencyList.entrySet()) {
             Integer source = entry.getKey();
             for (Edge edge : entry.getValue()) {
-                // Create a consistent edge key (smaller node first)
+
                 String edgeKey = Math.min(source, edge.target) + "-" + Math.max(source, edge.target);
 
                 if (!addedEdges.contains(edgeKey)) {
@@ -72,7 +88,7 @@ public class Graph {
         return allEdges;
     }
 
-    // Helper class for representing weighted edges with source and target
+
     public static class WeightedEdge {
         public final Integer source;
         public final Integer target;
@@ -93,6 +109,7 @@ public class Graph {
                     Objects.equals(source, that.source) &&
                     Objects.equals(target, that.target);
         }
+
 
         @Override
         public int hashCode() {

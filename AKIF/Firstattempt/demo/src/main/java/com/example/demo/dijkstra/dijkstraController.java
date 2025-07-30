@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -44,10 +45,14 @@ public class dijkstraController {
     private Button pauseButton;
     @FXML
     private Slider speedSlider;
+    @FXML
+    private ScrollPane resultScrollPane;
+    @FXML
+    private VBox resultBox;
 
     private Timeline currentDijkstraTimeline;
     private boolean isPaused = false;
-    private double animationSpeedFactor = 1.0; // For scaling durations
+    private double animationSpeedFactor = 1.0;
 
     private final Graph graph = new Graph();
     private final Map<Integer, Circle> nodeCircles = new ConcurrentHashMap<>();
@@ -56,24 +61,22 @@ public class dijkstraController {
     private final List<Polygon> arrowHeads = new ArrayList<>();
     private final List<Text> edgeWeights = new ArrayList<>();
 
-    // Distance display components
     private final Map<Integer, HBox> distanceRows = new ConcurrentHashMap<>();
     private final Map<Integer, Label> distanceLabels = new ConcurrentHashMap<>();
     private final Map<Integer, Pane> distanceIndicators = new ConcurrentHashMap<>();
 
-    private String selectedMode = "NODE"; // "NODE", "EDGE", "DIJKSTRA_SELECT"
+    private String selectedMode = "NODE";
     private Circle firstEdgeNode = null;
     private Integer sourceForDijkstra = null;
     private int nodeCounter = 1;
     private Timeline continuousPulse;
     private boolean isAnimating = false;
 
-    // Algorithm colors
-    private static final Color SOURCE_COLOR = Color.web("#27ae60");      // Green
-    private static final Color CURRENT_COLOR = Color.web("#e74c3c");     // Red
-    private static final Color NEIGHBOR_COLOR = Color.web("#f39c12");    // Orange
-    private static final Color VISITED_COLOR = Color.web("#3498db");     // Blue
-    private static final Color UNREACHABLE_COLOR = Color.web("#95a5a6"); // Gray
+    private static final Color SOURCE_COLOR = Color.web("#27ae60");
+    private static final Color CURRENT_COLOR = Color.web("#e74c3c");
+    private static final Color NEIGHBOR_COLOR = Color.web("#f39c12");
+    private static final Color VISITED_COLOR = Color.web("#3498db");
+    private static final Color UNREACHABLE_COLOR = Color.web("#95a5a6");
     private static final Color DEFAULT_COLOR = Color.LIGHTBLUE;
 
     @FXML
@@ -81,22 +84,21 @@ public class dijkstraController {
         setupContinuousAnimation();
         initializeDistancePanel();
 
-        // Setup speed slider
         speedSlider.setMin(0.5);
         speedSlider.setMax(3.0);
         speedSlider.setValue(1.0);
         speedSlider.setShowTickMarks(true);
         speedSlider.setShowTickLabels(true);
 
-        // Disable pause button initially
         pauseButton.setDisable(true);
-        pauseButton.setText("⏸️ Pause");
+        pauseButton.setText("⏸ Pause");
     }
 
     private void initializeDistancePanel() {
         currentNodeLabel.setText("Current Node: None");
         visitedCountLabel.setText("Visited: 0 nodes");
         distanceTableBox.getChildren().clear();
+        resultBox.getChildren().clear();
     }
 
     private void setupContinuousAnimation() {
@@ -174,6 +176,7 @@ public class dijkstraController {
         distanceIndicators.clear();
         currentNodeLabel.setText("Current Node: None");
         visitedCountLabel.setText("Visited: 0 nodes");
+        resultBox.getChildren().clear();
     }
 
     private void initializeDistanceDisplay(Map<Integer, Double> distances) {
@@ -211,6 +214,7 @@ public class dijkstraController {
         });
     }
 
+    // Replace the original updateDistanceDisplay function with this one.
     private void updateDistanceDisplay(Integer nodeId, Double distance, String status) {
         Platform.runLater(() -> {
             Label distLabel = distanceLabels.get(nodeId);
@@ -222,29 +226,58 @@ public class dijkstraController {
                 } else {
                     distLabel.setText(String.format("%.1f", distance));
                 }
-                String indicatorColor = "#bdc3c7";
-                String rowStyle = "-fx-background-color: #145ed0; -fx-border-color: #0c0c0c; -fx-border-width: 1; -fx-border-radius: 3;";
+
+
+                String colorHex;
+                String textColor = "white";
+                String borderWidth = "1";
+                String borderColor = "#444";
+
                 switch (status) {
                     case "source":
-                        indicatorColor = "#27ae60";
+                        colorHex = "#27ae60";
+                        borderColor = colorHex;
+                        borderWidth = "2";
                         break;
                     case "current":
-                        indicatorColor = "#e74c3c";
-                        rowStyle = "-fx-background-color: #d30f0f; -fx-border-color: #e74c3c; -fx-border-width: 2; -fx-border-radius: 3;";
+                        colorHex = "#e74c3c";
+                        borderColor = colorHex;
+                        borderWidth = "2";
                         break;
                     case "neighbor":
-                        indicatorColor = "#f39c12";
-                        rowStyle = "-fx-background-color: #deb814; -fx-border-color: #f39c12; -fx-border-width: 1; -fx-border-radius: 3;";
+                        colorHex = "#f39c12";
+                        textColor = "black";
+                        borderColor = colorHex;
                         break;
                     case "visited":
-                        indicatorColor = "#3498db";
+                        colorHex = "#3498db";
                         break;
                     case "unreachable":
-                        indicatorColor = "#95a5a6";
+                        colorHex = "#95a5a6";
+                        textColor = "black";
+                        break;
+                    default:
+                        colorHex = "#bdc3c7";
+                        textColor = "black";
                         break;
                 }
-                indicator.setStyle("-fx-background-color: " + indicatorColor + "; -fx-background-radius: 6;");
+
+
+                indicator.setStyle("-fx-background-color: " + colorHex + "; -fx-background-radius: 6;");
+
+
+                String rowStyle = String.format(
+                        "-fx-background-color: %s; -fx-border-color: %s; -fx-border-width: %s; -fx-border-radius: 3;",
+                        colorHex, borderColor, borderWidth
+                );
                 row.setStyle(rowStyle);
+
+
+                Label nodeLabel = (Label) row.getChildren().get(1);
+                nodeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: " + textColor + ";");
+                distLabel.setStyle("-fx-font-size: 12px; -fx-font-family: monospace; -fx-text-fill: " + textColor + ";");
+
+
                 if (status.equals("neighbor")) {
                     ScaleTransition scaleUp = new ScaleTransition(scaledDuration(200), distLabel);
                     scaleUp.setToX(1.2);
@@ -260,7 +293,7 @@ public class dijkstraController {
     }
 
     @FXML
-    private void handleCanvasClick(javafx.scene.input.MouseEvent event) {
+    private void handleCanvasClick(MouseEvent event) {
         if (selectedMode.equals("NODE")) {
             addNodeAt(event.getX(), event.getY());
         } else if (selectedMode.equals("EDGE")) {
@@ -299,7 +332,7 @@ public class dijkstraController {
         statusLabel.setText("Node " + nodeId + " created.");
     }
 
-    private void selectNodeForEdge(javafx.scene.input.MouseEvent event) {
+    private void selectNodeForEdge(MouseEvent event) {
         Circle clicked = findNearestCircle(event.getX(), event.getY());
         if (clicked == null) return;
         if (firstEdgeNode == null) {
@@ -359,7 +392,7 @@ public class dijkstraController {
         arrowHead.setFill(Color.DARKGREEN);
         double midX = (startX + endX) / 2;
         double midY = (startY + endY) / 2;
-        Text weightText = new Text(midX + 10, midY - 5, String.format("%.1f", weight));
+        Text weightText = new Text(midX + 15, midY +10, String.format("%.1f", weight));
         weightText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         weightText.setFill(Color.DARKRED);
         edgeLines.add(line);
@@ -395,7 +428,7 @@ public class dijkstraController {
         return arrow;
     }
 
-    private void selectSourceForDijkstra(javafx.scene.input.MouseEvent event) {
+    private void selectSourceForDijkstra(MouseEvent event) {
         Circle start = findNearestCircle(event.getX(), event.getY());
         if (start == null) return;
         sourceForDijkstra = getNodeById(start);
@@ -405,7 +438,6 @@ public class dijkstraController {
         Platform.runLater(this::startDijkstraAnimation);
     }
 
-    // Helper to scale duration based on speed
     private Duration scaledDuration(double milliseconds) {
         return Duration.millis(milliseconds / animationSpeedFactor);
     }
@@ -512,11 +544,10 @@ public class dijkstraController {
             delay.play();
         });
 
-        // Update speed on slider change
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             animationSpeedFactor = newVal.doubleValue();
             if (currentDijkstraTimeline != null) {
-                currentDijkstraTimeline.setRate(1.0); // We manually scale durations
+                currentDijkstraTimeline.setRate(1.0);
             }
             statusLabel.setText("Speed: " + String.format("%.1fx", animationSpeedFactor));
         });
@@ -535,26 +566,63 @@ public class dijkstraController {
             currentNodeLabel.setText("Algorithm Complete!");
             visitedCountLabel.setText("Total visited: " + visited.size() + " nodes");
         });
-        StringBuilder result = new StringBuilder("Dijkstra completed from node " + sourceForDijkstra + "\n");
-        result.append("Final shortest distances:\n");
-        List<Integer> sortedNodes = new ArrayList<>(distances.keySet());
-        sortedNodes.sort(Integer::compareTo);
-        for (Integer node : sortedNodes) {
-            if (distances.get(node) == Double.MAX_VALUE) {
-                result.append("Node ").append(node).append(": ∞ (unreachable)\n");
-                updateDistanceDisplay(node, Double.MAX_VALUE, "unreachable");
-                Circle nodeCircle = nodeCircles.get(node);
-                if (nodeCircle != null && !node.equals(sourceForDijkstra)) {
-                    animateNodeTransition(nodeCircle, getCurrentColor(nodeCircle), UNREACHABLE_COLOR, scaledDuration(500));
+
+        Platform.runLater(() -> {
+            resultBox.getChildren().clear();
+
+            Label headerLabel = new Label("Dijkstra Results from Node " + sourceForDijkstra);
+            headerLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50; -fx-padding: 5 0 10 0;");
+            resultBox.getChildren().add(headerLabel);
+
+            List<Integer> sortedNodes = new ArrayList<>(distances.keySet());
+            sortedNodes.sort(Integer::compareTo);
+
+            for (Integer node : sortedNodes) {
+                HBox resultRow = new HBox(10);
+                resultRow.setAlignment(Pos.CENTER_LEFT);
+                resultRow.setPadding(new Insets(3, 10, 3, 10));
+
+                Label nodeLabel = new Label("Node " + node + ":");
+                nodeLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+                nodeLabel.setPrefWidth(70);
+
+                Label distanceLabel;
+                if (distances.get(node) == Double.MAX_VALUE) {
+                    distanceLabel = new Label("∞ (unreachable)");
+                    distanceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #ffffff;");
+                    resultRow.setStyle("-fx-background-color: #ADD8E6; -fx-border-color: #0c0c0c; -fx-border-width: 1; -fx-border-radius: 3;");
+                } else {
+                    distanceLabel = new Label(String.format("%.1f", distances.get(node)));
+                    if (node.equals(sourceForDijkstra)) {
+                        distanceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
+                        resultRow.setStyle("-fx-background-color: #00008B; -fx-border-color: #0c0c0c; -fx-border-width: 1; -fx-border-radius: 3;");
+                    } else {
+                        distanceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #ffffff;");
+                        resultRow.setStyle("-fx-background-color: #00008B; -fx-border-color: #0c0c0c; -fx-border-width: 1; -fx-border-radius: 3;");
+                    }
                 }
-            } else {
-                result.append("Node ").append(node).append(": ").append(String.format("%.1f", distances.get(node))).append("\n");
-                updateDistanceDisplay(node, distances.get(node), node.equals(sourceForDijkstra) ? "source" : "visited");
+
+                resultRow.getChildren().addAll(nodeLabel, distanceLabel);
+                resultBox.getChildren().add(resultRow);
+
+                updateDistanceDisplay(node, distances.get(node),
+                        distances.get(node) == Double.MAX_VALUE ? "unreachable" :
+                                (node.equals(sourceForDijkstra) ? "source" : "visited"));
+
+                if (distances.get(node) == Double.MAX_VALUE) {
+                    Circle nodeCircle = nodeCircles.get(node);
+                    if (nodeCircle != null && !node.equals(sourceForDijkstra)) {
+                        animateNodeTransition(nodeCircle, getCurrentColor(nodeCircle), UNREACHABLE_COLOR, scaledDuration(500));
+                    }
+                }
             }
-        }
-        statusLabel.setText(result.toString());
+        });
+
+        statusLabel.setText("Dijkstra algorithm completed! Check results panel for details.");
 
         Timeline celebration = new Timeline();
+        List<Integer> sortedNodes = new ArrayList<>(distances.keySet());
+        sortedNodes.sort(Integer::compareTo);
         for (int i = 0; i < sortedNodes.size(); i++) {
             Integer nodeId = sortedNodes.get(i);
             Circle nodeCircle = nodeCircles.get(nodeId);

@@ -15,7 +15,7 @@
             <children>
 
                 <!-- Header -->
-                <Label layoutX="50.0" layoutY="30.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Sequence Alignment">
+                <Label layoutX="50.0" layoutY="45.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Sequence Alignment">
                     <font>
                         <Font name="Segoe UI" />
                     </font>
@@ -73,6 +73,7 @@
 
                 <Label fx:id="answer1" alignment="CENTER" layoutX="795.0" layoutY="91.0" prefHeight="41.0" prefWidth="231.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" text="computing.." />
             <Label fx:id="answer2" alignment="CENTER" layoutX="795.0" layoutY="143.0" prefHeight="41.0" prefWidth="231.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" text="computing.." />
+            <Button layoutX="14.0" layoutY="17.0" mnemonicParsing="false" text="Button" />
 
             </children>
         </Pane>

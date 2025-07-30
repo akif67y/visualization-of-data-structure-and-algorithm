@@ -62,14 +62,14 @@ public class StackController {
 
         // Apply beautiful styling
         btn.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #ff7b7b, #ff5252);" +
+                "-fx-background-color: #3498db;" +
                         "-fx-background-radius: 12;" +
                         "-fx-text-fill: white;" +
                         "-fx-font-size: 16px;" +
                         "-fx-font-weight: bold;" +
                         "-fx-padding: 15 25;" +
-                        "-fx-min-width: 200;" +
-                        "-fx-max-width: 200;" +
+                        "-fx-min-width: 70;" +
+                        "-fx-max-width: 70;" +
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 4);" +
                         "-fx-cursor: hand;"
         );
@@ -77,14 +77,14 @@ public class StackController {
         // Add hover effects
         btn.setOnMouseEntered(e -> {
             btn.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom, #ff9999, #ff7777);" +
+                    "-fx-background-color: #3498db;" +
                             "-fx-background-radius: 12;" +
                             "-fx-text-fill: white;" +
                             "-fx-font-size: 16px;" +
                             "-fx-font-weight: bold;" +
                             "-fx-padding: 15 25;" +
-                            "-fx-min-width: 200;" +
-                            "-fx-max-width: 200;" +
+                            "-fx-min-width: 70;" +
+                            "-fx-max-width: 70;" +
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 15, 0, 0, 6);" +
                             "-fx-cursor: hand;"
             );
@@ -92,14 +92,14 @@ public class StackController {
 
         btn.setOnMouseExited(e -> {
             btn.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom, #ff7b7b, #ff5252);" +
+                    "-fx-background-color: #3498db;" +
                             "-fx-background-radius: 12;" +
                             "-fx-text-fill: white;" +
                             "-fx-font-size: 16px;" +
                             "-fx-font-weight: bold;" +
                             "-fx-padding: 15 25;" +
-                            "-fx-min-width: 200;" +
-                            "-fx-max-width: 200;" +
+                            "-fx-min-width: 70;" +
+                            "-fx-max-width: 70;" +
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 4);" +
                             "-fx-cursor: hand;"
             );

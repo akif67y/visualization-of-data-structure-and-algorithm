@@ -344,6 +344,9 @@ public class lcs {
             squel.play();
             System.out.println("animation sequence finished.");
         }
+        if(ans.equals("")){
+            answer.setText("No LCS found");
+        }
     }
 
     /**

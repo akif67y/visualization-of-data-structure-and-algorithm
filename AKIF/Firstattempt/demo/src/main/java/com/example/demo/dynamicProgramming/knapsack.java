@@ -48,7 +48,7 @@ public class knapsack{
     private final Map<Pair<Integer, Integer>, Label> cellMap = new HashMap<>();
 
     // Animation speed
-    private final int ANIM_SPEED = 400;
+    private final int ANIM_SPEED = 600;
 
     @FXML
     public void onWeightsEnter(ActionEvent event) {

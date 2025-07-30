@@ -641,5 +641,5 @@ public class LinkedListController implements Initializable {
         // Start the parallel animation
         pt.play();
     }
-    
+
 }

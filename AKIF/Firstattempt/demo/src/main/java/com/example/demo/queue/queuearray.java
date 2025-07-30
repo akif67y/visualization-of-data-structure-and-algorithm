@@ -6,8 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polyline;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class queuearray {
     @FXML private TextField inputField;
@@ -18,26 +18,38 @@ public class queuearray {
     @FXML private Button enqueueButton;
     @FXML private Button dequeueButton;
     @FXML private Button frontButton;
-    @FXML private Button createQueueButton;
     @FXML private HBox arrowLabelBox;
+    @FXML private HBox indexLabelBox;
 
     private int[] queueArray;
     private int size;
     private int front = -1;
     private int rear = -1;
 
+    // Style constants for a cleaner look and easier maintenance
+    private static final String CELL_STYLE_EMPTY = "-fx-background-color: #ECEFF1; -fx-border-color: #CFD8DC; -fx-padding: 12; -fx-min-width: 90px; -fx-alignment: center; -fx-background-radius: 6; -fx-border-radius: 6; -fx-font-family: 'System Bold'; -fx-font-size: 14px;";
+    private static final String CELL_STYLE_FILLED = "-fx-background-color: #3498db; -fx-border-color: #90A4AE; -fx-padding: 12; -fx-min-width: 90px; -fx-alignment: center; -fx-background-radius: 6; -fx-border-radius: 6; -fx-font-family: 'System Bold'; -fx-font-size: 14px; -fx-text-fill: #ffffff;fx-font-weight: bold;";
+    private static final String LOGICAL_CELL_STYLE = "-fx-background-color: #68e36a; -fx-border-color: #66BB6A; -fx-padding: 12; -fx-min-width: 90px; -fx-alignment: center; -fx-background-radius: 6; -fx-border-radius: 6; -fx-font-family: 'System Bold'; -fx-font-size: 14px; -fx-text-fill: #ffffff; fx-font-weight: bold;";
+    private static final String INDEX_LABEL_STYLE = "-fx-text-fill: #78909C; -fx-font-size: 12px;";
+    private static final String POINTER_LABEL_STYLE = "-fx-font-weight: bold; -fx-font-size: 12px;";
+
     @FXML
     public void createQueue() {
         try {
             size = Integer.parseInt(sizeField.getText());
+            if (size <= 0) {
+                showAlert("Queue size must be positive.");
+                return;
+            }
             queueArray = new int[size];
             front = rear = -1;
             updateViews();
             enqueueButton.setDisable(false);
             dequeueButton.setDisable(false);
             frontButton.setDisable(false);
+            frontLabel.setText("-");
         } catch (NumberFormatException e) {
-            showAlert("Enter a valid integer size.");
+            showAlert("Please enter a valid integer for the size.");
         }
     }
 
@@ -46,7 +58,7 @@ public class queuearray {
         try {
             int val = Integer.parseInt(inputField.getText());
             if ((rear + 1) % size == front) {
-                showAlert("Queue is full.");
+                showAlert("Queue is full (Overflow).");
                 return;
             }
 
@@ -56,7 +68,7 @@ public class queuearray {
 
             updateViews();
         } catch (NumberFormatException e) {
-            showAlert("Enter a valid integer to enqueue.");
+            showAlert("Please enter a valid integer to enqueue.");
         }
         inputField.clear();
     }
@@ -64,126 +76,118 @@ public class queuearray {
     @FXML
     public void dequeue() {
         if (front == -1) {
-            showAlert("Queue is empty.");
+            showAlert("Queue is empty (Underflow).");
             return;
         }
 
         if (front == rear) {
-            front = rear = -1; // only one element
+            front = rear = -1; // Queue becomes empty
         } else {
             front = (front + 1) % size;
         }
 
         updateViews();
-        inputField.clear();
     }
 
     @FXML
     public void showFront() {
         if (front == -1) {
-            frontLabel.setText("Front: null");
+            frontLabel.setText("-");
+            showAlert("Queue is empty.");
         } else {
-            frontLabel.setText("Front: " + queueArray[front]);
+            frontLabel.setText(String.valueOf(queueArray[front]));
         }
     }
 
     private void updateViews() {
         queueView.getChildren().clear();
         arrayView.getChildren().clear();
-        arrowLabelBox.getChildren().clear(); // new label row above array
+        arrowLabelBox.getChildren().clear();
+        indexLabelBox.getChildren().clear();
 
         // === Logical Queue View ===
         if (front != -1) {
             int i = front;
             while (true) {
                 Label label = new Label(String.valueOf(queueArray[i]));
-                label.setStyle("-fx-background-color: #c8e6c9; -fx-border-color: green; -fx-padding: 10; -fx-font-weight: bold;");
+                label.setStyle(LOGICAL_CELL_STYLE);
                 queueView.getChildren().add(label);
                 if (i == rear) break;
                 i = (i + 1) % size;
             }
         }
 
-        // === Array and Arrows ===
+        // === Array, Pointers, and Index Views ===
         for (int i = 0; i < size; i++) {
-            // -- Build array cell --
-            Label cell = new Label("null");
-            cell.setStyle("-fx-border-color: gray; -fx-padding: 10; -fx-min-width: 50px; -fx-alignment: center;");
+            // Create the main array cell
+            Label cell = new Label("-");
+            cell.setStyle(CELL_STYLE_EMPTY);
 
-            if (front != -1 && isInQueue(i)) {
+            boolean isOccupied = (front != -1) && isInQueue(i);
+            if (isOccupied) {
                 cell.setText(String.valueOf(queueArray[i]));
-                cell.setStyle("-fx-background-color: #e0f7fa; -fx-border-color: gray; -fx-padding: 10;");
+                cell.setStyle(CELL_STYLE_FILLED);
             }
-
             arrayView.getChildren().add(cell);
 
-            // -- Build arrow label above it --
+            // Create the pointer label above the cell
+            Label pointerLabel = new Label();
+            pointerLabel.setAlignment(Pos.CENTER);
+            pointerLabel.setStyle(POINTER_LABEL_STYLE);
+            pointerLabel.prefWidthProperty().bind(cell.widthProperty());
 
+            if (front != -1) {
+                if (front == rear && front == i) {
+                    pointerLabel.setText("FRONT / REAR ▼");
+                    pointerLabel.setMinWidth(100);
+                    pointerLabel.setMaxWidth(100);
+                    pointerLabel.setAlignment(Pos.CENTER);
 
-               if(i != front && i!= rear){
-                   VBox dummy = new VBox(2); // 2px spacing
-                   dummy.prefWidthProperty().bind(cell.widthProperty());
-                   arrowLabelBox.getChildren().add(dummy);
-               }
-               else{
-                   VBox arrowStack = new VBox(2); // 2px spacing
-
-
-                   Label roleLabel = new Label();
-
-                   if (front == rear && front == i) {
-                       roleLabel.setText("Front/Rear");
-                   } else if (i == front) {
-                       roleLabel.setText("Front");
-                   } else if (i == rear) {
-                       roleLabel.setText("Rear");
-                   }
-
-// Optional: draw a vertical line down to the array cell
-                   Line connector = new Line(0, 0, 0, 30); // vertical line
-                   connector.setStrokeWidth(2);
-                   connector.setStyle("-fx-stroke: gray;");
-
-// 3) little arrow head (using Polyline)
-                   Polyline arrowHead = new Polyline(
-                           -5.0, 0.0,   // left wing start
-                           0.0,  5.0,  // tip
-                           5.0,  0.0   // right wing end
-                   );
-                   arrowHead.setStrokeWidth(2);
-                   arrowHead.setTranslateY(-2);
-                   arrowHead.setStroke(Color.GRAY);
-                   arrowHead.setFill(Color.GRAY);
-
-// Build the VBox
-
-                   arrowStack.setAlignment(Pos.TOP_CENTER);
-                   arrowStack.getChildren().addAll(roleLabel, connector, arrowHead);
-
-// bind its width to the cell (if you’re using binding from before)
-                   arrowStack.prefWidthProperty().bind(cell.widthProperty());
-
-// add to your arrowLabelBox
-                   arrowLabelBox.getChildren().add(arrowStack);
-               }
-
+                    pointerLabel.setTextFill(Color.web("#AD1457"));
+                } else if (i == front) {
+                    pointerLabel.setText("FRONT ▼");
+                    pointerLabel.setTextFill(Color.web("#1565C0"));
+                } else if (i == rear) {
+                    pointerLabel.setText("REAR ▼");
+                    pointerLabel.setTextFill(Color.web("#C62828"));
+                }
             }
+            arrowLabelBox.getChildren().add(pointerLabel);
 
+            // Create the index label below the cell
+            Label indexLabel = new Label("[" + i + "]");
+            indexLabel.setAlignment(Pos.CENTER);
+            indexLabel.setStyle(INDEX_LABEL_STYLE);
+            indexLabel.prefWidthProperty().bind(cell.widthProperty());
+            indexLabelBox.getChildren().add(indexLabel);
+        }
 
-        showFront();
+        // Update the front label without showing an alert
+        if (front == -1) {
+            frontLabel.setText("-");
+        } else {
+            frontLabel.setText(String.valueOf(queueArray[front]));
+        }
     }
 
     private boolean isInQueue(int index) {
+        if (front == -1) return false;
+
+        // Non-circular case
         if (front <= rear) {
             return index >= front && index <= rear;
-        } else {
+        }
+        // Circular case (wrapped around)
+        else {
             return index >= front || index <= rear;
         }
     }
 
     private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Queue Information");
+        alert.setHeaderText(null);
         alert.setContentText(msg);
-        alert.show();
+        alert.showAndWait();
     }
 }

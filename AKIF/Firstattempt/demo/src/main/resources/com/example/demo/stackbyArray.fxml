@@ -12,7 +12,7 @@
 <AnchorPane fx:id="mainthingy" prefHeight="800.0" prefWidth="1500.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.stack.StackByArrayController">
    <children>
       <!-- Array Representation Section -->
-      <VBox layoutX="50.0" layoutY="50.0" prefHeight="200.0" prefWidth="1000.0" spacing="10.0">
+      <VBox layoutX="50.0" layoutY="205.0" prefHeight="226.0" prefWidth="1000.0" spacing="10.0">
          <children>
             <Label text="Array Representation" textFill="#2c3e50">
                <font>
@@ -28,7 +28,7 @@
       </VBox>
 
       <!-- Stack Representation Section -->
-      <VBox layoutX="1150.0" layoutY="50.0" prefHeight="700.0" prefWidth="300.0" spacing="10.0">
+      <VBox layoutX="1118.0" layoutY="188.0" prefHeight="562.0" prefWidth="332.0" spacing="10.0">
          <children>
             <Label text="Stack" textFill="#2c3e50">
                <font>
@@ -44,7 +44,7 @@
       </VBox>
 
       <!-- Controls Section -->
-      <VBox layoutX="50.0" layoutY="300.0" prefHeight="400.0" prefWidth="1000.0" spacing="20.0">
+      <VBox layoutX="50.0" layoutY="434.0" prefHeight="302.0" prefWidth="1000.0" spacing="20.0">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1000.0" spacing="20.0">
                <children>
@@ -86,5 +86,15 @@
             </Label>
          </children>
       </VBox>
+      <AnchorPane prefHeight="145.0" prefWidth="1504.0" style="-fx-background-color: #3498db;">
+         <children>
+            <Label alignment="CENTER" layoutX="606.0" layoutY="27.0" prefHeight="90.0" prefWidth="292.0" style="-fx-font-weight: bold;" text="Stack Representation (Array)" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Button" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
