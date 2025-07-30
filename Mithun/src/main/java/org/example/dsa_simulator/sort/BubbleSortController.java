@@ -1,8 +1,14 @@
 package org.example.dsa_simulator.sort;
 
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -10,11 +16,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class BubbleSortController implements Initializable {
@@ -28,6 +38,9 @@ public class BubbleSortController implements Initializable {
     @FXML private Button resetButton;
     @FXML private Pane arrayContainer;
     @FXML private Label statusLabel;
+    @FXML private ListView<String> pseudoCodeList;
+    @FXML private Button backButton;
+    @FXML private Slider speedSlider;
 
     // Sorting and Visualization State
     private int[] array;
@@ -37,44 +50,71 @@ public class BubbleSortController implements Initializable {
 
     private boolean isSorting = false;
     private boolean isPaused = false;
-    private boolean isCompleted = false; // Add this flag to track completion
-    private int currentI = 0;
-    private int currentJ = 0;
+    private boolean isCompleted = false;
+    private int currentI = 0; // Outer loop (pass)
+    private int currentJ = 0; // Inner loop (comparison)
     private int arrayLength = 0;
 
     private PauseTransition pause;
-    private final double barWidth = 60;
-    private final double barSpacing = 10;
-    private final double maxBarHeight = 300;
-    private final double baseY = 310; // Base line for bars
-    private final Duration animationDuration = Duration.millis(1000);
-    private boolean showingPurpleBar = false;
+    private Duration animationDuration = Duration.millis(500); // Default speed
+
+    // Color scheme
+    private final Color UNSORTED_COLOR = Color.LIGHTBLUE;
+    private final Color SORTED_COLOR = Color.LIGHTGREEN;
+    private final Color COMPARING_COLOR = Color.RED;
+    private final Color POINTER_COLOR = Color.PURPLE; // New color for the second bar
+
+    // Pseudocode
+    private final String[] bubbleSortPseudoCode = {
+            "procedure bubbleSort(A : list of sortable items)",
+            "  n = length(A)",
+            "  repeat",
+            "    swapped = false",
+            "    for i from 1 to n-1",
+            "      if A[i-1] > A[i]",
+            "        swap(A[i-1], A[i])",
+            "        swapped = true",
+            "      end if",
+            "    end for",
+            "    n = n - 1",
+            "  until not swapped",
+            "end procedure"
+    };
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         arrayInput.setText("64,34,25,12,22,11,90");
         pause = new PauseTransition(animationDuration);
 
-        parseAndVisualize();
+        // Setup speed slider
+        speedSlider.setMin(1);
+        speedSlider.setMax(100);
+        speedSlider.setValue(50);
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double maxDuration = 1500.0;
+            double minDuration = 50.0;
+            double newDurationMillis = maxDuration - (newVal.doubleValue() / 100.0) * (maxDuration - minDuration);
+            animationDuration = Duration.millis(newDurationMillis);
+            pause.setDuration(animationDuration);
+        });
+
+        arrayContainer.widthProperty().addListener((obs, oldVal, newVal) -> parseAndVisualize());
+        arrayContainer.heightProperty().addListener((obs, oldVal, newVal) -> parseAndVisualize());
+        pseudoCodeList.getItems().addAll(bubbleSortPseudoCode);
         updateButtonStates();
     }
 
     @FXML
     private void startSort() {
         if (isSorting) return;
-
         if (!parseAndVisualize()) return;
-
         isSorting = true;
         isPaused = false;
-        isCompleted = false; // Reset completion flag
-        statusLabel.setText("Sorting started...");
-
+        isCompleted = false;
+        statusLabel.setText("Bubble sort started...");
         currentI = 0;
         currentJ = 0;
         arrayLength = array.length;
-        showingPurpleBar = false;
-
         updateButtonStates();
         runSortingStep();
     }
@@ -84,7 +124,7 @@ public class BubbleSortController implements Initializable {
         if (!isSorting || isPaused) return;
         isPaused = true;
         pause.pause();
-        statusLabel.setText("Sorting paused. Press 'Resume' or 'Next Step'.");
+        statusLabel.setText("Sorting paused.");
         updateButtonStates();
     }
 
@@ -99,116 +139,130 @@ public class BubbleSortController implements Initializable {
 
     @FXML
     private void doNextStep() {
-        // Don't allow next step if sorting is completed
         if (isCompleted) return;
-
-        if (isSorting && !isPaused) {
+        if (!isSorting) {
+            startSort();
             pauseSort();
             return;
         }
-
-        if (!isSorting) {
-            if (!parseAndVisualize()) return;
-            isSorting = true;
-            isPaused = true;
-            isCompleted = false; // Reset completion flag
-            currentI = 0;
-            currentJ = 0;
-            arrayLength = array.length;
-            showingPurpleBar = false;
-            updateButtonStates();
+        if (!isPaused) {
+            pauseSort();
+        } else {
+            runSortingStep();
         }
-
-        statusLabel.setText("Manual step...");
-        performSingleStepManual();
     }
 
     @FXML
     private void resetSort() {
         isSorting = false;
         isPaused = false;
-        isCompleted = false; // Reset completion flag
+        isCompleted = false;
         pause.stop();
-        showingPurpleBar = false;
-
         currentI = 0;
         currentJ = 0;
-
         parseAndVisualize();
         statusLabel.setText("Enter an array and click 'Start'");
         updateButtonStates();
+        highlightPseudoCode(-1);
     }
 
     private void runSortingStep() {
-        if (!isSorting) return;
-
         if (currentI >= arrayLength - 1) {
             finishSorting();
             return;
         }
-
         if (currentJ >= arrayLength - currentI - 1) {
             setSorted(arrayLength - currentI - 1);
             currentI++;
             currentJ = 0;
-            resetBarColors();
-            showingPurpleBar = false;
-
-            if (!isPaused) {
-                pause.setOnFinished(e -> runSortingStep());
-                pause.playFromStart();
-            }
+            if (isPaused) return;
+            runSortingStep();
             return;
         }
 
-        performSingleStep();
-    }
-
-    private void performSingleStep() {
-        statusLabel.setText("Comparing elements at index " + currentJ + " and " + (currentJ + 1));
-
         // Highlight bars being compared
+        statusLabel.setText("Comparing elements at index " + currentJ + " and " + (currentJ + 1));
         highlightBars(currentJ, currentJ + 1);
+        highlightPseudoCode(5);
 
         pause.setOnFinished(e -> {
-            compareAndSwap();
-            resetBarColors();
-            currentJ++;
-            if (!isPaused) {
+            if (array[currentJ] > array[currentJ + 1]) {
+                performSwapAnimation();
+            } else {
+                statusLabel.setText("No swap needed. Moving to next pair.");
+                resetBarColors();
+                currentJ++;
+                if (isPaused) return;
                 runSortingStep();
             }
         });
         pause.playFromStart();
     }
 
-    private void compareAndSwap() {
-        if (array[currentJ] > array[currentJ + 1]) {
-            statusLabel.setText("Swapping " + array[currentJ] + " and " + array[currentJ + 1]);
+    private void performSwapAnimation() {
+        statusLabel.setText("Swapping " + array[currentJ] + " and " + array[currentJ + 1]);
+        highlightPseudoCode(6);
 
-            // Swap in the array
-            int temp = array[currentJ];
-            array[currentJ] = array[currentJ + 1];
-            array[currentJ + 1] = temp;
+        int index1 = currentJ;
+        int index2 = currentJ + 1;
 
-            // Update the visualization
-            updateBarVisualization(currentJ);
-            updateBarVisualization(currentJ + 1);
-        } else {
-            statusLabel.setText("No swap needed.");
-        }
+        Rectangle bar1 = bars.get(index1);
+        Rectangle bar2 = bars.get(index2);
+        Text valueText1 = valueTexts.get(index1);
+        Text valueText2 = valueTexts.get(index2);
+        Text indexText1 = indexTexts.get(index1);
+        Text indexText2 = indexTexts.get(index2);
+
+        double deltaX = bar2.getX() - bar1.getX();
+
+        TranslateTransition ttBar1 = new TranslateTransition(animationDuration, bar1);
+        ttBar1.setByX(deltaX);
+        TranslateTransition ttBar2 = new TranslateTransition(animationDuration, bar2);
+        ttBar2.setByX(-deltaX);
+        TranslateTransition ttValue1 = new TranslateTransition(animationDuration, valueText1);
+        ttValue1.setByX(deltaX);
+        TranslateTransition ttValue2 = new TranslateTransition(animationDuration, valueText2);
+        ttValue2.setByX(-deltaX);
+        TranslateTransition ttIndex1 = new TranslateTransition(animationDuration, indexText1);
+        ttIndex1.setByX(deltaX);
+        TranslateTransition ttIndex2 = new TranslateTransition(animationDuration, indexText2);
+        ttIndex2.setByX(-deltaX);
+
+        ParallelTransition parallelTransition = new ParallelTransition(ttBar1, ttBar2, ttValue1, ttValue2, ttIndex1, ttIndex2);
+
+        parallelTransition.setOnFinished(e -> {
+            int temp = array[index1];
+            array[index1] = array[index2];
+            array[index2] = temp;
+
+            bar1.setTranslateX(0);
+            bar2.setTranslateX(0);
+            valueText1.setTranslateX(0);
+            valueText2.setTranslateX(0);
+            indexText1.setTranslateX(0);
+            indexText2.setTranslateX(0);
+
+            updateBarVisualization(index1);
+            updateBarVisualization(index2);
+
+            resetBarColors();
+            currentJ++;
+            if (isPaused) return;
+            runSortingStep();
+        });
+
+        parallelTransition.play();
     }
 
     private void finishSorting() {
-        // Set ALL bars to green since sorting is complete
         for (int i = 0; i < bars.size(); i++) {
             setSorted(i);
         }
-
         statusLabel.setText("Sorting completed!");
-
+        highlightPseudoCode(-1);
         isSorting = false;
         isPaused = false;
-        isCompleted = true; // Mark as completed
+        isCompleted = true;
         updateButtonStates();
     }
 
@@ -216,10 +270,9 @@ public class BubbleSortController implements Initializable {
         startButton.setDisable(isSorting);
         resetButton.setDisable(!isSorting && currentI == 0 && !isCompleted);
         arrayInput.setDisable(isSorting);
-
         pauseButton.setDisable(!isSorting || isPaused || isCompleted);
         resumeButton.setDisable(!isSorting || !isPaused || isCompleted);
-        nextStepButton.setDisable((isSorting && !isPaused) || isCompleted); // Disable when completed
+        nextStepButton.setDisable((isSorting && !isPaused) || isCompleted);
     }
 
     private boolean parseAndVisualize() {
@@ -247,36 +300,31 @@ public class BubbleSortController implements Initializable {
         bars = new ArrayList<>();
         valueTexts = new ArrayList<>();
         indexTexts = new ArrayList<>();
-
         if (array == null) return;
 
-        // Find max value for scaling
-        int maxValue = array[0];
-        for (int value : array) {
-            if (value > maxValue) maxValue = value;
-        }
-
+        int maxValue = Arrays.stream(array).max().orElse(1);
+        double barWidth = 60;
+        double barSpacing = 10;
+        double maxBarHeight = 400;
+        double baseY = 700;
         double totalWidth = array.length * barWidth + (array.length - 1) * barSpacing;
-        double startX = (arrayContainer.getPrefWidth() - totalWidth) / 2;
+        double startX = (arrayContainer.getWidth() > 0 ? (arrayContainer.getWidth() - totalWidth) / 2 : 20);
 
         for (int i = 0; i < array.length; i++) {
             double x = startX + i * (barWidth + barSpacing);
             double barHeight = (double) array[i] / maxValue * maxBarHeight;
             double y = baseY - barHeight;
 
-            // Create bar
             Rectangle bar = new Rectangle(x, y, barWidth, barHeight);
-            bar.setFill(Color.LIGHTBLUE);
+            bar.setFill(UNSORTED_COLOR);
             bar.setStroke(Color.BLACK);
             bar.setStrokeWidth(2);
 
-            // Create value text (at bottom of bar)
             Text valueText = new Text(String.valueOf(array[i]));
-            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            valueText.setFont(Font.font("Arial", FontWeight.BOLD, 18));
             valueText.setX(x + barWidth / 2 - valueText.getBoundsInLocal().getWidth() / 2);
-            valueText.setY(baseY - 5);
+            valueText.setY(baseY - 10);
 
-            // Create index text (below value text)
             Text indexText = new Text(String.valueOf(i));
             indexText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
             indexText.setFill(Color.GRAY);
@@ -291,82 +339,48 @@ public class BubbleSortController implements Initializable {
     }
 
     private void updateBarVisualization(int index) {
-        if (index >= 0 && index < bars.size()) {
-            // Find max value for scaling
-            int maxValue = array[0];
-            for (int value : array) {
-                if (value > maxValue) maxValue = value;
-            }
-
-            Rectangle bar = bars.get(index);
-            Text valueText = valueTexts.get(index);
-
-            // Update bar height
-            double barHeight = (double) array[index] / maxValue * maxBarHeight;
-            bar.setHeight(barHeight);
-            bar.setY(baseY - barHeight);
-
-            // Update value text
-            valueText.setText(String.valueOf(array[index]));
-            valueText.setX(bar.getX() + barWidth / 2 - valueText.getBoundsInLocal().getWidth() / 2);
-        }
+        if (index < 0 || index >= bars.size()) return;
+        int maxValue = Arrays.stream(array).max().orElse(1);
+        double maxBarHeight = 400;
+        double baseY = 700;
+        Rectangle bar = bars.get(index);
+        Text valueText = valueTexts.get(index);
+        double barHeight = (double) array[index] / maxValue * maxBarHeight;
+        bar.setHeight(barHeight);
+        bar.setY(baseY - barHeight);
+        valueText.setText(String.valueOf(array[index]));
+        valueText.setX(bar.getX() + bar.getWidth() / 2 - valueText.getBoundsInLocal().getWidth() / 2);
     }
 
     private void highlightBars(int index1, int index2) {
         resetBarColors();
-        if (index1 >= 0 && index1 < bars.size()) {
-            bars.get(index1).setFill(Color.RED);
-        }
-        if (index2 >= 0 && index2 < bars.size()) {
-            bars.get(index2).setFill(Color.PURPLE);
-        }
+        // Set one bar to red and the other to purple
+        if (index1 >= 0 && index1 < bars.size()) bars.get(index1).setFill(COMPARING_COLOR);
+        if (index2 >= 0 && index2 < bars.size()) bars.get(index2).setFill(POINTER_COLOR);
     }
 
     private void resetBarColors() {
         for (int i = 0; i < bars.size(); i++) {
-            // Check if this bar is in sorted position
             if (i >= arrayLength - currentI) {
-                bars.get(i).setFill(Color.LIGHTGREEN);
+                bars.get(i).setFill(SORTED_COLOR);
             } else {
-                bars.get(i).setFill(Color.LIGHTBLUE);
+                bars.get(i).setFill(UNSORTED_COLOR);
             }
         }
     }
 
     private void setSorted(int index) {
         if (index >= 0 && index < bars.size()) {
-            bars.get(index).setFill(Color.LIGHTGREEN);
+            bars.get(index).setFill(SORTED_COLOR);
         }
     }
 
-    private void performSingleStepManual() {
-        if (!isSorting) return;
-
-        if (currentI >= arrayLength - 1) {
-            finishSorting();
-            return;
-        }
-
-        if (currentJ >= arrayLength - currentI - 1) {
-            setSorted(arrayLength - currentI - 1);
-            currentI++;
-            currentJ = 0;
-            resetBarColors();
-            showingPurpleBar = false;
-            return;
-        }
-
-        if (!showingPurpleBar) {
-            // First click: highlight bars being compared
-            statusLabel.setText("Comparing elements at index " + currentJ + " and " + (currentJ + 1));
-            highlightBars(currentJ, currentJ + 1);
-            showingPurpleBar = true;
+    private void highlightPseudoCode(int lineNumber) {
+        if (lineNumber >= 0 && lineNumber < pseudoCodeList.getItems().size()) {
+            pseudoCodeList.getSelectionModel().select(lineNumber);
+            pseudoCodeList.scrollTo(lineNumber);
         } else {
-            // Second click: perform comparison and move to next
-            compareAndSwap();
-            resetBarColors();
-            currentJ++;
-            showingPurpleBar = false;
+            pseudoCodeList.getSelectionModel().clearSelection();
         }
     }
 
@@ -376,5 +390,17 @@ public class BubbleSortController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    void returnHome(ActionEvent event) {
+        try {
+            Parent homeScreenRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/Home-screen.fxml")));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(homeScreenRoot));
+            stage.setTitle("DSA Simulator");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

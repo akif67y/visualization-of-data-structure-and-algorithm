@@ -36,6 +36,13 @@ public class ChatController {
 
     @FXML
     public void initialize() {
+        // Set the chat background to a light gray/blue
+        chatBox.setStyle("-fx-background-color: #f0f2f5;");
+        scrollPane.setStyle("-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;");
+
+        // Style the input field with a different color
+        inputField.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;");
+
         chatBox.heightProperty().addListener(observable ->
                 Platform.runLater(() -> scrollPane.setVvalue(1.0))
         );
@@ -74,10 +81,15 @@ public class ChatController {
 
                 String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
 
+                // Add system prompt to make responses concise and to-the-point
+                String enhancedMessage = "You are Panda AI, a DSA learning assistant. Give concise, to-the-point answers. " +
+                        "Keep responses brief and practical. Focus on key concepts and avoid lengthy explanations unless specifically asked for details. " +
+                        "User question: " + userMessage;
+
                 String jsonPayload = new JSONObject()
                         .put("contents", new JSONObject[] {
                                 new JSONObject().put("parts", new JSONObject[] {
-                                        new JSONObject().put("text", userMessage)
+                                        new JSONObject().put("text", enhancedMessage)
                                 })
                         })
                         .toString();
@@ -133,13 +145,13 @@ public class ChatController {
         messageContainer.setAlignment(Pos.CENTER_RIGHT);
         messageContainer.setMaxWidth(500);
 
-        // Create message bubble
+        // Create message bubble with distinct blue color
         Text text = new Text(message);
         text.setFont(Font.font("System", 14));
         text.setFill(Color.WHITE);
 
         TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle("-fx-background-color: linear-gradient(to right, #667eea, #764ba2); " +
+        textFlow.setStyle("-fx-background-color: #0084ff; " +  // Changed to solid blue
                 "-fx-background-radius: 20 20 5 20; " +
                 "-fx-padding: 12 16 12 16; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);");
@@ -151,7 +163,7 @@ public class ChatController {
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_RIGHT);
         hbox.getChildren().add(messageContainer);
-        hbox.setPadding(new Insets(5, 0, 5, 50));
+        hbox.setPadding(new Insets(5, 15, 5, 50));
 
         chatBox.getChildren().add(hbox);
     }
@@ -183,7 +195,7 @@ public class ChatController {
         text.setFill(Color.web("#2c3e50"));
 
         TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle("-fx-background-color: rgba(255, 255, 255, 0.95); " +
+        textFlow.setStyle("-fx-background-color: white; " +  // Pure white for AI messages
                 "-fx-background-radius: 5 20 20 20; " +
                 "-fx-padding: 12 16 12 16; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);");
@@ -195,7 +207,7 @@ public class ChatController {
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.getChildren().add(messageContainer);
-        hbox.setPadding(new Insets(5, 50, 5, 0));
+        hbox.setPadding(new Insets(5, 50, 5, 15));
 
         chatBox.getChildren().add(hbox);
     }
@@ -227,7 +239,7 @@ public class ChatController {
         text.setFill(Color.web("#c0392b"));
 
         TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle("-fx-background-color: rgba(255, 235, 235, 0.95); " +
+        textFlow.setStyle("-fx-background-color: #ffebee; " +  // Light red background
                 "-fx-background-radius: 5 20 20 20; " +
                 "-fx-padding: 12 16 12 16; " +
                 "-fx-border-color: #e74c3c; " +
@@ -242,7 +254,7 @@ public class ChatController {
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.getChildren().add(messageContainer);
-        hbox.setPadding(new Insets(5, 50, 5, 0));
+        hbox.setPadding(new Insets(5, 50, 5, 15));
 
         chatBox.getChildren().add(hbox);
     }
@@ -262,7 +274,7 @@ public class ChatController {
         Label typingLabel = new Label("Panda is helping you...");
         typingLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
         typingLabel.setTextFill(Color.web("#7f8c8d"));
-        typingLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.8); " +
+        typingLabel.setStyle("-fx-background-color: #e9ecef; " +  // Light gray for typing indicator
                 "-fx-background-radius: 15; " +
                 "-fx-padding: 8 12 8 12; " +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);");
@@ -273,7 +285,7 @@ public class ChatController {
         typingIndicatorBox = new HBox();
         typingIndicatorBox.setAlignment(Pos.CENTER_LEFT);
         typingIndicatorBox.getChildren().add(messageContainer);
-        typingIndicatorBox.setPadding(new Insets(5, 50, 5, 0));
+        typingIndicatorBox.setPadding(new Insets(5, 50, 5, 15));
 
         chatBox.getChildren().add(typingIndicatorBox);
     }

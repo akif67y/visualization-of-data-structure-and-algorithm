@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -24,6 +26,15 @@
                 <!-- First row: Core BST Operations -->
                 <ToolBar prefHeight="40.0" prefWidth="850.0">
                     <items>
+                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/Back.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                         <Label text="Enter Value:" />
                         <TextField fx:id="valueTextField" promptText="e.g., 50" />
                         <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insert" text="Insert " />

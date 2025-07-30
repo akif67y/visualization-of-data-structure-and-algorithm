@@ -6,6 +6,8 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -17,11 +19,20 @@
     <children>
         <AnchorPane prefHeight="50.0" style="-fx-background-color: #4A90E2;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Label layoutX="26.0" layoutY="10.0" text="Heap (PriorityQueue)" textFill="WHITE">
+                <Label layoutX="442.0" layoutY="10.0" text="Heap (PriorityQueue)" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="20.0" />
                     </font>
                 </Label>
+            <Button contentDisplay="GRAPHIC_ONLY" layoutY="10.0" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
+               <graphic>
+                  <ImageView fitHeight="23.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/Back.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             </children>
         </AnchorPane>
 
