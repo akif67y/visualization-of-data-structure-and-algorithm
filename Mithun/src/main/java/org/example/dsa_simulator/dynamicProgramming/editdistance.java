@@ -263,7 +263,7 @@ public class editdistance {
                     Timeline update = new Timeline(
                             new KeyFrame(Duration.millis(ANIM_SPEED), e ->comparison.setText("Replace/Delete/Insert to turn '" + c1 + "' into '" + c2 + "'")));
                             sequence.getChildren().add(update);
-                   // comparison.setText("Replace/Delete/Insert to turn '" + c1 + "' into '" + c2 + "'");
+
                 }
 
                 Label cell = new Label("");
@@ -275,11 +275,10 @@ public class editdistance {
                 sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(0, j))));
                 sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(i, 0))));
 
-//                ParallelTransition pt = new ParallelTransition();
-//                pt.getChildren().addAll();
+
                 sequence.getChildren().add(createHighlightAnimation(comparison));
 
-                // Highlight dependency cells
+
                 if (c1 == c2) {
                     sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(i-1, j-1))));
                 } else {
@@ -299,7 +298,7 @@ public class editdistance {
 
 
 
-                // Finalize value
+
                 Timeline update = new Timeline(
                         new KeyFrame(Duration.millis(ANIM_SPEED), e -> cell.setText(String.valueOf(dpTable[ifinal][jfinal])))
                 );

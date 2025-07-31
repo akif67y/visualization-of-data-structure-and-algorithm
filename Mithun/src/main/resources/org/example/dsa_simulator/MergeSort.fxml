@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="1500.0" prefWidth="1080.0" spacing="15.0" styleClass="root" stylesheets="@SortStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.sort.MergeSortController">
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1500.0" spacing="15.0" styleClass="root" stylesheets="@SortStyles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.sort.MergeSortController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>

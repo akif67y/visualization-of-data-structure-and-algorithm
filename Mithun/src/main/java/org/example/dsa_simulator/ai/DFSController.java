@@ -27,7 +27,7 @@ import java.util.*;
 
 public class DFSController implements Initializable {
 
-    // FXML UI Elements
+
     @FXML private TextArea edgeInputArea;
     @FXML private Pane graphPane;
     @FXML private Label visitedNodesLabel;
@@ -43,31 +43,31 @@ public class DFSController implements Initializable {
     @FXML private Button runDFSButton;
     @FXML private Button drawFromTextButton;
 
-    // Graph data structure
+
     private Graph graph;
     private int nodeCount = 0;
 
-    // State for creating edges
+
     private StackPane firstNodeForEdge = null;
 
-    // State for deleting elements
+
     private Object elementToDelete = null;
     private boolean wasDragged = false;
 
-    // Animation control
+
     private Timeline currentAnimation;
 
-    // Dragging variables
+
     private StackPane draggedNode = null;
     private double dragStartX, dragStartY;
 
-    // Visual components for traversals
+
     private Map<String, StackPane> visualNodes = new HashMap<>();
     private List<String> visitedOrder = new ArrayList<>();
     private List<Group> allEdges = new ArrayList<>();
     private Map<String, Group> visualEdges = new HashMap<>();
 
-    // Constants for styling
+
     private static final double NODE_RADIUS = 25.0;
     private static final Color NODE_COLOR = Color.web("#45B7D1");
     private static final Color NODE_STROKE_COLOR = Color.web("#2C3E50");
@@ -78,7 +78,7 @@ public class DFSController implements Initializable {
     private static final Color EDGE_TRAVERSAL_COLOR = Color.RED;
     private static final Color EDGE_DELETE_HIGHLIGHT_COLOR = Color.RED;
 
-    // Updated DFS Pseudocode for recursive approach
+
     private final String[] dfsPseudoCode = {
             "1. procedure DFS(G, v, visited)",
             "2.   mark v as visited",
@@ -340,53 +340,48 @@ public class DFSController implements Initializable {
         StackPane nodePane = visualNodes.get(nodeId);
         if (nodePane != null) {
             Circle circle = (Circle) nodePane.getChildren().get(0);
-            circle.setFill(NODE_VISITED_COLOR);
+            circle.setFill(Color.web("#FF6B6B"));
             circle.setStroke(Color.web("#E74C3C"));
             circle.setStrokeWidth(4);
         }
     }
 
-    /**
-     * Main entry point for the DFS animation. Sets up the initial state and starts the recursive animation.
-     */
+
     private void performDFSWithVisualization(String startNode) {
         resetVisualState();
         currentAnimation = new Timeline();
         Set<String> visited = new HashSet<>();
-        Stack<String> stack = new Stack<>(); // For visual display only
+        Stack<String> stack = new Stack<>();
 
-        // Start the recursive animation chain
+
         animateDFSStep(null, startNode, visited, stack, currentAnimation);
 
-        // Add a final frame to signal completion
+
         currentAnimation.getKeyFrames().add(new KeyFrame(currentAnimation.getTotalDuration().add(Duration.seconds(1)), e -> {
             visitedNodesLabel.setText(visitedNodesLabel.getText() + " - DFS Complete!");
-            updateStackDisplay(new Stack<>()); // Clear the stack display
+            updateStackDisplay(new Stack<>());
         }));
 
         currentAnimation.play();
     }
 
-    /**
-     * This recursive method builds the animation for one step of DFS.
-     * It animates visiting the current node, then recursively calls itself for each unvisited neighbor.
-     */
+
     private void animateDFSStep(String parentNode, String currentNode, Set<String> visited, Stack<String> stack, Timeline timeline) {
-        // Base case: if node is already visited, do nothing.
+
         if (visited.contains(currentNode)) {
             return;
         }
 
-        // Mark as visited immediately to prevent cycles in the animation logic
+
         visited.add(currentNode);
         stack.push(currentNode);
 
-        // Create a copy of the stack at this point in time for the animation frame
+
         final Stack<String> stackStateForAnimation = (Stack<String>) stack.clone();
 
-        // Add a KeyFrame to animate visiting THIS node
+
         timeline.getKeyFrames().add(new KeyFrame(timeline.getTotalDuration().add(Duration.seconds(1.2)), e -> {
-            highlightPseudoCode(2); // mark v as visited
+            highlightPseudoCode(2);
             highlightVisitedNode(currentNode);
             if (parentNode != null) {
                 highlightTraversalEdge(parentNode, currentNode);
@@ -396,29 +391,28 @@ public class DFSController implements Initializable {
             updateStackDisplay(stackStateForAnimation);
         }));
 
-        // Get neighbors and sort them to ensure a consistent, intuitive traversal order
+
         List<String> neighbors = new ArrayList<>(graph.getAdjacencyList().get(currentNode));
         neighbors.sort(Comparator.comparingInt(Integer::parseInt));
 
-        // Recursively build the animation for each unvisited neighbor
+
         for (String neighbor : neighbors) {
-            // Add a keyframe to show the algorithm considering the neighbor
+
             final String currentNeighbor = neighbor;
             timeline.getKeyFrames().add(new KeyFrame(timeline.getTotalDuration().add(Duration.seconds(0.5)), e -> {
-                highlightPseudoCode(5); // "if w is not visited"
-                // Temporarily highlight the edge being considered
+                highlightPseudoCode(5);
+
                 highlightTraversalEdge(currentNode, currentNeighbor);
             }));
 
             if (!visited.contains(neighbor)) {
-                // The timeline's duration grows as we add keyframes for the entire subtree
+
                 animateDFSStep(currentNode, neighbor, visited, stack, timeline);
             }
-            // No 'else' block needed here because the edge is already highlighted above.
-            // You could add a pause here if you want to explicitly show the check failing.
+
         }
 
-        // After exploring all children, this node's part in the recursion is done. Pop it from the visual stack.
+
         stack.pop();
         final Stack<String> stackStateAfterBacktrack = (Stack<String>) stack.clone();
         timeline.getKeyFrames().add(new KeyFrame(timeline.getTotalDuration().add(Duration.seconds(0.8)), e -> {

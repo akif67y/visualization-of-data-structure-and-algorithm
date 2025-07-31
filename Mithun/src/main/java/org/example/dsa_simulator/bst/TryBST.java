@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-// Your existing Node class
+
 class Node {
     int data;
     Node left, right;
@@ -37,10 +37,10 @@ class Node {
     }
 }
 
-// This class can now act as your FXML controller
+
 public class TryBST implements Initializable {
 
-    // --- FXML INJECTED FIELDS ---
+
     @FXML private Pane drawPane;
     @FXML private TextField valueTextField;
     @FXML private Button insertButton;
@@ -51,17 +51,16 @@ public class TryBST implements Initializable {
     @FXML private Button traverseButton;
 
 
-    // --- CLASS FIELDS ---
     private Node root;
     private Map<Node, Button> visualNodes = new HashMap<>();
     private Map<Node, Line> parentLines = new HashMap<>();
-    private double anchoredRootX = -1; // Stores the fixed X position of the root.
-    private Text traversalResultText; // A single Text object for traversal results.
+    private double anchoredRootX = -1;
+    private Text traversalResultText;
 
-    // Visual constants
+
     private static final double NODE_DIAMETER = 50;
     private static final double LEVEL_HEIGHT = 80;
-    private static final double HORIZONTAL_GAP = 60; // Gap between nodes horizontally
+    private static final double HORIZONTAL_GAP = 60;
     private static final Color NODE_COLOR = Color.LIGHTCYAN;
     private static final Color NODE_BORDER_COLOR = Color.BLACK;
     private static final Color HIGHLIGHT_COLOR = Color.LIGHTGREEN;
@@ -116,6 +115,8 @@ public class TryBST implements Initializable {
             Node nodeToDelete = search(root, value);
             if (nodeToDelete == null) {
                 System.out.println("Node " + value + " not found.");
+                String msg="Node " + value + " not found";
+                displayTextMessage(msg,200,200,false);
                 setButtonsDisabled(false);
                 return;
             }
@@ -126,6 +127,7 @@ public class TryBST implements Initializable {
             setButtonsDisabled(false);
         }
     }
+
 
     @FXML
     void searchNode() {
@@ -164,7 +166,7 @@ public class TryBST implements Initializable {
     }
 
 
-    // --- TRAVERSAL LOGIC & ANIMATION ---
+
 
     private void getInorder(Node node, List<Node> order) {
         if (node == null) return;
@@ -231,7 +233,7 @@ public class TryBST implements Initializable {
     }
 
 
-    // --- SEARCH LOGIC ---
+
 
     private void animateSearch(int value) {
         List<Node> path = new ArrayList<>();
@@ -261,7 +263,7 @@ public class TryBST implements Initializable {
             } else {
                 Node lastNodeInPath = path.isEmpty() ? null : path.get(path.size() - 1);
                 Button lastButton = (lastNodeInPath != null) ? visualNodes.get(lastNodeInPath) : null;
-                double x = (lastButton != null) ? lastButton.getLayoutX() + NODE_DIAMETER / 2 : drawPane.getWidth() / 2;
+                double x = (lastButton != null) ? lastButton.getLayoutX() + NODE_DIAMETER / 2 : 1500 / 2;
                 double y = (lastButton != null) ? lastButton.getLayoutY() + NODE_DIAMETER + 20 : drawPane.getHeight() / 2;
                 displayTextMessage(value + " Not Found", x, y, false);
             }
@@ -297,7 +299,7 @@ public class TryBST implements Initializable {
     }
 
 
-    // --- INSERTION LOGIC ---
+
 
     private void animateInsertion(int value) {
         List<Node> path = new ArrayList<>();
@@ -317,7 +319,7 @@ public class TryBST implements Initializable {
         sequence.play();
     }
 
-    // --- DELETION LOGIC ---
+
 
     private void animateDeletion(Node nodeToDelete) {
         if (nodeToDelete.left == null || nodeToDelete.right == null) {
@@ -381,14 +383,14 @@ public class TryBST implements Initializable {
     }
 
 
-    // --- REFACTORED: SHARED ANIMATION & HELPER METHODS ---
+
 
     private void animateTreeRestructure(Node newNode, Node parent, boolean isInsert) {
         ParallelTransition parallelTransition = new ParallelTransition();
 
-        // Animate existing nodes moving to new positions
+
         visualNodes.forEach((node, button) -> {
-            if (node == newNode) return; // Don't animate the node being inserted
+            if (node == newNode) return;
 
             double targetLayoutX = node.targetX - NODE_DIAMETER / 2.0;
             double targetLayoutY = node.targetY - NODE_DIAMETER / 2.0;
@@ -399,13 +401,13 @@ public class TryBST implements Initializable {
                 move.setToY(targetLayoutY - button.getLayoutY());
                 parallelTransition.getChildren().add(move);
 
-                // This custom animation moves the lines in sync with the node
+
                 Animation lineAnimation = createLineAnimation(node, move);
                 parallelTransition.getChildren().add(lineAnimation);
             }
         });
 
-        // If this is an insertion, create and fade in the new node and its line
+
         if (isInsert) {
             Button newButton = createVisualNode(newNode.targetX, newNode.targetY, newNode.data);
             newButton.setOpacity(0);
@@ -427,7 +429,7 @@ public class TryBST implements Initializable {
             }
         }
 
-        // After all animations are complete, clean up and finalize positions
+
         parallelTransition.setOnFinished(e -> {
             visualNodes.forEach((node, button) -> {
                 button.setLayoutX(node.targetX - NODE_DIAMETER / 2.0);
@@ -487,7 +489,7 @@ public class TryBST implements Initializable {
             anchoredRootX = -1;
             return;
         }
-        if (anchoredRootX == -1) anchoredRootX = drawPane.getWidth() / 2.0;
+        if (anchoredRootX == -1) anchoredRootX = 1500 / 2.0;
         List<Node> inOrderNodes = new ArrayList<>();
         setYPositionsAndGetInOrder(root, 0, inOrderNodes);
         for (int i = 0; i < inOrderNodes.size(); i++) {

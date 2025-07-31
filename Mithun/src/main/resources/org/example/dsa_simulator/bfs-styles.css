@@ -106,6 +106,15 @@
 .pseudocode-list .list-cell:hover {
     -fx-background-color: #E8F4FD;
 }
+.list-view .list-cell:filled:selected {
+    -fx-background-color: yellow;
+    -fx-text-fill: black;
+}
+.list-view .list-cell:empty {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
 
 /* Pane styling for graph area */
 .graph-pane {

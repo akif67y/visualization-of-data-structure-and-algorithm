@@ -26,7 +26,7 @@ import java.util.*;
 
 public class MergeSortController implements Initializable {
 
-    // FXML Components
+
     @FXML private TextField arrayInput;
     @FXML private Button startButton;
     @FXML private Button pauseButton;
@@ -37,7 +37,7 @@ public class MergeSortController implements Initializable {
     @FXML private Label statusLabel;
     @FXML private Slider speedSlider; // Add this to your FXML file
 
-    // Sorting and Visualization State
+
     private int[] originalArray;
     private List<MergeLevel> mergeLevels;
     private int currentLevel = 0;
@@ -50,32 +50,32 @@ public class MergeSortController implements Initializable {
     private final double smallBoxHeight = 60;
     private final double boxSpacing = 10;
     private final double levelSpacing = 100;
-    private final double baseY = 50;
+    private final double baseY = 10;
     private Duration animationDuration = Duration.millis(1200); // Will be updated by slider
 
-    // Animation control
+
     private SequentialTransition currentMergeAnimation;
     private boolean isAnimating = false;
 
-    // Color scheme for merge sort
+
     private final Color ORIGINAL_COLOR = Color.LIGHTBLUE;
     private final Color LEFT_SUBARRAY_COLOR = Color.LIGHTCORAL;
     private final Color RIGHT_SUBARRAY_COLOR = Color.CYAN;
-    private final Color MERGING_PARENT_COLOR = Color.YELLOW; // Parent during merge
-    private final Color COMPARE_COLOR = Color.DARKORANGE;     // Elements being compared
+    private final Color MERGING_PARENT_COLOR = Color.YELLOW;
+    private final Color COMPARE_COLOR = Color.DARKORANGE;
     private final Color PLACED_COLOR = Color.LIGHTSEAGREEN;   // Elements placed in parent
     private final Color MERGED_CHILD_COLOR = Color.GRAY.brighter(); // Children after merge
     private final Color COMPLETED_COLOR = Color.LIGHTGREEN;
     private final Color INACTIVE_LEVEL_COLOR = Color.GRAY.deriveColor(0, 1, 1, 0.4); // Dimmed levels
 
-    // Merge sort phases
+
     private enum Phase {
         DIVIDING,
         MERGING
     }
     private Phase currentPhase = Phase.DIVIDING;
 
-    // Data structure to represent each level of merge sort
+
     private static class MergeLevel {
         List<SubArray> subArrays;
         int levelNumber;
@@ -86,7 +86,7 @@ public class MergeSortController implements Initializable {
         }
     }
 
-    // Data structure to represent a subarray at any level
+
     private static class SubArray {
         int[] elements;
         int startIndex;
@@ -96,7 +96,7 @@ public class MergeSortController implements Initializable {
         Text[] indexTexts;
         double x, y;
 
-        // Relationships for merge visualization
+
         SubArray leftChild = null;
         SubArray rightChild = null;
         SubArray parent = null;
@@ -116,15 +116,15 @@ public class MergeSortController implements Initializable {
         arrayInput.setText("12,23,14,16,18,67,34,65");
         pause = new PauseTransition(animationDuration);
 
-        // Setup speed slider listener
+
         if (speedSlider != null) {
             speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-                // Map slider 0-100 to duration 2500ms (slow) to 50ms (fast)
+
                 double newDurationMillis = 2500 - (newVal.doubleValue() * 24.5);
                 animationDuration = Duration.millis(Math.max(50, newDurationMillis));
                 pause.setDuration(animationDuration);
             });
-            speedSlider.setValue(50); // Set initial slider position to middle
+            speedSlider.setValue(50);
         }
 
         parseAndVisualize();
@@ -152,7 +152,7 @@ public class MergeSortController implements Initializable {
         if (!isSorting || isPaused) return;
         isPaused = true;
 
-        // Pause current animations
+
         if (pause != null) pause.pause();
         if (currentMergeAnimation != null && isAnimating) {
             currentMergeAnimation.pause();
@@ -169,7 +169,7 @@ public class MergeSortController implements Initializable {
         statusLabel.setText("Resuming sort...");
         updateButtonStates();
 
-        // Resume current animations
+
         if (currentMergeAnimation != null && isAnimating) {
             currentMergeAnimation.play();
         } else if (pause != null) {
@@ -187,7 +187,7 @@ public class MergeSortController implements Initializable {
         if (!isSorting) {
             if (!parseAndVisualize()) return;
             isSorting = true;
-            isPaused = true; // Start paused for manual stepping
+            isPaused = true;
             isCompleted = false;
             currentLevel = 0;
             currentPairIndex = 0;
@@ -206,7 +206,7 @@ public class MergeSortController implements Initializable {
         isCompleted = false;
         isAnimating = false;
 
-        // Stop all animations
+
         if (pause != null) pause.stop();
         if (currentMergeAnimation != null) {
             currentMergeAnimation.stop();
@@ -225,13 +225,13 @@ public class MergeSortController implements Initializable {
         mergeLevels = new ArrayList<>();
         if (originalArray == null || originalArray.length == 0) return;
 
-        // Create initial level with original array
+
         MergeLevel initialLevel = new MergeLevel(0);
         SubArray initialSubArray = new SubArray(originalArray, 0, originalArray.length - 1);
         initialLevel.subArrays.add(initialSubArray);
         mergeLevels.add(initialLevel);
 
-        // Generate all division levels and set parent-child relationships
+
         generateDivisionLevels();
     }
 
@@ -247,30 +247,30 @@ public class MergeSortController implements Initializable {
                     hasDivisions = true;
                     int mid = subArray.elements.length / 2;
 
-                    // Create left subarray
+
                     int[] leftElements = Arrays.copyOfRange(subArray.elements, 0, mid);
                     SubArray leftSubArray = new SubArray(leftElements, subArray.startIndex, subArray.startIndex + mid - 1);
                     leftSubArray.parent = subArray;
 
-                    // Create right subarray
+
                     int[] rightElements = Arrays.copyOfRange(subArray.elements, mid, subArray.elements.length);
                     SubArray rightSubArray = new SubArray(rightElements, subArray.startIndex + mid, subArray.endIndex);
                     rightSubArray.parent = subArray;
 
-                    // Set child links in the parent
+
                     subArray.leftChild = leftSubArray;
                     subArray.rightChild = rightSubArray;
 
                     nextLevel.subArrays.add(leftSubArray);
                     nextLevel.subArrays.add(rightSubArray);
                 } else {
-                    // Single element - remains in the next level
+
                     nextLevel.subArrays.add(subArray);
                 }
             }
 
             if (!hasDivisions) {
-                // No more divisions possible, this is the deepest level
+
                 break;
             }
 
@@ -283,24 +283,23 @@ public class MergeSortController implements Initializable {
         if (!isSorting) return;
 
         if (currentPhase == Phase.DIVIDING) {
-            if (currentLevel < mergeLevels.size() - 1) { // Check if there's a next level to divide into
+            if (currentLevel < mergeLevels.size() - 1) {
                 performDivisionStep();
             } else {
-                // Division complete, move to merging phase
+
                 currentPhase = Phase.MERGING;
-                // Start merging from the deepest level (which is mergeLevels.size() - 1)
-                // But we merge *into* the level above it. So currentLevel should be the deepest level.
+
                 currentLevel = mergeLevels.size() - 1;
-                currentPairIndex = 0; // Start with the first pair (index 0 in the parent level)
+                currentPairIndex = 0;
                 statusLabel.setText("Division complete. Starting merge phase...");
 
-                runSortingStep(); // Proceed to merging
+                runSortingStep();
             }
         } else if (currentPhase == Phase.MERGING) {
-            if (currentLevel > 0) { // Check if there's a level above to merge into (level 0 is the final result)
+            if (currentLevel > 0) {
                 performMergingStep();
             } else {
-                // Merging is complete (reached level 0)
+
                 finishSorting();
             }
         }
@@ -309,14 +308,14 @@ public class MergeSortController implements Initializable {
     private void performDivisionStep() {
         MergeLevel currentLevelObj = mergeLevels.get(currentLevel);
         statusLabel.setText("Level " + currentLevel + ": Dividing subarrays...");
-        visualizeAllLevelsUpTo(currentLevel); // Show current and all previous levels
+        visualizeAllLevelsUpTo(currentLevel);
 
         pause.setOnFinished(e -> {
-            currentLevel++; // Move to the next level for division
+            currentLevel++;
             if (!isPaused) {
                 runSortingStep();
             }
-            // If paused, the next click of Resume/Next Step will call runSortingStep again
+
         });
         pause.playFromStart();
     }
@@ -328,15 +327,13 @@ public class MergeSortController implements Initializable {
             return;
         }
 
-        // The level *above* the current one contains the parents that need their children merged
-        // currentLevel points to the level containing the children
-        // currentPairIndex points to the parent in the level *above*
+
         MergeLevel parentLevel = mergeLevels.get(currentLevel - 1);
         MergeLevel childLevel = mergeLevels.get(currentLevel); // Level containing children
 
-        // Check if we have processed all pairs in the parent level
+
         if (currentPairIndex >= parentLevel.subArrays.size()) {
-            // Move up one level for merging
+
             currentLevel--;
             currentPairIndex = 0;
             if (!isPaused) {
@@ -349,9 +346,9 @@ public class MergeSortController implements Initializable {
         SubArray leftChild = parentSubArray.leftChild;
         SubArray rightChild = parentSubArray.rightChild;
 
-        // Safety check - if it's a single element, no merge is needed for this parent
+
         if (leftChild == null || rightChild == null) {
-            // This parent was a single element, skip merging for it
+
             currentPairIndex++;
             if (!isPaused) {
                 runSortingStep();
@@ -361,43 +358,43 @@ public class MergeSortController implements Initializable {
 
         statusLabel.setText("Level " + (currentLevel - 1) + ": Merging into " + Arrays.toString(parentSubArray.elements));
 
-        // Visualize all levels, highlighting the ones involved in the current merge
+
         visualizeAllLevelsUpTo(mergeLevels.size() - 1, parentSubArray, leftChild, rightChild);
 
-        // Highlight parent and children initially
+
         highlightSubArray(parentSubArray, MERGING_PARENT_COLOR);
         highlightSubArray(leftChild, LEFT_SUBARRAY_COLOR);
         highlightSubArray(rightChild, RIGHT_SUBARRAY_COLOR);
 
-        // --- Perform the actual merge logic with animations ---
-        pause.setOnFinished(e -> {
-            // This is the core merge logic executed with visual animations
-            performAnimatedMerge(parentSubArray, leftChild, rightChild, () -> {
-                // Callback executed after all merge animations complete
 
-                // Mark children as merged after the merge logic
+        pause.setOnFinished(e -> {
+
+            performAnimatedMerge(parentSubArray, leftChild, rightChild, () -> {
+
+
+
                 highlightSubArray(leftChild, MERGED_CHILD_COLOR);
                 highlightSubArray(rightChild, MERGED_CHILD_COLOR);
 
-                // Move to the next parent in the same parent level
+
                 currentPairIndex++;
 
-                // Check if we need to move to the next level up for merging
+
                 if (currentPairIndex >= parentLevel.subArrays.size()) {
-                    currentLevel--; // Move up one level (e.g., from level 3 children to level 2 parents)
-                    currentPairIndex = 0; // Reset pair index for the new parent level
+                    currentLevel--;
+                    currentPairIndex = 0;
                 }
 
                 if (!isPaused) {
                     runSortingStep();
                 }
-                // If paused, the next click of Resume/Next Step will call runSortingStep again
+
             });
         });
-        pause.playFromStart(); // Plays with the current duration set by the slider
+        pause.playFromStart();
     }
 
-    // Performs the merge logic with visual animations
+
     private void performAnimatedMerge(SubArray parent, SubArray leftChild, SubArray rightChild, Runnable onComplete) {
         isAnimating = true;
         currentMergeAnimation = new SequentialTransition();
@@ -407,18 +404,18 @@ public class MergeSortController implements Initializable {
         int[] rightArr = rightChild.elements;
         int[] parentArr = parent.elements;
 
-        // Create all the individual merge step animations
+
         while (i < leftArr.length && j < rightArr.length) {
             final int finalI = i, finalJ = j, finalK = k;
 
             if (leftArr[i] <= rightArr[j]) {
-                // Create animation for moving element from left array to parent
+
                 parentArr[k] = leftArr[i];
                 ParallelTransition moveAnimation = createMoveAnimation(leftChild, finalI, parent, finalK, leftArr[i]);
                 currentMergeAnimation.getChildren().add(moveAnimation);
                 i++;
             } else {
-                // Create animation for moving element from right array to parent
+
                 parentArr[k] = rightArr[j];
                 ParallelTransition moveAnimation = createMoveAnimation(rightChild, finalJ, parent, finalK, rightArr[j]);
                 currentMergeAnimation.getChildren().add(moveAnimation);
@@ -427,7 +424,7 @@ public class MergeSortController implements Initializable {
             k++;
         }
 
-        // Copy remaining elements from left array
+
         while (i < leftArr.length) {
             final int finalI = i, finalK = k;
             parentArr[k] = leftArr[i];
@@ -436,7 +433,7 @@ public class MergeSortController implements Initializable {
             i++; k++;
         }
 
-        // Copy remaining elements from right array
+
         while (j < rightArr.length) {
             final int finalJ = j, finalK = k;
             parentArr[k] = rightArr[j];
@@ -445,23 +442,23 @@ public class MergeSortController implements Initializable {
             j++; k++;
         }
 
-        // Set completion callback
+
         currentMergeAnimation.setOnFinished(e -> {
             isAnimating = false;
             currentMergeAnimation = null;
             onComplete.run();
         });
 
-        // Start the animation sequence
+
         currentMergeAnimation.play();
     }
 
-    // Creates an animation for moving an element from source to destination
+
     private ParallelTransition createMoveAnimation(SubArray sourceArray, int sourceIndex,
                                                    SubArray destArray, int destIndex, int value) {
         ParallelTransition moveAnimation = new ParallelTransition();
 
-        // Get source and destination positions
+
         Rectangle sourceBox = sourceArray.boxes[sourceIndex];
         Text sourceText = sourceArray.valueTexts[sourceIndex];
         Rectangle destBox = destArray.boxes[destIndex];
@@ -469,11 +466,11 @@ public class MergeSortController implements Initializable {
 
         if (sourceBox == null || destBox == null) return moveAnimation;
 
-        // Calculate translation distances
+
         double deltaX = destBox.getX() - sourceBox.getX();
         double deltaY = destBox.getY() - sourceBox.getY();
 
-        // Create clone elements for animation (so original stays in place initially)
+
         Rectangle animBox = new Rectangle(sourceBox.getX(), sourceBox.getY(),
                 sourceBox.getWidth(), sourceBox.getHeight());
         animBox.setFill(COMPARE_COLOR);
@@ -486,10 +483,10 @@ public class MergeSortController implements Initializable {
         animText.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         animText.setFill(Color.BLACK);
 
-        // Add animated elements to container
+
         arrayContainer.getChildren().addAll(animBox, animText);
 
-        // Create translation animations
+
         TranslateTransition boxTransition = new TranslateTransition(
                 Duration.millis(animationDuration.toMillis() * 0.6), animBox);
         boxTransition.setByX(deltaX);
@@ -502,18 +499,18 @@ public class MergeSortController implements Initializable {
 
         moveAnimation.getChildren().addAll(boxTransition, textTransition);
 
-        // When animation completes, update destination and remove animated elements
+
         moveAnimation.setOnFinished(e -> {
-            // Update destination element
+
             updateParentElement(destArray, destIndex, value);
 
-            // Remove animated elements
+
             arrayContainer.getChildren().removeAll(animBox, animText);
 
-            // Briefly highlight the placed element
+
             highlightElement(destArray, destIndex, PLACED_COLOR);
 
-            // Create a brief pause to show the placed element
+
             PauseTransition briefPause = new PauseTransition(Duration.millis(100));
             briefPause.play();
         });
@@ -521,12 +518,12 @@ public class MergeSortController implements Initializable {
         return moveAnimation;
     }
 
-    // Visualizes all levels up to a given level index
+
     private void visualizeAllLevelsUpTo(int maxLevelIndex) {
         visualizeAllLevelsUpTo(maxLevelIndex, null, null, null);
     }
 
-    // Visualizes all levels, optionally highlighting specific subarrays
+
     private void visualizeAllLevelsUpTo(int maxLevelIndex, SubArray highlightParent, SubArray highlightLeft, SubArray highlightRight) {
         arrayContainer.getChildren().clear();
         if (mergeLevels == null || mergeLevels.isEmpty()) return;
@@ -534,19 +531,19 @@ public class MergeSortController implements Initializable {
         for (int i = 0; i <= maxLevelIndex && i < mergeLevels.size(); i++) {
             MergeLevel level = mergeLevels.get(i);
             double totalWidth = calculateTotalWidth(level);
-            // Use actual width if available, otherwise prefWidth
+
             double containerWidth = arrayContainer.getWidth() > 10 ? arrayContainer.getWidth() : arrayContainer.getPrefWidth();
             double startX = (containerWidth - totalWidth) / 2;
             if (Double.isNaN(startX) || startX < 0) startX = 10;
             double currentX = startX;
             double currentY = baseY + i * levelSpacing;
 
-            // Dim levels other than the deepest processed one, unless they are highlighted
+
             boolean isDimmed = (i != maxLevelIndex);
 
             for (SubArray subArray : level.subArrays) {
                 boolean isHighlighted = (subArray == highlightParent || subArray == highlightLeft || subArray == highlightRight);
-                // Pass isDimmed flag, but override if specifically highlighted
+
                 createSubArrayVisualization(subArray, currentX, currentY, isDimmed && !isHighlighted);
                 currentX += subArray.elements.length * (smallBoxWidth + boxSpacing) + 20;
             }
@@ -569,7 +566,7 @@ public class MergeSortController implements Initializable {
             Text valueText = new Text(String.valueOf(subArray.elements[i]));
             valueText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
             if (isDimmed) {
-                valueText.setFill(Color.GRAY.brighter()); // Lighter gray text for dimmed
+                valueText.setFill(Color.GRAY.brighter());
             } else {
                 valueText.setFill(Color.BLACK);
             }
@@ -580,7 +577,7 @@ public class MergeSortController implements Initializable {
             indexText.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
             indexText.setFill(Color.GRAY);
             if (isDimmed) {
-                indexText.setFill(Color.GRAY.darker()); // Darker gray index for dimmed
+                indexText.setFill(Color.GRAY.darker());
             }
             indexText.setX(x + smallBoxWidth / 2 - indexText.getBoundsInLocal().getWidth() / 2);
             indexText.setY(y + smallBoxHeight + 15);
@@ -601,7 +598,7 @@ public class MergeSortController implements Initializable {
         }
         if (subArray.valueTexts != null) {
             for(Text text : subArray.valueTexts) {
-                if (text != null) text.setFill(Color.BLACK); // Keep text visible
+                if (text != null) text.setFill(Color.BLACK);
             }
         }
     }
@@ -618,7 +615,7 @@ public class MergeSortController implements Initializable {
         }
     }
 
-    // Update the visual representation of an element in the parent subarray
+
     private void updateParentElement(SubArray parentSubArray, int index, int value) {
         if (parentSubArray == null || index < 0 || index >= parentSubArray.boxes.length) return;
 
@@ -706,7 +703,7 @@ public class MergeSortController implements Initializable {
         if (originalArray == null) return;
 
         double totalWidth = originalArray.length * (smallBoxWidth + boxSpacing) - boxSpacing;
-        // Use actual width if available, otherwise prefWidth
+
         double containerWidth = arrayContainer.getWidth() > 10 ? arrayContainer.getWidth() : arrayContainer.getPrefWidth();
         double startX = (containerWidth - totalWidth) / 2;
         if (Double.isNaN(startX) || startX < 0) startX = 10;
@@ -737,9 +734,9 @@ public class MergeSortController implements Initializable {
     }
 
     private void performSingleStepManual() {
-        // In manual mode, runSortingStep handles the logic based on currentLevel and Phase
+
         runSortingStep();
-        // The pause/resume logic within runSortingStep/pause.setOnFinished handles stopping.
+
     }
 
     private void showAlert() {

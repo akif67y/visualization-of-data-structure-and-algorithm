@@ -36,11 +36,11 @@ public class ChatController {
 
     @FXML
     public void initialize() {
-        // Set the chat background to a light gray/blue
+
         chatBox.setStyle("-fx-background-color: #f0f2f5;");
         scrollPane.setStyle("-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;");
 
-        // Style the input field with a different color
+
         inputField.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;");
 
         chatBox.heightProperty().addListener(observable ->
@@ -62,18 +62,15 @@ public class ChatController {
         addUserMessage(userMessage);
         inputField.clear();
 
-        // Show typing indicator
+
         showTypingIndicator();
 
-        // Make API call
+
         Task<String> apiCallTask = new Task<>() {
             @Override
             protected String call() throws Exception {
-                // =================================================================
-                // IMPORTANT: You MUST get a free API key and paste it here.
-                // Get one from Google AI Studio: https://aistudio.google.com/app/apikey
-                // =================================================================
-                String apiKey = "AIzaSyBclwscsx6FIb3FKZwcaJ4u_SRH-j3EjXU"; // <-- PASTE YOUR API KEY HERE
+
+                String apiKey = "AIzaSyBclwscsx6FIb3FKZwcaJ4u_SRH-j3EjXU";
 
                 if (apiKey.isBlank()) {
                     throw new Exception("API Key is missing. Please get a key from Google AI Studio and add it to ChatController.java.");
@@ -81,7 +78,7 @@ public class ChatController {
 
                 String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
 
-                // Add system prompt to make responses concise and to-the-point
+
                 String enhancedMessage = "You are Panda AI, a DSA learning assistant. Give concise, to-the-point answers. " +
                         "Keep responses brief and practical. Focus on key concepts and avoid lengthy explanations unless specifically asked for details. " +
                         "User question: " + userMessage;
@@ -109,7 +106,7 @@ public class ChatController {
                     throw new Exception("API Error: " + errorMessage);
                 }
 
-                // Extract the response text
+
                 return jsonResponse.getJSONArray("candidates")
                         .getJSONObject(0)
                         .getJSONObject("content")
@@ -145,7 +142,7 @@ public class ChatController {
         messageContainer.setAlignment(Pos.CENTER_RIGHT);
         messageContainer.setMaxWidth(500);
 
-        // Create message bubble with distinct blue color
+
         Text text = new Text(message);
         text.setFont(Font.font("System", 14));
         text.setFill(Color.WHITE);
@@ -159,7 +156,7 @@ public class ChatController {
 
         messageContainer.getChildren().add(textFlow);
 
-        // Create container for alignment
+
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_RIGHT);
         hbox.getChildren().add(messageContainer);
@@ -169,27 +166,27 @@ public class ChatController {
     }
 
     private void addAIMessage(String message) {
-        // Create AI message container
+
         HBox messageContainer = new HBox(10);
         messageContainer.setAlignment(Pos.CENTER_LEFT);
         messageContainer.setMaxWidth(550);
 
-        // Add panda emoji
+
         Label pandaEmoji = new Label("🐼");
         pandaEmoji.setStyle("-fx-font-size: 24px;");
         pandaEmoji.setMinWidth(40);
         pandaEmoji.setAlignment(Pos.TOP_LEFT);
 
-        // Create message bubble
+
         VBox messageBubble = new VBox(5);
         messageBubble.setMaxWidth(450);
 
-        // AI name label
+
         Label nameLabel = new Label("Panda AI");
         nameLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
         nameLabel.setTextFill(Color.web("#2c3e50"));
 
-        // Message text
+
         Text text = new Text(message);
         text.setFont(Font.font("System", 14));
         text.setFill(Color.web("#2c3e50"));
@@ -203,7 +200,7 @@ public class ChatController {
         messageBubble.getChildren().addAll(nameLabel, textFlow);
         messageContainer.getChildren().addAll(pandaEmoji, messageBubble);
 
-        // Create container for alignment
+
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.getChildren().add(messageContainer);
@@ -213,27 +210,27 @@ public class ChatController {
     }
 
     private void addErrorMessage(String message) {
-        // Create error message container
+
         HBox messageContainer = new HBox(10);
         messageContainer.setAlignment(Pos.CENTER_LEFT);
         messageContainer.setMaxWidth(550);
 
-        // Add panda emoji (sad)
+
         Label pandaEmoji = new Label("🐼");
         pandaEmoji.setStyle("-fx-font-size: 24px;");
         pandaEmoji.setMinWidth(40);
         pandaEmoji.setAlignment(Pos.TOP_LEFT);
 
-        // Create message bubble
+
         VBox messageBubble = new VBox(5);
         messageBubble.setMaxWidth(450);
 
-        // AI name label
+
         Label nameLabel = new Label("Panda AI");
         nameLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
         nameLabel.setTextFill(Color.web("#e74c3c"));
 
-        // Error message text
+
         Text text = new Text(message);
         text.setFont(Font.font("System", 14));
         text.setFill(Color.web("#c0392b"));
@@ -250,7 +247,7 @@ public class ChatController {
         messageBubble.getChildren().addAll(nameLabel, textFlow);
         messageContainer.getChildren().addAll(pandaEmoji, messageBubble);
 
-        // Create container for alignment
+
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.getChildren().add(messageContainer);
@@ -260,17 +257,17 @@ public class ChatController {
     }
 
     private void showTypingIndicator() {
-        // Create typing indicator
+
         HBox messageContainer = new HBox(10);
         messageContainer.setAlignment(Pos.CENTER_LEFT);
 
-        // Add panda emoji
+
         Label pandaEmoji = new Label("🐼");
         pandaEmoji.setStyle("-fx-font-size: 20px;");
         pandaEmoji.setMinWidth(35);
         pandaEmoji.setAlignment(Pos.CENTER_LEFT);
 
-        // Create typing message
+
         Label typingLabel = new Label("Panda is helping you...");
         typingLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
         typingLabel.setTextFill(Color.web("#7f8c8d"));
@@ -281,7 +278,7 @@ public class ChatController {
 
         messageContainer.getChildren().addAll(pandaEmoji, typingLabel);
 
-        // Create container for alignment
+
         typingIndicatorBox = new HBox();
         typingIndicatorBox.setAlignment(Pos.CENTER_LEFT);
         typingIndicatorBox.getChildren().add(messageContainer);

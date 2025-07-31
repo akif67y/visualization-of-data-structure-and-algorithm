@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -376,6 +377,33 @@ public class dijkstraController {
             statusLabel.setText("Directed edge: " + sourceId + " → " + targetId + " (weight: " + weight + ")");
         }
     }
+    private void updateWeightLabelPosition(Text weightLabel, double startX, double startY, double endX, double endY) {
+
+        double midX = (startX + endX) / 2.0;
+        double midY = (startY + endY) / 2.0;
+
+
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double length = Math.hypot(dx, dy);
+
+        if (length > 0) {
+            double perpDx = -dy / length;
+            double perpDy = dx / length;
+            double offset = 15.0;
+
+
+            double targetX = midX + perpDx * offset;
+            double targetY = midY + perpDy * offset;
+
+
+            Bounds bounds = weightLabel.getLayoutBounds();
+
+
+            weightLabel.setX(targetX - bounds.getWidth() / 2.0);
+            weightLabel.setY(targetY + bounds.getHeight() / 4.0);
+        }
+    }
 
     private void drawDirectedEdge(Circle from, Circle to, double weight) {
         double fromX = from.getCenterX();
@@ -396,9 +424,8 @@ public class dijkstraController {
         line.setStrokeWidth(2);
         Polygon arrowHead = createArrowHead(endX, endY, dx, dy);
         arrowHead.setFill(Color.DARKGREEN);
-        double midX = (startX + endX) / 2;
-        double midY = (startY + endY) / 2;
-        Text weightText = new Text(midX + 15, midY +10, String.format("%.1f", weight));
+        Text weightText = new Text(String.format("%.1f", weight));
+        updateWeightLabelPosition(weightText, startX, startY, endX, endY);
         weightText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         weightText.setFill(Color.DARKRED);
         edgeLines.add(line);
@@ -484,7 +511,7 @@ public class dijkstraController {
         currentDijkstraTimeline = new Timeline();
         currentDijkstraTimeline.setCycleCount(Timeline.INDEFINITE);
 
-        KeyFrame step = new KeyFrame(scaledDuration(2500), e -> {
+        KeyFrame step = new KeyFrame(Duration.millis(2500), e -> {
             NodeEntry currentEntry;
             do {
                 if (pq.isEmpty()) {
@@ -512,8 +539,8 @@ public class dijkstraController {
                 updateDistanceDisplay(u, distances.get(u), "current");
             }
 
-            PauseTransition delay = new PauseTransition(scaledDuration(1000));
-            delay.setOnFinished(ev -> {
+
+            Timeline delayTimeline = new Timeline(new KeyFrame(Duration.millis(1000), ev -> {
                 List<Edge> neighbors = graph.getNeighbors(u);
                 for (Edge edge : neighbors) {
                     Integer v = edge.target;
@@ -538,22 +565,25 @@ public class dijkstraController {
                 }
 
                 double rawFinalizeDelay = 600 + 200 * neighbors.size();
-                PauseTransition finalize = new PauseTransition(scaledDuration(rawFinalizeDelay));
-                finalize.setOnFinished(fev -> {
+
+                Timeline finalizeTimeline = new Timeline(new KeyFrame(Duration.millis(rawFinalizeDelay), fev -> {
                     if (!u.equals(sourceForDijkstra)) {
                         animateNodeTransition(uCircle, CURRENT_COLOR, VISITED_COLOR, scaledDuration(500));
                     }
                     updateDistanceDisplay(u, distances.get(u), "visited");
-                });
-                finalize.play();
-            });
-            delay.play();
+                }));
+                finalizeTimeline.setRate(animationSpeedFactor);
+                finalizeTimeline.play();
+            }));
+            delayTimeline.setRate(animationSpeedFactor);
+            delayTimeline.play();
         });
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             animationSpeedFactor = newVal.doubleValue();
+            // Update the main timeline rate
             if (currentDijkstraTimeline != null) {
-                currentDijkstraTimeline.setRate(1.0);
+                currentDijkstraTimeline.setRate(animationSpeedFactor);
             }
             statusLabel.setText("Speed: " + String.format("%.1fx", animationSpeedFactor));
         });

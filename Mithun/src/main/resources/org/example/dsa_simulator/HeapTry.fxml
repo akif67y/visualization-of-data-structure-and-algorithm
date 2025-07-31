@@ -15,24 +15,24 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.heap.HeapTry">
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.heap.HeapTry">
     <children>
         <AnchorPane prefHeight="50.0" style="-fx-background-color: #4A90E2;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Label layoutX="442.0" layoutY="10.0" text="Heap (PriorityQueue)" textFill="WHITE">
+                <Label alignment="CENTER" layoutX="442.0" layoutY="10.0" text="Heap (PriorityQueue)" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="20.0" />
                     </font>
                 </Label>
-            <Button contentDisplay="GRAPHIC_ONLY" layoutY="10.0" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
-               <graphic>
-                  <ImageView fitHeight="23.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@icons/Back.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+                <Button contentDisplay="GRAPHIC_ONLY" layoutX="8.0" layoutY="10.0" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
+                    <graphic>
+                        <ImageView fitHeight="23.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@icons/Back.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </children>
         </AnchorPane>
 
@@ -42,13 +42,13 @@
             </padding>
             <children>
                 <TextField fx:id="enqueueField" onAction="#handleEnqueue" prefWidth="60.0" promptText="Value" />
-                <Button onAction="#handleEnqueue" text="Enqueue" />
-                <Button onAction="#handleDequeue" text="Dequeue" />
+                <Button onAction="#handleEnqueue" style="-fx-background-radius: 10;" text="Enqueue" />
+                <Button onAction="#handleDequeue" style="-fx-background-radius: 10;" text="Dequeue" />
                 <Region HBox.hgrow="SOMETIMES" />
                 <TextField fx:id="buildHeapField" prefWidth="220.0" promptText="e.g., 3,1,2" />
-                <Button onAction="#buildHeap" text="Build Heap" />
-                <Button onAction="#randomButton" text="Random" />
-                <Button onAction="#clearScreen" text="Clear" />
+                <Button onAction="#buildHeap" style="-fx-background-radius: 10;" text="Build Heap" />
+                <Button onAction="#randomButton" style="-fx-background-radius: 10;" text="Random" />
+                <Button onAction="#clearScreen" style="-fx-background-radius: 10;" text="Clear" />
                 <Region HBox.hgrow="ALWAYS" />
                 <VBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-border-color: lightgrey; -fx-padding: 5; -fx-border-radius: 5;">
                     <children>

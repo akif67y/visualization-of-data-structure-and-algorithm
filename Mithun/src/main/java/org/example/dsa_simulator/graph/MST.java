@@ -25,7 +25,7 @@ import java.util.*;
 
 public class MST {
 
-    // --- FXML Injected Fields ---
+
     @FXML private Pane graphPane;
     @FXML private Button runButton;
     @FXML private Button defaultGraphButton;
@@ -33,12 +33,12 @@ public class MST {
     @FXML private Label statusLabel;
     @FXML private Label costLabel;
 
-    // --- Graph Data Structures ---
+
     private final Map<String, Button> visualNodes = new HashMap<>();
     private final List<Edge> edges = new ArrayList<>();
     private final Map<Edge, Line> visualEdges = new HashMap<>();
 
-    // --- Visual Constants ---
+
     private static final double NODE_DIAMETER = 50;
     private static final Color NODE_COLOR = Color.SKYBLUE;
     private static final Color NODE_BORDER_COLOR = Color.BLACK;
@@ -48,7 +48,7 @@ public class MST {
     private static final Color EDGE_REJECTED_COLOR = Color.LIGHTGRAY;
     private static final Color NODE_INCLUDED_COLOR = Color.ORANGE;
 
-    // --- FXML Actions ---
+
 
     @FXML
     public void runKruskal() {
@@ -82,15 +82,15 @@ public class MST {
     @FXML
     public void openEditGraphWindow() {
         try {
-            // Load the FXML for the pop-up window
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/dsa_simulator/MSTPop.fxml"));
             Parent root = loader.load();
 
-            // Get the controller for the pop-up and pass a reference to this controller
+
             EditGraph editController = loader.getController();
             editController.setMainController(this);
 
-            // Create a new stage (window) for the pop-up
+
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setTitle("Edit Graph");
@@ -103,16 +103,16 @@ public class MST {
         }
     }
 
-    // --- Core Animation Logic ---
+
 
     private void animateKruskal() {
         setButtonsDisabled(true);
 
-        // Create a copy of edges and sort by weight
+
         List<Edge> sortedEdges = new ArrayList<>(edges);
         sortedEdges.sort(Comparator.comparingInt(e -> e.weight));
 
-        // Get all unique vertices for DSU initialization
+
         Set<String> vertices = new HashSet<>();
         for (Edge edge : edges) {
             vertices.add(edge.source);
@@ -123,29 +123,29 @@ public class MST {
         SequentialTransition mainAnimation = new SequentialTransition();
         final int[] totalCost = {0};
         final int[] edgesAdded = {0};
-        final int targetEdges = vertices.size() - 1; // MST should have n-1 edges
+        final int targetEdges = vertices.size() - 1;
 
         for (Edge edge : sortedEdges) {
             Line line = visualEdges.get(edge);
             Button node1 = visualNodes.get(edge.source);
             Button node2 = visualNodes.get(edge.destination);
 
-            // Step 1: Highlight the edge being considered
+
             mainAnimation.getChildren().add(createHighlightStep(line, "Considering edge " + edge + "..."));
 
-            // Step 2: Check for cycle and animate result
+
             String root1 = dsu.find(edge.source);
             String root2 = dsu.find(edge.destination);
 
             if (!root1.equals(root2) && edgesAdded[0] < targetEdges) {
-                // No cycle and MST not complete: Include the edge in MST
+
                 dsu.union(edge.source, edge.destination);
                 totalCost[0] += edge.weight;
                 edgesAdded[0]++;
                 mainAnimation.getChildren().add(createIncludeStep(line, node1, node2,
                         "Accepted. MST Cost: " + totalCost[0] + " (Edges: " + edgesAdded[0] + "/" + targetEdges + ")"));
             } else {
-                // Either cycle detected or MST already complete: Reject the edge
+
                 String reason = (edgesAdded[0] >= targetEdges) ?
                         "Rejected (MST complete - " + targetEdges + " edges already selected)." :
                         "Rejected (forms a cycle).";
@@ -203,13 +203,13 @@ public class MST {
         );
     }
 
-    // --- Graph Drawing and Helper Methods ---
+
 
     public void updateGraphFromData(List<Edge> newEdges) {
         clearGraph();
         this.edges.addAll(newEdges);
 
-        // Auto-generate node positions in a circle
+
         Set<String> nodeNames = new HashSet<>();
         for (Edge edge : newEdges) {
             nodeNames.add(edge.source);
@@ -221,9 +221,9 @@ public class MST {
         double centerY = graphPane.getHeight() / 2;
         double radius = Math.min(centerX, centerY) * 0.75;
 
-        // Convert to list for consistent ordering
+
         List<String> nodeList = new ArrayList<>(nodeNames);
-        Collections.sort(nodeList); // Sort for consistent positioning
+        Collections.sort(nodeList);
 
         for (int i = 0; i < nodeList.size(); i++) {
             String name = nodeList.get(i);
@@ -237,13 +237,13 @@ public class MST {
     }
 
     private void drawGraph(Map<String, Point> positions) {
-        // Draw nodes first
+
         positions.forEach((name, pos) -> {
             Button nodeButton = createVisualNode(pos.x, pos.y, name);
             visualNodes.put(name, nodeButton);
         });
 
-        // Draw edges and their weights
+
         for (Edge edge : edges) {
             Button sourceButton = visualNodes.get(edge.source);
             Button destButton = visualNodes.get(edge.destination);
@@ -258,12 +258,12 @@ public class MST {
             weightText.xProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2).add(5));
             weightText.yProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2).subtract(5));
 
-            // Add line and text to the pane
+
             graphPane.getChildren().addAll(line, weightText);
             visualEdges.put(edge, line);
         }
 
-        // Add all nodes to the pane AFTER the edges to ensure they are on top
+
         graphPane.getChildren().addAll(visualNodes.values());
     }
 
@@ -310,7 +310,7 @@ public class MST {
         editGraphButton.setDisable(disabled);
     }
 
-    // --- Inner Classes for Data Representation ---
+
 
     public static class Edge {
         String source, destination;
@@ -339,7 +339,7 @@ public class MST {
 
         @Override
         public int hashCode() {
-            // Ensure undirected edge equivalence
+
             return Objects.hash(Math.min(source.hashCode(), destination.hashCode()),
                     Math.max(source.hashCode(), destination.hashCode()), weight);
         }
@@ -364,7 +364,7 @@ public class MST {
             }
         }
 
-        // Find with path compression - CRITICAL FIX
+
         String find(String x) {
             if (!parent.get(x).equals(x)) {
                 parent.put(x, find(parent.get(x))); // Path compression
@@ -372,14 +372,14 @@ public class MST {
             return parent.get(x);
         }
 
-        // Union by rank - PERFORMANCE IMPROVEMENT
+
         void union(String x, String y) {
             String rootX = find(x);
             String rootY = find(y);
 
             if (rootX.equals(rootY)) return;
 
-            // Union by rank
+
             int rankX = rank.get(rootX);
             int rankY = rank.get(rootY);
 

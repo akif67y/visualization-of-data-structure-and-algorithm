@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 
 public class InsertionSortController implements Initializable {
 
-    // FXML Components
+
     @FXML private TextField arrayInput;
     @FXML private Button startButton;
     @FXML private Button pauseButton;
@@ -42,7 +42,7 @@ public class InsertionSortController implements Initializable {
     @FXML private Button backButton;
     @FXML private Slider speedSlider;
 
-    // Sorting and Visualization State
+
     private int[] array;
     private List<Rectangle> bars;
     private List<Text> valueTexts;
@@ -58,20 +58,20 @@ public class InsertionSortController implements Initializable {
     private PauseTransition pause;
     private Duration animationDuration = Duration.millis(500);
 
-    // Color scheme
+
     private final Color UNSORTED_COLOR = Color.LIGHTBLUE;
     private final Color SORTED_COLOR = Color.LIGHTGREEN;
     private final Color COMPARING_COLOR = Color.RED;
     private final Color POINTER_COLOR = Color.PURPLE; // For the key element
 
-    // --- FIX: Re-introduced a Phase enum for robust state management ---
+
     private enum Phase {
         SELECTING_KEY,
         FINDING_POSITION
     }
     private Phase currentPhase = Phase.SELECTING_KEY;
 
-    // Pseudocode
+
     private final String[] insertionSortPseudoCode = {
             "procedure insertionSort(A : list of sortable items)",
             "  n = length(A)",
@@ -177,7 +177,7 @@ public class InsertionSortController implements Initializable {
         }
 
         if (currentPhase == Phase.SELECTING_KEY) {
-            // Start of a new pass: select the key
+
             currentJ = currentI;
             statusLabel.setText("Pass " + currentI + ": Inserting element " + array[currentI]);
             highlightKeyElement(currentI);
@@ -188,7 +188,7 @@ public class InsertionSortController implements Initializable {
             pause.playFromStart();
 
         } else if (currentPhase == Phase.FINDING_POSITION) {
-            // Check if we need to continue shifting left
+
             if (currentJ > 0 && array[currentJ - 1] > array[currentJ]) {
                 statusLabel.setText("Comparing " + array[currentJ] + " and " + array[currentJ - 1] + ". Swapping...");
                 highlightComparison(currentJ - 1, currentJ);
@@ -197,7 +197,7 @@ public class InsertionSortController implements Initializable {
                 pause.setOnFinished(e -> animateSwap(currentJ - 1, currentJ));
                 pause.playFromStart();
             } else {
-                // Done with this pass, move to the next 'i'
+
                 statusLabel.setText("Element " + array[currentJ] + " is in correct sorted position.");
                 currentI++;
                 currentPhase = Phase.SELECTING_KEY; // Reset phase for next pass
@@ -242,19 +242,19 @@ public class InsertionSortController implements Initializable {
             array[index1] = array[index2];
             array[index2] = temp;
 
-            // Reset translations
+
             bar1.setTranslateX(0); bar2.setTranslateX(0);
             valueText1.setTranslateX(0); valueText2.setTranslateX(0);
             indexText1.setTranslateX(0); indexText2.setTranslateX(0);
 
-            // Redraw the two bars in their new state
+
             updateBarVisualization(index1);
             updateBarVisualization(index2);
 
-            // Continue shifting the same element left
+
             currentJ--;
             if (isPaused) return;
-            runSortingStep(); // Go back to the FINDING_POSITION phase
+            runSortingStep();
         });
         swapAnimation.play();
     }
@@ -306,7 +306,7 @@ public class InsertionSortController implements Initializable {
         double barWidth = 60;
         double barSpacing = 10;
         double maxBarHeight = 400;
-        double baseY = 700;
+        double baseY = 550;
         double totalWidth = array.length * barWidth + (array.length - 1) * barSpacing;
         double startX = (arrayContainer.getWidth() > 0 ? (arrayContainer.getWidth() - totalWidth) / 2 : 20);
 
@@ -342,7 +342,7 @@ public class InsertionSortController implements Initializable {
         if (index < 0 || index >= bars.size()) return;
         int maxValue = Arrays.stream(array).max().orElse(1);
         double maxBarHeight = 400;
-        double baseY = 700;
+        double baseY = 550;
         Rectangle bar = bars.get(index);
         Text valueText = valueTexts.get(index);
         double barHeight = (double) array[index] / maxValue * maxBarHeight;
@@ -371,7 +371,7 @@ public class InsertionSortController implements Initializable {
 
     private void resetBarColors() {
         for (int i = 0; i < bars.size(); i++) {
-            // The sorted part is from the beginning up to (but not including) the current pass index 'i'
+
             if (i < currentI) bars.get(i).setFill(SORTED_COLOR);
             else bars.get(i).setFill(UNSORTED_COLOR);
         }

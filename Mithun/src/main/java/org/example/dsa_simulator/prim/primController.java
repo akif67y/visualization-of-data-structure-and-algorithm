@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -368,6 +369,34 @@ public class primController {
 
         statusLabel.setText("Node " + nodeId + " created.");
     }
+    private void updateWeightLabelPosition(Text weightLabel, double startX, double startY, double endX, double endY) {
+        // 1. Find the midpoint of the edge
+        double midX = (startX + endX) / 2.0;
+        double midY = (startY + endY) / 2.0;
+
+        // 2. Calculate a normalized perpendicular vector to the edge line
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double length = Math.hypot(dx, dy);
+
+        if (length > 0) {
+            double perpDx = -dy / length; // Perpendicular X component
+            double perpDy = dx / length;  // Perpendicular Y component
+            double offset = 15.0;         // How far to push the label away
+
+            // 3. Calculate the target point for the label's center
+            double targetX = midX + perpDx * offset;
+            double targetY = midY + perpDy * offset;
+
+            // 4. Get the dimensions of the text itself
+            Bounds bounds = weightLabel.getLayoutBounds();
+
+            // 5. Set the label's position, adjusting by its own width and height
+            //    This crucial step centers the label on the target point.
+            weightLabel.setX(targetX - bounds.getWidth() / 2.0);
+            weightLabel.setY(targetY + bounds.getHeight() / 4.0); // Y is adjusted by ~1/4 for better visual centering
+        }
+    }
 
     private void selectNodeForEdge(javafx.scene.input.MouseEvent event) {
         Circle clicked = findNearestCircle(event.getX(), event.getY());
@@ -436,9 +465,8 @@ public class primController {
         line.setStroke(NORMAL_EDGE_COLOR);
         line.setStrokeWidth(3);
 
-        double midX = (startX + endX) / 2;
-        double midY = (startY + endY) / 2;
-        Text weightText = new Text(midX + 10, midY - 5, String.format("%.1f", weight));
+        Text weightText = new Text(String.format("%.1f", weight));
+        updateWeightLabelPosition(weightText, startX, startY, endX, endY);
         weightText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         weightText.setFill(Color.DARKRED);
 
@@ -513,7 +541,7 @@ public class primController {
         currentPrimTimeline = new Timeline();
         currentPrimTimeline.setCycleCount(Timeline.INDEFINITE);
 
-        KeyFrame step = new KeyFrame(scaledDuration(2500), e -> {
+        KeyFrame step = new KeyFrame(Duration.millis(2500), e -> {
             if (mstNodes.size() == graph.getNodes().size()) {
                 currentPrimTimeline.stop();
                 finishPrim();
@@ -539,8 +567,8 @@ public class primController {
                 currentEdgeLabel.setText("Current Edge: " + minEdge.source + " ↔ " + minEdge.target + " (weight: " + String.format("%.1f", minEdge.weight) + ")");
             });
 
-            PauseTransition delay = new PauseTransition(scaledDuration(1500));
-            delay.setOnFinished(ev -> {
+            // Create a timeline for the delay instead of PauseTransition
+            Timeline delayTimeline = new Timeline(new KeyFrame(Duration.millis(1500), ev -> {
                 mstEdges.add(minEdgeKey);
                 totalMstWeight += minEdge.weight;
 
@@ -564,16 +592,22 @@ public class primController {
                 pulse.setAutoReverse(true);
                 pulse.setCycleCount(2);
                 pulse.play();
-            });
-            delay.play();
+            }));
+            delayTimeline.setRate(animationSpeedFactor);
+            delayTimeline.play();
         });
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             animationSpeedFactor = newVal.doubleValue();
+            // Update the main timeline rate
+            if (currentPrimTimeline != null) {
+                currentPrimTimeline.setRate(animationSpeedFactor);
+            }
             statusLabel.setText("Speed: " + String.format("%.1fx", animationSpeedFactor));
         });
 
         currentPrimTimeline.getKeyFrames().add(step);
+        currentPrimTimeline.setRate(animationSpeedFactor); // Add this line
         pauseButton.setDisable(false);
         pauseButton.setText("⏸️ Pause");
         isPaused = false;
