@@ -23,9 +23,9 @@ import java.util.*;
 
 public class HeapTry {
 
-    // --- Using two parallel lists is more robust than a map (handles duplicate values) ---
-    private final List<Integer> heap; // The logical heap data
-    private final List<Button> visualNodes; // The visual representation (Buttons)
+
+    private final List<Integer> heap;
+    private final List<Button> visualNodes;
     private final List<Line> visualEdges;
 
     @FXML private TextField enqueueField;
@@ -40,14 +40,14 @@ public class HeapTry {
         visualEdges = new ArrayList<>();
     }
 
-    // --- FIX: The initialize() method is required for setting up the UI state reliably. ---
+
     @FXML
     public void initialize() {
-        // Set Max Heap as the default selection when the program starts.
+
         maxHeapRadio.setSelected(true);
     }
 
-    // --- Event Handlers ---
+
 
     @FXML
     void handleEnqueue(ActionEvent event) {
@@ -62,7 +62,7 @@ public class HeapTry {
 
             drawEdges();
 
-            // --- FIX: Correctly check which heap type is selected ---
+
             if (maxHeapRadio.isSelected()) {
                 animateMaxEnqueue();
             } else {
@@ -80,7 +80,7 @@ public class HeapTry {
             System.err.println("Heap is empty, cannot dequeue.");
             return;
         }
-        // --- FIX: Correctly check which heap type is selected ---
+
         if (maxHeapRadio.isSelected()) {
             animateMaxDequeue();
         } else {
@@ -105,7 +105,7 @@ public class HeapTry {
         clearScreen(null);
         heap.addAll(numbers);
 
-        // --- FIX: Correctly check which heap type is selected ---
+
         if (maxHeapRadio.isSelected()) {
             for (int i = (heap.size() / 2) - 1; i >= 0; i--) maxHeapify(i);
         } else {
@@ -127,9 +127,9 @@ public class HeapTry {
         List<Integer> numbers = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < 15; i++) numbers.add(random.nextInt(99) + 1);
-        // This makes the random numbers appear in the text field for clarity
+
         buildHeapField.setText(String.join(",", numbers.stream().map(Object::toString).toArray(String[]::new)));
-        // Call the buildHeap method to process the generated numbers
+
         buildHeap(event);
     }
 
@@ -142,7 +142,7 @@ public class HeapTry {
     }
 
 
-    // --- Animation Logic ---
+
 
     void animateMinEnqueue() {
         SequentialTransition sequentialAnimation = new SequentialTransition();
@@ -157,6 +157,9 @@ public class HeapTry {
             Collections.swap(heap, i, parentIndex);
             Collections.swap(visualNodes, i, parentIndex);
             i = parentIndex;
+        }
+        if (sequentialAnimation.getChildren().isEmpty()) {
+            sequentialAnimation.getChildren().add(new PauseTransition(Duration.millis(600)));
         }
         playAnimationWithFinalization(sequentialAnimation);
     }
@@ -175,10 +178,13 @@ public class HeapTry {
             Collections.swap(visualNodes, i, parentIndex);
             i = parentIndex;
         }
+        if (sequentialAnimation.getChildren().isEmpty()) {
+            sequentialAnimation.getChildren().add(new PauseTransition(Duration.millis(600)));
+        }
         playAnimationWithFinalization(sequentialAnimation);
     }
 
-    // In your "Animation Logic" section
+
 
     private void animateMinDequeue() {
         SequentialTransition masterAnimation = new SequentialTransition();
@@ -186,12 +192,29 @@ public class HeapTry {
         masterAnimation.getChildren().add(createFadeOutAnimation(rootButton));
 
         if (heap.size() > 1) {
-            Button lastButton = visualNodes.get(heap.size() - 1);
-            masterAnimation.getChildren().add(createMoveToRootAnimation(lastButton));
 
-            // --- FIX: Color the node RED immediately, before the heapify loop ---
+            int lastNodeIndex = heap.size() - 1;
+            Line edgeToRemove = null;
+            if (lastNodeIndex > 0 && lastNodeIndex -1 < visualEdges.size()) {
+
+                edgeToRemove = visualEdges.get(lastNodeIndex - 1);
+            }
+
+            Button lastButton = visualNodes.get(lastNodeIndex);
+            TranslateTransition moveToRoot = createMoveToRootAnimation(lastButton);
+
+
+            if (edgeToRemove != null) {
+                final Line finalEdgeToRemove = edgeToRemove;
+                moveToRoot.setOnFinished(e -> {
+                    canvasPane.getChildren().remove(finalEdgeToRemove);
+                    visualEdges.remove(finalEdgeToRemove);
+                });
+            }
+            masterAnimation.getChildren().add(moveToRoot);
+
+
             setButtonColor(lastButton, Color.RED);
-
             heap.set(0, heap.getLast());
             visualNodes.set(0, lastButton);
             heap.removeLast();
@@ -206,10 +229,7 @@ public class HeapTry {
                 if (rightChildIndex < heap.size() && heap.get(rightChildIndex) < heap.get(swapCandidateIndex)) swapCandidateIndex = rightChildIndex;
                 if (swapCandidateIndex == currentIndex) break;
 
-                // --- FIX: Call the updated swap animation method ---
-                // currentIndex is the main node, swapCandidateIndex is the other.
                 masterAnimation.getChildren().add(createSwapAnimation(currentIndex, swapCandidateIndex));
-
                 Collections.swap(heap, currentIndex, swapCandidateIndex);
                 Collections.swap(visualNodes, currentIndex, swapCandidateIndex);
                 currentIndex = swapCandidateIndex;
@@ -227,12 +247,28 @@ public class HeapTry {
         masterAnimation.getChildren().add(createFadeOutAnimation(rootButton));
 
         if (heap.size() > 1) {
-            Button lastButton = visualNodes.get(heap.size() - 1);
-            masterAnimation.getChildren().add(createMoveToRootAnimation(lastButton));
 
-            // --- FIX: Color the node RED immediately, before the heapify loop ---
+            int lastNodeIndex = heap.size() - 1;
+            Line edgeToRemove = null;
+            if (lastNodeIndex > 0 && lastNodeIndex - 1 < visualEdges.size()) {
+                edgeToRemove = visualEdges.get(lastNodeIndex - 1);
+            }
+
+            Button lastButton = visualNodes.get(lastNodeIndex);
+            TranslateTransition moveToRoot = createMoveToRootAnimation(lastButton);
+
+
+            if (edgeToRemove != null) {
+                final Line finalEdgeToRemove = edgeToRemove;
+                moveToRoot.setOnFinished(e -> {
+                    canvasPane.getChildren().remove(finalEdgeToRemove);
+                    visualEdges.remove(finalEdgeToRemove);
+                });
+            }
+            masterAnimation.getChildren().add(moveToRoot);
+
+
             setButtonColor(lastButton, Color.RED);
-
             heap.set(0, heap.getLast());
             visualNodes.set(0, lastButton);
             heap.removeLast();
@@ -247,9 +283,7 @@ public class HeapTry {
                 if (rightChildIndex < heap.size() && heap.get(rightChildIndex) > heap.get(swapCandidateIndex)) swapCandidateIndex = rightChildIndex;
                 if (swapCandidateIndex == currentIndex) break;
 
-                // --- FIX: Call the updated swap animation method ---
                 masterAnimation.getChildren().add(createSwapAnimation(currentIndex, swapCandidateIndex));
-
                 Collections.swap(heap, currentIndex, swapCandidateIndex);
                 Collections.swap(visualNodes, currentIndex, swapCandidateIndex);
                 currentIndex = swapCandidateIndex;
@@ -261,7 +295,7 @@ public class HeapTry {
         playAnimationWithFinalization(masterAnimation);
     }
 
-    // --- Animation Helpers ---
+
 
     private ParallelTransition createSwapAnimation(int index1, int index2) {
         Button button1 = visualNodes.get(index1);
@@ -280,9 +314,9 @@ public class HeapTry {
         move2.setByY(-deltaY);
         ParallelTransition swapAnimation = new ParallelTransition(move1, move2);
 
-        // --- CHANGE: After this single swap, change yellow back to blue ---
+
         swapAnimation.setOnFinished(e -> {
-            setButtonColor(otherButton, Color.LIGHTBLUE);
+            setButtonColor(otherButton, Color.LIGHTCYAN);
         });
 
         return swapAnimation;
@@ -313,14 +347,14 @@ public class HeapTry {
                 button.setLayoutY(button.getLayoutY() + button.getTranslateY());
                 button.setTranslateX(0);
                 button.setTranslateY(0);
-                setButtonColor(button, Color.LIGHTBLUE);
+                setButtonColor(button, Color.LIGHTCYAN);
             }
         });
         animation.play();
     }
 
 
-    // --- Heapify and Drawing Logic ---
+
 
     private void minHeapify(int i) {
         int smallest = i;
@@ -377,21 +411,56 @@ public class HeapTry {
     }
 
     private double[] calculateNodePosition(int index, int totalNodes) {
-        double canvasWidth = canvasPane.getWidth();
-        if (canvasWidth <= 0) canvasWidth = 1200; // Use a reasonable default
+
+        double canvasWidth = 1500;
+        if (canvasWidth <= 0) canvasWidth = 1200;
+
+
         final double LEVEL_HEIGHT = 90.0;
         final double TOP_OFFSET = 60.0;
         int level = (int) (Math.log(index + 1) / Math.log(2));
-        int positionInLevel = index - ((1 << level) - 1);
         double y = TOP_OFFSET + level * LEVEL_HEIGHT;
-        double levelWidth = canvasWidth * 0.6;
-        double xOffset = canvasWidth * 0.05;
-        int nodesInLevel = 1 << level;
-        double spacing = levelWidth / nodesInLevel;
-        double x = xOffset + (positionInLevel + 0.5) * spacing;
+
+
+
+
+        double x = canvasWidth / 2.0;
+
+
+        if (index == 0) {
+            return new double[]{x, y};
+        }
+
+
+        double horizontalGap = canvasWidth / 6;
+
+
+        LinkedList<String> path = new LinkedList<>();
+        int currentIndex = index;
+        while (currentIndex > 0) {
+            int parentIndex = (currentIndex - 1) / 2;
+            if (currentIndex == 2 * parentIndex + 1) {
+                path.addFirst("left");
+            } else {
+                path.addFirst("right");
+            }
+            currentIndex = parentIndex;
+        }
+
+
+        for (int i = 0; i < path.size(); i++) {
+
+            double currentLevelGap = horizontalGap / (1 << i);
+            if (path.get(i).equals("left")) {
+                x -= currentLevelGap;
+            } else { // "right"
+                x += currentLevelGap;
+            }
+        }
+
         return new double[]{x, y};
     }
-    // Add this helper method to your class
+
     private void setButtonColor(Button button, Color color) {
         double diameter = 50.0;
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(diameter / 2.0), Insets.EMPTY)));

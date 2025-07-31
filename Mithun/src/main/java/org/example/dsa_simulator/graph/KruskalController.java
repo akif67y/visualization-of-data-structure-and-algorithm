@@ -1,5 +1,7 @@
 package org.example.dsa_simulator.graph;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -25,13 +27,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Controller for the Kruskal's Algorithm visualization tool.
- * This class handles all user interactions, graph creation, and the animated execution of the algorithm.
- */
+
 public class KruskalController implements Initializable {
 
-    // FXML UI Elements
+
     @FXML private Pane graphPane;
     @FXML private RadioButton addNodeRadio;
     @FXML private RadioButton addEdgeRadio;
@@ -47,22 +46,22 @@ public class KruskalController implements Initializable {
     @FXML private Label mstEdgesLabel;
     @FXML private VBox mstResultBox;
 
-    // Graph data structures
+
     private final List<GraphNode> nodes = new ArrayList<>();
     private final List<GraphEdge> edges = new ArrayList<>();
     private int nodeCount = 0;
 
-    // State for creating edges
+
     private GraphNode firstNodeForEdge = null;
 
-    // State for deleting elements
+
     private Object elementToDelete = null;
 
-    // Animation state
+
     private PauseTransition currentStepAnimation;
     private Duration animationDuration = Duration.millis(500); // Default speed
 
-    // Constants for styling
+
     private static final double NODE_RADIUS = 20.0;
     private static final Color NODE_COLOR = Color.SKYBLUE;
     private static final Color NODE_STROKE_COLOR = Color.BLACK;
@@ -70,7 +69,7 @@ public class KruskalController implements Initializable {
     private static final Color NODE_DELETE_HIGHLIGHT_COLOR = Color.RED;
     private static final Color EDGE_COLOR = Color.BLACK;
     private static final Color EDGE_TESTING_COLOR = Color.GOLD;
-    private static final Color EDGE_MST_COLOR = Color.FORESTGREEN;
+    private static final Color EDGE_MST_COLOR = Color.LIMEGREEN;
     private static final Color EDGE_DISCARDED_COLOR = Color.LIGHTGRAY;
     private static final Color EDGE_DELETE_HIGHLIGHT_COLOR = Color.RED;
 
@@ -80,9 +79,9 @@ public class KruskalController implements Initializable {
         mstWeightLabel.setText("Total Weight: N/A");
         mstEdgesLabel.setText("Edges: N/A");
 
-        // --- FIX: Add a listener to the speed slider to update duration in real-time ---
+
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            // This logic inverts the slider so right is faster
+
             double newDurationMillis = speedSlider.getMax() - newVal.doubleValue() + speedSlider.getMin();
             animationDuration = Duration.millis(newDurationMillis);
         });
@@ -105,7 +104,29 @@ public class KruskalController implements Initializable {
         nodeCount++;
         GraphNode node = new GraphNode(boundedX, boundedY, nodeCount);
         nodes.add(node);
+
+
+        node.getCircle().setOpacity(0);
+        node.getLabel().setOpacity(0);
+
+        // 2. Add the invisible components to the pane
         graphPane.getChildren().addAll(node.getCircle(), node.getLabel());
+
+        // 3. Create fade-in transitions for both the circle and the label
+        FadeTransition circleFadeIn = new FadeTransition(Duration.millis(400), node.getCircle());
+        circleFadeIn.setFromValue(0.0);
+        circleFadeIn.setToValue(1.0);
+
+        FadeTransition labelFadeIn = new FadeTransition(Duration.millis(400), node.getLabel());
+        labelFadeIn.setFromValue(0.0);
+        labelFadeIn.setToValue(1.0);
+
+        // 4. Play both animations at the same time for a smooth effect
+        ParallelTransition parallelTransition = new ParallelTransition(circleFadeIn, labelFadeIn);
+        parallelTransition.play();
+
+        // --- End of Fade-In Animation Logic ---
+
         log("Node " + nodeCount + " added at (" + (int) boundedX + ", " + (int) boundedY + ").");
     }
 
@@ -245,13 +266,13 @@ public class KruskalController implements Initializable {
 
         GraphEdge currentEdge = edgeIterator.next();
 
-        // --- FIX: Use the animationDuration field which is updated by the slider's listener ---
+
         currentStepAnimation = new PauseTransition(animationDuration);
         currentStepAnimation.setOnFinished(e -> {
             currentEdge.setStyle(EDGE_TESTING_COLOR, 2.5);
             log("Considering edge: " + currentEdge.u.id + " - " + currentEdge.v.id + " (Weight: " + currentEdge.weight + ")");
 
-            // --- FIX: Use the animationDuration field here as well ---
+
             currentStepAnimation = new PauseTransition(animationDuration);
             currentStepAnimation.setOnFinished(event -> {
                 if (ds.find(currentEdge.u.id) != ds.find(currentEdge.v.id)) {
@@ -394,7 +415,7 @@ public class KruskalController implements Initializable {
         }
     }
 
-    // --- REMOVED getAnimationSpeed() method ---
+
 
     private static class GraphNode {
         final int id;
@@ -465,17 +486,30 @@ public class KruskalController implements Initializable {
             return (u == n1 && v == n2) || (u == n2 && v == n1);
         }
         public void updateLabelPosition() {
+
             double midX = (u.getX() + v.getX()) / 2.0;
             double midY = (u.getY() + v.getY()) / 2.0;
+
+
             double dx = v.getX() - u.getX();
             double dy = v.getY() - u.getY();
             double length = Math.hypot(dx, dy);
+
             if (length > 0) {
                 double perpDx = -dy / length;
                 double perpDy = dx / length;
                 double offset = 15.0;
-                weightLabel.setX(midX + perpDx * offset);
-                weightLabel.setY(midY + perpDy * offset);
+
+
+                double targetX = midX + perpDx * offset;
+                double targetY = midY + perpDy * offset;
+
+
+                Bounds bounds = weightLabel.getLayoutBounds();
+
+
+                weightLabel.setX(targetX - bounds.getWidth() / 2.0);
+                weightLabel.setY(targetY + bounds.getHeight() / 4.0);
             }
         }
     }

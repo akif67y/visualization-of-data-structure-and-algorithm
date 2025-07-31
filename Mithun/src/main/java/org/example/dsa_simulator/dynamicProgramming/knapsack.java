@@ -34,22 +34,22 @@ public class knapsack{
     @FXML
     private Label pickedItems;
 
-    // Internal data
+
     private List<Integer> weights = new ArrayList<>();
     private List<Integer> values = new ArrayList<>();
     private int capacity = 0;
 
-    // DP Table
+
     private int[][] dpTable;
     private int n = 0; // number of items
 
-    // Grid configuration
+
     private static final double CELL_WIDTH = 60.0;
     private static final double CELL_HEIGHT = 30.0;
     private static final double GRID_POS_X = 10.0;
     private static final double GRID_POS_Y = 10.0;
 
-    // Cell map for animation
+
     private final Map<Pair<Integer, Integer>, Label> cellMap = new HashMap<>();
 
     // Animation speed
@@ -141,22 +141,22 @@ public class knapsack{
         grid.setVgap(0);
         grid.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
 
-        // Column constraints: col0=values, col1=weights, col2=indices, col3->(3+W)=DP table
+
         for (int col = 0; col <= W + 3; col++) {
             ColumnConstraints colConstraint = new ColumnConstraints(CELL_WIDTH);
             grid.getColumnConstraints().add(colConstraint);
         }
 
-        // Row constraints: row0=headers, row1=base case (0 items), row2->(1+N)=items
+
         for (int row = 0; row <= N + 1; row++) {
             RowConstraints rowConstraint = new RowConstraints(CELL_HEIGHT);
             grid.getRowConstraints().add(rowConstraint);
         }
 
-        // Initialize cell map
+
         cellMap.clear();
 
-        // Headers in row 0
+
         Label valHeader = new Label("val");
         styleHeaderCell(valHeader, grid, 0, 0);
         cellMap.put(new Pair<>(0, 0), valHeader);
@@ -176,7 +176,7 @@ public class knapsack{
             cellMap.put(new Pair<>(0, 3 + w), capacityLabel);
         }
 
-        // Row 1: Base case (0 items) - empty cells for first 3 columns
+
         Label emptyVal = new Label("");
         styleDataCell(emptyVal, grid, 0, 1);
         cellMap.put(new Pair<>(1, 0), emptyVal);
@@ -189,39 +189,39 @@ public class knapsack{
         styleDataCell(indexZero, grid, 2, 1);
         cellMap.put(new Pair<>(1, 2), indexZero);
 
-        // Initialize DP table
-        dpTable = new int[N + 2][W + 4]; // Extra space for safety
 
-        // Base case: 0 items → 0 value for all capacities
+        dpTable = new int[N + 2][W + 4];
+
+
         for (int w = 0; w <= W; w++) {
-            dpTable[0][w] = 0; // Using 0-based indexing for DP table
+            dpTable[0][w] = 0;
             Label baseCell = new Label("0");
             styleDataCell(baseCell, grid, 3 + w, 1);
             cellMap.put(new Pair<>(1, 3 + w), baseCell);
         }
 
-        // Rows 2 to N+1: Items 1 to N
+
         for (int i = 1; i <= N; i++) {
-            // Value column
+
             Label valueLabel = new Label(String.valueOf(values.get(i - 1)));
             styleDataCell(valueLabel, grid, 0, i + 1);
             cellMap.put(new Pair<>(i + 1, 0), valueLabel);
 
-            // Weight column
+
             Label weightLabel = new Label(String.valueOf(weights.get(i - 1)));
             styleDataCell(weightLabel, grid, 1, i + 1);
             cellMap.put(new Pair<>(i + 1, 1), weightLabel);
 
-            // Index column
+
             Label indexLabel = new Label(String.valueOf(i));
             styleDataCell(indexLabel, grid, 2, i + 1);
             cellMap.put(new Pair<>(i + 1, 2), indexLabel);
         }
 
-        // Animation sequence
+
         SequentialTransition sequence = new SequentialTransition();
 
-        // Fill DP table with animation
+
         for (int i = 1; i <= N; i++) { // Items 1 to N
             for (int w = 0; w <= W; w++) { // Capacities 0 to W
                 final int itemIndex = i;
@@ -229,18 +229,18 @@ public class knapsack{
                 final int gridRow = i + 1;
                 final int gridCol = 3 + w;
 
-                // Calculate DP value
+
                 int currentWeight = weights.get(i - 1);
                 int currentValue = values.get(i - 1);
 
                 if (currentWeight > w) {
-                    // Item too heavy, take previous best
+
                     dpTable[i][w] = dpTable[i - 1][w];
                 } else {
-                    // Take max of (skip item, take item)
+
                     dpTable[i][w] = Math.max(
-                            dpTable[i - 1][w], // Skip item
-                            dpTable[i - 1][w - currentWeight] + currentValue // Take item
+                            dpTable[i - 1][w],
+                            dpTable[i - 1][w - currentWeight] + currentValue
                     );
                 }
 
@@ -249,10 +249,10 @@ public class knapsack{
                 styleDataCell(cell, grid, gridCol, gridRow);
                 cellMap.put(new Pair<>(gridRow, gridCol), cell);
 
-                // Highlight current cell
+
                 sequence.getChildren().add(createHighlightAnimation(cell));
 
-                // Highlight relevant headers
+
                 ParallelTransition headerHighlight = new ParallelTransition();
                 headerHighlight.getChildren().addAll(
                         createHighlightAnimation(cellMap.get(new Pair<>(0, gridCol))), // Capacity header
@@ -260,12 +260,12 @@ public class knapsack{
                 );
                 sequence.getChildren().add(headerHighlight);
 
-                // Highlight dependencies
+
                 if (currentWeight > w) {
-                    // Only highlight the cell above
+
                     sequence.getChildren().add(createHighlightAnimation(cellMap.get(new Pair<>(gridRow - 1, gridCol))));
                 } else {
-                    // Highlight both dependency cells
+
                     ParallelTransition depHighlight = new ParallelTransition();
                     Label upCell = cellMap.get(new Pair<>(gridRow - 1, gridCol));
                     Label diagCell = cellMap.get(new Pair<>(gridRow - 1, 3 + (w - currentWeight)));
@@ -279,7 +279,7 @@ public class knapsack{
                     sequence.getChildren().add(depHighlight);
                 }
 
-                // Update status
+
                 ParallelTransition cellHighlight = new ParallelTransition();
                 Timeline updateStatus = new Timeline(
                         new KeyFrame(Duration.millis(ANIM_SPEED ), e -> {
@@ -295,7 +295,7 @@ public class knapsack{
                 cellHighlight.getChildren().addAll(createHighlightAnimation(status));
                 sequence.getChildren().add(cellHighlight);
 
-                // Set final cell value
+
                 Timeline setValue = new Timeline(
                         new KeyFrame(Duration.millis(ANIM_SPEED / 2), e -> cell.setText(String.valueOf(dpTable[itemIndex][currentCapacity])))
                 );
@@ -336,7 +336,7 @@ public class knapsack{
             int gridRow = i + 1;
             int gridCol = 3 + w;
 
-            // Highlight current cell
+
             sequence.getChildren().add(createHighlightAnimation(cellMap.get(new Pair<>(gridRow, gridCol))));
 
             final int itemIndex = i;
@@ -344,7 +344,7 @@ public class knapsack{
             final int value = values.get(i - 1);
 
             if (w >= weight && dpTable[i][w] == dpTable[i - 1][w - weight] + value) {
-                // Item i was included
+
                 selected.add(itemIndex);
                 trace = trace +  "Item " + itemIndex + "(wt=" + weight + ", val=" + value + ") \n";
                 String finalTrace = trace;
@@ -357,7 +357,7 @@ public class knapsack{
                 sequence.getChildren().add(tl);
                 w -= weight;
             } else {
-                // Item was not included
+
                 Timeline tl = new Timeline(
                         new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
                             status.setText("Skipped item " + itemIndex);

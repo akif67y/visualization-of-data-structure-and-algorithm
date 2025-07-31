@@ -7,9 +7,11 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <!--
   Root container is a BorderPane.
@@ -18,23 +20,33 @@
   - The right and bottom sections have been removed.
 -->
 
+<?import javafx.scene.layout.HBox?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.bst.TryBST">
     <top>
         <!-- A VBox is used to stack the control bars vertically. -->
         <VBox>
             <children>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="46.0" style="-fx-background-color: #4682B4;" text="Button">
+                            <graphic>
+                                <ImageView fitHeight="22.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@icons/Back.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="49.0" style="-fx-background-color: #4682B4; -fx-text-fill: white; -fx-font-weight: bold;" text="BINARY SEARCH TREE" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="28.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
                 <!-- First row: Core BST Operations -->
                 <ToolBar prefHeight="40.0" prefWidth="850.0">
                     <items>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
-                     <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/Back.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
                         <Label text="Enter Value:" />
                         <TextField fx:id="valueTextField" promptText="e.g., 50" />
                         <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insert" text="Insert " />

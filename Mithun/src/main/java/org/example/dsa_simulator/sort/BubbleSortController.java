@@ -42,7 +42,7 @@ public class BubbleSortController implements Initializable {
     @FXML private Button backButton;
     @FXML private Slider speedSlider;
 
-    // Sorting and Visualization State
+
     private int[] array;
     private List<Rectangle> bars;
     private List<Text> valueTexts;
@@ -58,13 +58,13 @@ public class BubbleSortController implements Initializable {
     private PauseTransition pause;
     private Duration animationDuration = Duration.millis(500); // Default speed
 
-    // Color scheme
+
     private final Color UNSORTED_COLOR = Color.LIGHTBLUE;
     private final Color SORTED_COLOR = Color.LIGHTGREEN;
     private final Color COMPARING_COLOR = Color.RED;
     private final Color POINTER_COLOR = Color.PURPLE; // New color for the second bar
 
-    // Pseudocode
+
     private final String[] bubbleSortPseudoCode = {
             "procedure bubbleSort(A : list of sortable items)",
             "  n = length(A)",
@@ -86,7 +86,7 @@ public class BubbleSortController implements Initializable {
         arrayInput.setText("64,34,25,12,22,11,90");
         pause = new PauseTransition(animationDuration);
 
-        // Setup speed slider
+
         speedSlider.setMin(1);
         speedSlider.setMax(100);
         speedSlider.setValue(50);
@@ -180,7 +180,7 @@ public class BubbleSortController implements Initializable {
             return;
         }
 
-        // Highlight bars being compared
+
         statusLabel.setText("Comparing elements at index " + currentJ + " and " + (currentJ + 1));
         highlightBars(currentJ, currentJ + 1);
         highlightPseudoCode(5);
@@ -306,7 +306,7 @@ public class BubbleSortController implements Initializable {
         double barWidth = 60;
         double barSpacing = 10;
         double maxBarHeight = 400;
-        double baseY = 700;
+        double baseY = 550;
         double totalWidth = array.length * barWidth + (array.length - 1) * barSpacing;
         double startX = (arrayContainer.getWidth() > 0 ? (arrayContainer.getWidth() - totalWidth) / 2 : 20);
 
@@ -342,7 +342,7 @@ public class BubbleSortController implements Initializable {
         if (index < 0 || index >= bars.size()) return;
         int maxValue = Arrays.stream(array).max().orElse(1);
         double maxBarHeight = 400;
-        double baseY = 700;
+        double baseY = 550;
         Rectangle bar = bars.get(index);
         Text valueText = valueTexts.get(index);
         double barHeight = (double) array[index] / maxValue * maxBarHeight;

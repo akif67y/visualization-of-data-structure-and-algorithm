@@ -25,13 +25,13 @@ import java.util.*;
 
 public class queuelist {
 
-    /* ─────────────────────────────  CONSTANTS  ───────────────────────────── */
-    private static final double BASE_X       = 70;   // where the first node appears
+
+    private static final double BASE_X       = 70;
     private static final double BASE_Y       = 50;
     private static final double NODE_WIDTH   = 50;
-    private static final double NODE_SPACING = 80;   // NODE_WIDTH + horizontal gap
+    private static final double NODE_SPACING = 80;
 
-    /* ─────────────────────────────  FXML HOOKS  ──────────────────────────── */
+
     @FXML private Label status;
     @FXML private HBox  buttonContainer;
     @FXML private TextField inputField;
@@ -41,20 +41,20 @@ public class queuelist {
     @FXML private Label frontPointer;
     @FXML private Label rearPointer;
 
-    /* ─────────────────────────────  DATA STRUCTURES  ─────────────────────── */
+
     private final Queue<Button> dynamicButtons   = new LinkedList<>();
 
     private final List<Button>  linkedListNodes  = new ArrayList<>();
     private final List<Line>    connectionLines  = new ArrayList<>();
     private final List<Polygon> arrowHeads       = new ArrayList<>();
 
-    /* ─────────────────────────────  INITIALISE  ──────────────────────────── */
+
     @FXML
     public void initialize() {
         frontPointer.setVisible(false);
         rearPointer.setVisible(false);
 
-        /* place the NULL marker at its baseline position */
+
         nullLabel.setLayoutX(BASE_X);
         nullLabel.setLayoutY(BASE_Y + 15);
         nullLabel.setVisible(true);
@@ -62,7 +62,7 @@ public class queuelist {
         buttonContainer.setSpacing(15);
     }
 
-    /* ─────────────────────────────  INPUT HANDLERS  ──────────────────────── */
+
     @FXML
     private void handleTextFieldKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -75,7 +75,7 @@ public class queuelist {
         String label = inputField.getText().trim();
         if (label.isEmpty()) return;
 
-        /* ---------- visual button in the queue strip ---------- */
+
         Button btn = new Button(label);
         btn.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #2196F3, #1976D2);" +
@@ -126,29 +126,29 @@ public class queuelist {
         buttonContainer.getChildren().add(btn);
         scaleIn.play(); fadeIn.play();
 
-        /* ---------- linked-list canvas ---------- */
+
         addToLinkedListEnd(label);
         inputField.clear();
-        updateQueuePointers();               // moves FRONT / REAR labels
-        updateNullPointerPosition();         // keeps “NULL” correctly placed
+        updateQueuePointers();
+        updateNullPointerPosition();
     }
 
     @FXML
     private void onDequeueClicked() {
         if (dynamicButtons.isEmpty()) return;
 
-        Button frontBtn = dynamicButtons.peek();          // don't remove yet
+        Button frontBtn = dynamicButtons.peek();
 
         ParallelTransition anim = new ParallelTransition();
 
-        /* fade + shrink the front button */
+
         FadeTransition  fadeOut  = new FadeTransition(Duration.millis(300), frontBtn);
         ScaleTransition scaleOut = new ScaleTransition(Duration.millis(300), frontBtn);
         fadeOut.setToValue(0.0);
         scaleOut.setToX(0.5); scaleOut.setToY(0.5);
         anim.getChildren().addAll(fadeOut, scaleOut);
 
-        /* shift remaining buttons in the strip */
+
         double shift = -(frontBtn.getWidth() + buttonContainer.getSpacing());
         List<Node> children = buttonContainer.getChildren();
         for (int i = 1; i < children.size(); i++) {
@@ -157,15 +157,15 @@ public class queuelist {
             anim.getChildren().add(tt);
         }
 
-        /* after animation finishes, update data + linked list */
+
         anim.setOnFinished(e -> {
             dynamicButtons.remove();
             buttonContainer.getChildren().remove(frontBtn);
 
-            // reset any residual translate so HBox can lay out naturally
+
             for (Node node : buttonContainer.getChildren()) node.setTranslateX(0);
 
-            removeFromLinkedListFront();     // visual list + lines
+            removeFromLinkedListFront();
             updateQueuePointers();
             updateNullPointerPosition();
         });
@@ -173,7 +173,7 @@ public class queuelist {
         anim.play();
     }
 
-    /* ─────────────────────────────  POINTER LABELS  ──────────────────────── */
+
     private void updateQueuePointers() {
         int size = dynamicButtons.size();
         if (size == 0) {
@@ -206,7 +206,7 @@ public class queuelist {
         tl.play();
     }
 
-    /* ─────────────────────────────  NULL MARKER  ─────────────────────────── */
+
     private void updateNullPointerPosition() {
         if (linkedListNodes.isEmpty()) {
             nullLabel.setVisible(true);
@@ -219,7 +219,7 @@ public class queuelist {
         animatePointer(nullLabel, targetX);
     }
 
-    /* ─────────────────────────────  LINKED-LIST OPS  ─────────────────────── */
+
     private void addToLinkedListEnd(String value) {
 
         /* create and position the node */
@@ -242,8 +242,8 @@ public class queuelist {
         linkedListContainer.getChildren().add(node);
         linkedListNodes.add(node);
 
-        nullLabel.setVisible(false);                    // pushed further right
-        redrawConnections();                            // refresh all arrows
+        nullLabel.setVisible(false);
+        redrawConnections();
     }
 
     private void removeFromLinkedListFront() {
@@ -252,19 +252,19 @@ public class queuelist {
             return;
         }
 
-        /* elements to be removed */
+
         Button  nodeToRemove = linkedListNodes.get(0);
         Line    lineToRemove = connectionLines.isEmpty() ? null : connectionLines.get(0);
         Polygon arrowToRemove = arrowHeads.isEmpty() ? null : arrowHeads.get(0);
 
         ParallelTransition all = new ParallelTransition();
 
-        /* fade-out front node */
+
         FadeTransition fadeNode = new FadeTransition(Duration.millis(20), nodeToRemove);
         fadeNode.setToValue(0.0);
         all.getChildren().add(fadeNode);
 
-// fade-out the outgoing connector (if any)
+
         if (lineToRemove != null && arrowToRemove != null) {
             FadeTransition fadeLine  = new FadeTransition(Duration.millis(20), lineToRemove);
             fadeLine.setToValue(0.0);
@@ -274,7 +274,7 @@ public class queuelist {
 
             all.getChildren().addAll(fadeLine, fadeArrow);
         }
-        /* shift everything else left by one slot */
+
         for (int i = 1; i < linkedListNodes.size(); i++) {
             TranslateTransition t = new TranslateTransition(Duration.millis(400), linkedListNodes.get(i));
             t.setByX(-NODE_SPACING);
@@ -290,7 +290,7 @@ public class queuelist {
             all.getChildren().addAll(tL, tA);
         }
 
-        /* clean-up & redraw */
+
         all.setOnFinished(e -> {
             linkedListContainer.getChildren().remove(nodeToRemove);
             if (lineToRemove != null)  linkedListContainer.getChildren().remove(lineToRemove);
@@ -300,7 +300,7 @@ public class queuelist {
             if (!connectionLines.isEmpty()) connectionLines.remove(0);
             if (!arrowHeads.isEmpty())     arrowHeads.remove(0);
 
-            /* bake translation into layoutX for remaining nodes */
+
             for (Node n : linkedListNodes) {
                 n.setLayoutX(n.getLayoutX() + n.getTranslateX());
                 n.setTranslateX(0);
@@ -313,13 +313,13 @@ public class queuelist {
     }
 
     private void redrawConnections() {
-        /* erase everything first */
+
         linkedListContainer.getChildren().removeAll(connectionLines);
         linkedListContainer.getChildren().removeAll(arrowHeads);
         connectionLines.clear();
         arrowHeads.clear();
 
-        /* rebuild */
+
         for (int i = 0; i < linkedListNodes.size() - 1; i++) {
             Button current = linkedListNodes.get(i);
             Button next    = linkedListNodes.get(i + 1);

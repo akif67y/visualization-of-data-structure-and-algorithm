@@ -34,7 +34,7 @@ public class queuearray {
     private int front = -1;
     private int rear = -1;
 
-    // Style constants for a cleaner look and easier maintenance
+
     private static final String CELL_STYLE_EMPTY = "-fx-background-color: #ECEFF1; -fx-border-color: #CFD8DC; -fx-padding: 12; -fx-min-width: 90px; -fx-alignment: center; -fx-background-radius: 6; -fx-border-radius: 6; -fx-font-family: 'System Bold'; -fx-font-size: 14px;";
     private static final String CELL_STYLE_FILLED = "-fx-background-color: #3498db; -fx-border-color: #90A4AE; -fx-padding: 12; -fx-min-width: 90px; -fx-alignment: center; -fx-background-radius: 6; -fx-border-radius: 6; -fx-font-family: 'System Bold'; -fx-font-size: 14px; -fx-text-fill: #ffffff;fx-font-weight: bold;";
     private static final String LOGICAL_CELL_STYLE = "-fx-background-color: #68e36a; -fx-border-color: #66BB6A; -fx-padding: 12; -fx-min-width: 90px; -fx-alignment: center; -fx-background-radius: 6; -fx-border-radius: 6; -fx-font-family: 'System Bold'; -fx-font-size: 14px; -fx-text-fill: #ffffff; fx-font-weight: bold;";
@@ -113,7 +113,7 @@ public class queuearray {
         arrowLabelBox.getChildren().clear();
         indexLabelBox.getChildren().clear();
 
-        // === Logical Queue View ===
+
         if (front != -1) {
             int i = front;
             while (true) {
@@ -125,9 +125,9 @@ public class queuearray {
             }
         }
 
-        // === Array, Pointers, and Index Views ===
+
         for (int i = 0; i < size; i++) {
-            // Create the main array cell
+
             Label cell = new Label("-");
             cell.setStyle(CELL_STYLE_EMPTY);
 
@@ -138,7 +138,7 @@ public class queuearray {
             }
             arrayView.getChildren().add(cell);
 
-            // Create the pointer label above the cell
+
             Label pointerLabel = new Label();
             pointerLabel.setAlignment(Pos.CENTER);
             pointerLabel.setStyle(POINTER_LABEL_STYLE);
@@ -162,7 +162,7 @@ public class queuearray {
             }
             arrowLabelBox.getChildren().add(pointerLabel);
 
-            // Create the index label below the cell
+
             Label indexLabel = new Label("[" + i + "]");
             indexLabel.setAlignment(Pos.CENTER);
             indexLabel.setStyle(INDEX_LABEL_STYLE);
@@ -170,7 +170,7 @@ public class queuearray {
             indexLabelBox.getChildren().add(indexLabel);
         }
 
-        // Update the front label without showing an alert
+
         if (front == -1) {
             frontLabel.setText("-");
         } else {
@@ -181,11 +181,11 @@ public class queuearray {
     private boolean isInQueue(int index) {
         if (front == -1) return false;
 
-        // Non-circular case
+
         if (front <= rear) {
             return index >= front && index <= rear;
         }
-        // Circular case (wrapped around)
+
         else {
             return index >= front || index <= rear;
         }

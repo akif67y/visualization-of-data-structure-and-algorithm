@@ -36,11 +36,11 @@ public class SelectionTry implements Initializable {
     @FXML private Pane arrayContainer;
     @FXML private Label statusLabel;
     @FXML private ListView<String> pseudoCodeList;
-    // Add this with your other FXML components at the top of the class
+
     @FXML private Button backButton;
     @FXML private Slider speedSlider;
 
-    // Sorting and Visualization State
+
     private int[] array;
     private List<Rectangle> bars;
     private List<Text> valueTexts;
@@ -58,7 +58,7 @@ public class SelectionTry implements Initializable {
     private final double barWidth = 60;
     private final double barSpacing = 10;
     private final double maxBarHeight = 500;
-    private final double baseY = 700; // Base line for bars
+    private final double baseY = 550; // Base line for bars
     private  Duration animationDuration = Duration.millis(1000);
 
 
@@ -70,8 +70,8 @@ public class SelectionTry implements Initializable {
 
     // Selection sort phases
     private enum Phase {
-        FINDING_MIN,    // Currently finding minimum in unsorted part
-        SWAPPING        // Swapping minimum to correct position
+        FINDING_MIN,
+        SWAPPING
     }
     private Phase currentPhase = Phase.FINDING_MIN;
 
@@ -91,12 +91,12 @@ public class SelectionTry implements Initializable {
     };
     private void highlightPseudoCode(int lineNumber) {
         if (lineNumber >= 0 && lineNumber < pseudoCodeList.getItems().size()) {
-            // Selects the line in the list, which highlights it
+
             pseudoCodeList.getSelectionModel().select(lineNumber);
-            // Scroll to the selected line to make sure it's visible
+
             pseudoCodeList.scrollTo(lineNumber);
         } else {
-            // Clear selection if no line should be highlighted
+
             pseudoCodeList.getSelectionModel().clearSelection();
         }
     }
@@ -109,20 +109,19 @@ public class SelectionTry implements Initializable {
         speedSlider.setMax(100);
         speedSlider.setValue(50); // Start in the middle
 
-        // Add a listener to the slider's value property
+
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            // Map the slider value (1-100) to a duration in milliseconds (e.g., 2000ms to 50ms)
-            // A higher slider value should result in a shorter duration (faster animation)
+
             double maxDuration = 2000.0; // Slowest
             double minDuration = 50.0;   // Fastest
 
-            // Invert the slider's percentage
+
             double newDurationMillis = maxDuration - (newVal.doubleValue() / speedSlider.getMax()) * (maxDuration - minDuration);
 
-            // Update the animation duration
+
             animationDuration = Duration.millis(newDurationMillis);
 
-            // IMPORTANT: Update the duration of the existing pause transition
+
             pause.setDuration(animationDuration);
         });
         arrayContainer.widthProperty().addListener((obs, oldVal, newVal) -> parseAndVisualize());

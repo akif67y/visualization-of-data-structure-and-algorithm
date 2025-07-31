@@ -13,14 +13,14 @@ import java.util.List;
 
 public class EditGraph {
 
-    // --- FXML Injected Fields ---
+
     @FXML private TextField sourceNodeField;
     @FXML private TextField destNodeField;
     @FXML private TextField weightField;
     @FXML private ListView<String> edgeListView;
     @FXML private Button doneButton;
 
-    // --- Data & Communication ---
+
     private MST mainController; // Reference to the main controller
     private final List<MST.Edge> newEdges = new ArrayList<>();
     private final ObservableList<String> edgeListItems = FXCollections.observableArrayList();
@@ -30,18 +30,12 @@ public class EditGraph {
         edgeListView.setItems(edgeListItems);
     }
 
-    /**
-     * Sets the reference to the main controller to allow data passing.
-     * @param mainController The instance of the main MST controller.
-     */
+
     public void setMainController(MST mainController) {
         this.mainController = mainController;
     }
 
-    /**
-     * Called when the "Add Edge" button is clicked.
-     * Validates input and adds the new edge to the list.
-     */
+
     @FXML
     private void addEdge() {
         String source = sourceNodeField.getText().trim().toUpperCase();
@@ -76,16 +70,13 @@ public class EditGraph {
         }
     }
 
-    /**
-     * Called when the "Done" button is clicked.
-     * Passes the new graph data back to the main controller and closes the window.
-     */
+
     @FXML
     private void closeWindow() {
         if (mainController != null) {
             mainController.updateGraphFromData(newEdges);
         }
-        // Get the stage and close it
+
         Stage stage = (Stage) doneButton.getScene().getWindow();
         stage.close();
     }
