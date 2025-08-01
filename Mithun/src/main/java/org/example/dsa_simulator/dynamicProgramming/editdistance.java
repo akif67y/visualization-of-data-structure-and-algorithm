@@ -7,9 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -36,6 +34,13 @@ public class editdistance {
     private Label answer1;
     @FXML
     private Label answer2;
+    @FXML
+    private Button pauseButton;
+    @FXML
+    private Slider speedSlider;
+    @FXML
+    private Label speedLabel;
+
     String k1 = "";
     String k2 = "";
 
@@ -54,7 +59,15 @@ public class editdistance {
     private Map<Pair<Integer, Integer>, Label> cellMap;
     private int[][] dpTable;
 
-    private final int ANIM_SPEED = 500; // milliseconds
+    private int ANIM_SPEED = 500; // milliseconds
+
+    private int getAnimSpeed() {
+        return ANIM_SPEED;
+    }// milliseconds
+
+    // Animation control variables
+    private SequentialTransition currentAnimation;
+    private boolean isPaused = false;
 
     @FXML
     public void onString1Enter(ActionEvent event) {
@@ -79,6 +92,27 @@ public class editdistance {
             s2.clear();
         } else {
             showAlert("Error", "Please enter a valid string for String 2");
+        }
+    }
+    @FXML
+    public void initialize() {
+        if (speedSlider != null && speedLabel != null) {
+            // Set initial value
+            speedSlider.setValue(ANIM_SPEED);
+            speedLabel.setText(ANIM_SPEED + "ms");
+
+            // Add listener for real-time speed changes
+            speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                ANIM_SPEED = newValue.intValue();
+                speedLabel.setText(ANIM_SPEED + "ms");
+
+                // If animation is currently running, update its rate
+                if (currentAnimation != null && currentAnimation.getStatus() == Animation.Status.RUNNING) {
+                    // Calculate rate multiplier (inverse relationship)
+                    double rateMultiplier = 500.0 / ANIM_SPEED; // 500 is the default speed
+                    currentAnimation.setRate(rateMultiplier);
+                }
+            });
         }
     }
 
@@ -111,6 +145,7 @@ public class editdistance {
 
         StringBuilder path = new StringBuilder();
         SequentialTransition sequence = new SequentialTransition();
+        currentAnimation = sequence;
         int i = m + 1;
         int j = n + 1;
 
@@ -121,7 +156,7 @@ public class editdistance {
             if (i > 1 && j > 1 && t1.charAt(i - 2) == t2.charAt(j - 2)) {
                 //final String ch = String.valueOf(t1.charAt(i - 2));
                 Timeline tl = new Timeline(
-                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
+                        new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
                             k1 = t1.charAt(finali - 2) + k1;
                             answer1.setText(k1);
                             k2 = t2.charAt(finalj - 2) + k2;
@@ -132,7 +167,7 @@ public class editdistance {
                 i--; j--;
             } else if (i > 1 && j > 1 && dpTable[i][j] == dpTable[i-1][j-1] + 1) {
                 Timeline tl = new Timeline(
-                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
+                        new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
                             k1 = t1.charAt(finali - 2) + k1;
                             answer1.setText(k1);
                             k2 = t2.charAt(finalj - 2) + k2;
@@ -143,7 +178,7 @@ public class editdistance {
                 i--; j--;
             } else if (i > 1 && dpTable[i][j] == dpTable[i-1][j] + 1) {
                 Timeline tl = new Timeline(
-                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
+                        new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
                             k1 = t1.charAt(finali - 2) + k1;
                             answer1.setText(k1);
                             k2 = "_" + k2;
@@ -154,7 +189,7 @@ public class editdistance {
                 i--;
             } else if (j > 1 && dpTable[i][j] == dpTable[i][j-1] + 1) {
                 Timeline tl = new Timeline(
-                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> {
+                        new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
                             k1 = "_" + k1;
                             answer1.setText(k1);
                             k2 = t2.charAt(finalj-2) + k2;
@@ -169,7 +204,35 @@ public class editdistance {
         }
 
         if (!sequence.getChildren().isEmpty()) {
+            pauseButton.setVisible(true);
+            pauseButton.setText("Pause");
+            isPaused = false;
+
+            sequence.setOnFinished(e -> {
+              //  pauseButton.setVisible(false);
+               // isPaused = false;
+            });
+
             sequence.play();
+        }
+    }
+
+    @FXML
+    private void togglePause(ActionEvent event) {
+        if (currentAnimation == null) return;
+
+        if (isPaused) {
+            // Resume animation
+            currentAnimation.play();
+            pauseButton.setText("Pause");
+            pauseButton.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;");
+            isPaused = false;
+        } else {
+            // Pause animation
+            currentAnimation.pause();
+            pauseButton.setText("Resume");
+            pauseButton.setStyle("-fx-background-color: #24ab5e; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;");
+            isPaused = true;
         }
     }
 
@@ -242,6 +305,7 @@ public class editdistance {
 
         // Animation sequence
         SequentialTransition sequence = new SequentialTransition();
+        currentAnimation = sequence;
 
         for (int i = 2; i < GRID_ROWS; i++) {
             for (int j = 2; j < GRID_COLS; j++) {
@@ -252,7 +316,7 @@ public class editdistance {
                 if (c1 == c2) {
                     dpTable[i][j] = dpTable[i-1][j-1]; // no cost
                     Timeline update = new Timeline(
-                            new KeyFrame(Duration.millis(ANIM_SPEED), e ->comparison.setText(c1 + " == " + c2 + " → no cost")));
+                            new KeyFrame(Duration.millis(getAnimSpeed()), e ->comparison.setText(c1 + " == " + c2 + " → no cost")));
                     sequence.getChildren().add(update);
 
                 } else {
@@ -261,8 +325,8 @@ public class editdistance {
                             dpTable[i-1][j-1]
                     );
                     Timeline update = new Timeline(
-                            new KeyFrame(Duration.millis(ANIM_SPEED), e ->comparison.setText("Replace/Delete/Insert to turn '" + c1 + "' into '" + c2 + "'")));
-                            sequence.getChildren().add(update);
+                            new KeyFrame(Duration.millis(getAnimSpeed()), e ->comparison.setText("Replace/Delete/Insert to turn '" + c1 + "' into '" + c2 + "'")));
+                    sequence.getChildren().add(update);
 
                 }
 
@@ -275,9 +339,7 @@ public class editdistance {
                 sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(0, j))));
                 sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(i, 0))));
 
-
                 sequence.getChildren().add(createHighlightAnimation(comparison));
-
 
                 if (c1 == c2) {
                     sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(i-1, j-1))));
@@ -296,14 +358,11 @@ public class editdistance {
                     }
                 }
 
-
-
-
                 Timeline update = new Timeline(
-                        new KeyFrame(Duration.millis(ANIM_SPEED), e -> cell.setText(String.valueOf(dpTable[ifinal][jfinal])))
+                        new KeyFrame(Duration.millis(getAnimSpeed()), e -> cell.setText(String.valueOf(dpTable[ifinal][jfinal])))
                 );
                 sequence.getChildren().add(update);
-                sequence.getChildren().add(new PauseTransition(Duration.millis(ANIM_SPEED)));
+                sequence.getChildren().add(new PauseTransition(Duration.millis(getAnimSpeed())));
             }
         }
 
@@ -313,10 +372,15 @@ public class editdistance {
 
         sequence.setOnFinished(e -> {
             resultLabel.setText(String.valueOf(dpTable[m+1][n+1]));
+         //   pauseButton.setVisible(false);
+          //  isPaused = false;
         });
 
         if (!sequence.getChildren().isEmpty()) {
             System.out.println("Starting Edit Distance animation...");
+            pauseButton.setVisible(true);
+            pauseButton.setText("Pause");
+            isPaused = false;
             sequence.play();
         }
     }
@@ -334,7 +398,7 @@ public class editdistance {
         String highlightBg = "#ffeb3b";
         String highlightBorder = "#f57c00";
 
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(ANIM_SPEED / 2), label);
+        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(getAnimSpeed() / 2), label);
         scaleUp.setFromX(1.0);
         scaleUp.setFromY(1.0);
         scaleUp.setToX(1.2);
@@ -342,9 +406,9 @@ public class editdistance {
 
         scaleUp.setOnFinished(e -> label.setStyle(originalStyle + " -fx-background-color: " + highlightBg + "; -fx-border-color: " + highlightBorder + "; -fx-border-width: 2px; -fx-font-weight: bold;"));
 
-        PauseTransition pause = new PauseTransition(Duration.millis(ANIM_SPEED / 2));
+        PauseTransition pause = new PauseTransition(Duration.millis(getAnimSpeed() / 2));
 
-        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(ANIM_SPEED / 2), label);
+        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(getAnimSpeed() / 2), label);
         scaleDown.setFromX(1.2);
         scaleDown.setFromY(1.2);
         scaleDown.setToX(1.0);
@@ -362,15 +426,20 @@ public class editdistance {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     void returnHome(ActionEvent event) {
+        // Stop any running animation before returning home
+        if (currentAnimation != null) {
+            currentAnimation.stop();
+        }
+
         try {
             Parent homeScreenRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/Home-screen.fxml")));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(homeScreenRoot));
             stage.setTitle("DSA Simulator");
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

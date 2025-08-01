@@ -1,15 +1,12 @@
 package org.example.dsa_simulator.dynamicProgramming;
 
-
 import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -24,8 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class lcs {
-
-
     @FXML
     private TextField s1;
     @FXML
@@ -38,16 +33,25 @@ public class lcs {
     private Label comparison;
     @FXML
     private Label answer;
+    @FXML
+    private Button pauseResumeButton;
+    @FXML
+    private Slider speedSlider;
+    @FXML
+    private Label speedLabel;
+
     private String ans = "";
-    private final int SECONDS = 200;
+    private int SECONDS = 600;
 
-
+    // Add getter method:
+    private int getAnimSpeed() {
+        return SECONDS;
+    }
 
     private String t1 = "";
     private String t2 = "";
     private int m = 0;
     private int n = 0;
-
 
     private static final double CELL_WIDTH = 50.0;
     private static final double CELL_HEIGHT = 30.0;
@@ -56,13 +60,34 @@ public class lcs {
     private static final double GRID_POS_X = 10.0;
     private static final double GRID_POS_Y = 10.0;
 
-
     private Map<Pair<Integer, Integer>, Label> cellMap;
-
     private int[][]dp2;
 
+    // Animation control variables
+    private SequentialTransition currentAnimation;
+    private boolean isPaused = false;
+    private boolean isAnimationRunning = false;
+    @FXML
+    public void initialize() {
+        if (speedSlider != null && speedLabel != null) {
+            // Set initial value
+            speedSlider.setValue(SECONDS);
+            speedLabel.setText(SECONDS + "ms");
 
+            // Add listener for real-time speed changes
+            speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                SECONDS = newValue.intValue();
+                speedLabel.setText(SECONDS + "ms");
 
+                // If animation is currently running, update its rate
+                if (currentAnimation != null && currentAnimation.getStatus() == Animation.Status.RUNNING) {
+                    // Calculate rate multiplier (inverse relationship)
+                    double rateMultiplier = 200.0 / SECONDS; // 200 is the default speed
+                    currentAnimation.setRate(rateMultiplier);
+                }
+            });
+        }
+    }
     @FXML
     public void onString1Enter(ActionEvent event) {
         if (s1 != null && !s1.getText().trim().isEmpty()) {
@@ -99,18 +124,56 @@ public class lcs {
             return;
         }
 
-
         if (t1.isEmpty() || t2.isEmpty()) {
             showAlert("Error", "Please set both strings before generating the table");
             return;
         }
 
+        // Stop any current animation
+        if (currentAnimation != null) {
+            currentAnimation.stop();
+        }
+
+        // Reset animation state
+        isAnimationRunning = false;
+        isPaused = false;
+        updatePauseButtonState();
 
         drawingPane.getChildren().clear();
         cellMap = new HashMap<>();
         generateDpTable();
     }
 
+    @FXML
+    private void onPauseResume(ActionEvent event) {
+        if (currentAnimation == null || !isAnimationRunning) {
+            return;
+        }
+
+        if (isPaused) {
+            currentAnimation.play();
+            isPaused = false;
+        } else {
+            currentAnimation.pause();
+            isPaused = true;
+        }
+        updatePauseButtonState();
+    }
+
+    private void updatePauseButtonState() {
+        if (pauseResumeButton != null) {
+            if (!isAnimationRunning) {
+                pauseResumeButton.setText("Pause");
+                pauseResumeButton.setDisable(true);
+            } else if (isPaused) {
+                pauseResumeButton.setText("Resume");
+                pauseResumeButton.setDisable(false);
+            } else {
+                pauseResumeButton.setText("Pause");
+                pauseResumeButton.setDisable(false);
+            }
+        }
+    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -120,16 +183,11 @@ public class lcs {
         alert.showAndWait();
     }
 
-
-
-
     private void generateDpTable() {
-
         GridPane arrayGrid = new GridPane();
         arrayGrid.setHgap(0);
         arrayGrid.setVgap(0);
         arrayGrid.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
-
 
         for (int i = 0; i < GRID_COLS; i++) {
             ColumnConstraints colConst = new ColumnConstraints();
@@ -142,11 +200,9 @@ public class lcs {
             arrayGrid.getRowConstraints().add(rowConst);
         }
 
-
         Label emptyCell = new Label("lcs");
         styleAndAddCell(emptyCell, arrayGrid, 0, 0);
         cellMap.put(new Pair<>(0, 0), emptyCell);
-
 
         for (int j = 2; j < GRID_COLS; j++) {
             Label headerCell = new Label(String.valueOf(t2.charAt(j - 2)));
@@ -160,7 +216,6 @@ public class lcs {
             arrayGrid.add(headerCell, j, 0);
         }
 
-
         for (int i = 2; i < GRID_ROWS; i++) {
             Label headerCell = new Label(String.valueOf(t1.charAt(i - 2)));
             headerCell.setStyle("-fx-alignment: center; " +
@@ -173,9 +228,7 @@ public class lcs {
             arrayGrid.add(headerCell, 0, i);
         }
 
-
         int[][] dp = new int[GRID_ROWS][GRID_COLS];
-
 
         for (int j = 2; j < GRID_COLS; j++) {
             dp[1][j] = 0;
@@ -183,7 +236,6 @@ public class lcs {
             styleAndAddCell(cell, arrayGrid, j, 1);
             cellMap.put(new Pair<>(1, j), cell);
         }
-
 
         for (int i = 2; i < GRID_ROWS; i++) {
             dp[i][1] = 0;
@@ -204,7 +256,6 @@ public class lcs {
         styleAndAddCell(cellse, arrayGrid, 1, 1);
         cellMap.put(new Pair<>(1, 1), cellse);
 
-
         SequentialTransition sequence = new SequentialTransition();
 
         for (int i = 2; i < GRID_ROWS; i++) {
@@ -214,13 +265,11 @@ public class lcs {
                 char char1 = t1.charAt(i - 2);
                 char char2 = t2.charAt(j - 2);
 
-
                 if (char1 == char2) {
                     dp[i][j] = dp[i - 1][j - 1] + 1;
                 } else {
                     dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
-
 
                 Label cell = new Label("");
                 cell.setOpacity(1);
@@ -231,20 +280,16 @@ public class lcs {
                 sequence.getChildren().addAll(createHighlightAnimation(cellMap.get(new Pair<>(i,0))));
                 ParallelTransition parallelTransition = new ParallelTransition();
                 Timeline finalTimeline = new Timeline();
-                KeyFrame finalFrame = new KeyFrame(Duration.millis(SECONDS), e -> {
-                  if(char1 == char2)  comparison.setText( char1 + " equals " + char2);
-                  else{
-                      comparison.setText( char1 + " is not equal to " + char2);
-                  }
-
+                KeyFrame finalFrame = new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
+                    if(char1 == char2)  comparison.setText( char1 + " equals " + char2);
+                    else{
+                        comparison.setText( char1 + " is not equal to " + char2);
+                    }
                 });
                 finalTimeline.getKeyFrames().addAll(finalFrame);
                 parallelTransition.getChildren().addAll(finalTimeline);
                 parallelTransition.getChildren().addAll(createHighlightAnimation(comparison));
                 sequence.getChildren().addAll(parallelTransition);
-
-
-
 
                 if (char1 == char2) {
                     Label diagonalCell = cellMap.get(new Pair<>(i - 1, j - 1));
@@ -259,55 +304,62 @@ public class lcs {
                         maxInfluencingCell = cellMap.get(new Pair<>(i, j - 1));
                     }
                     if (maxInfluencingCell != null) {
-
                         sequence.getChildren().addAll(createHighlightAnimation(maxInfluencingCell));
-
                     }
                 }
 
-
-
-                sequence.getChildren().add(new PauseTransition(Duration.millis(SECONDS)));
+                sequence.getChildren().add(new PauseTransition(Duration.millis(getAnimSpeed())));
                 Timeline finalTimeline2 = new Timeline();
-                KeyFrame finalFrame2 = new KeyFrame(Duration.millis(SECONDS), e -> {
+                KeyFrame finalFrame2 = new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
                     cell.setText(dp[ifinal][jfinal] + "");
-
                 });
                 finalTimeline2.getKeyFrames().addAll(finalFrame2);
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(SECONDS), cell);
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(getAnimSpeed()), cell);
                 fadeIn.setFromValue(1.0);
                 fadeIn.setToValue(1.5);
                 sequence.getChildren().addAll( finalTimeline2, fadeIn);
             }
         }
 
-
         arrayGrid.setLayoutX(GRID_POS_X);
         arrayGrid.setLayoutY(GRID_POS_Y);
 
         drawingPane.getChildren().add(arrayGrid);
 
+        // Set up animation control
+        currentAnimation = sequence;
 
         if (!sequence.getChildren().isEmpty()) {
             System.out.println("Starting animation sequence...");
+            isAnimationRunning = true;
+            updatePauseButtonState();
+
+            sequence.setOnFinished(e -> {
+                resultLabel.setText(dp[m+1][n+1]+"");
+                isAnimationRunning = false;
+                isPaused = false;
+                updatePauseButtonState();
+            });
+
             sequence.play();
-            System.out.println("animation sequence finished.");
+            System.out.println("animation sequence started.");
         }
 
-
-        sequence.setOnFinished(e -> {
-            resultLabel.setText(dp[m+1][n+1]+"");
-
-        });
         dp2 = new int[GRID_ROWS][GRID_COLS];
         for (int i = 0; i < GRID_ROWS; i++) {
             for (int j = 0; j < GRID_COLS; j++) {
-              dp2[i][j] = dp[i][j];
+                dp2[i][j] = dp[i][j];
             }
         }
     }
+
     @FXML
     private void extractLcs(){
+        // Stop any current animation before starting LCS extraction
+        if (currentAnimation != null && isAnimationRunning) {
+            currentAnimation.stop();
+        }
+
         ans = "";
         SequentialTransition squel = new SequentialTransition();
         int i1 = m+1;
@@ -319,17 +371,14 @@ public class lcs {
                 final int ifinal = i1;
                 final int jfinal = j1;
                 Timeline finalTimeline2 = new Timeline();
-                KeyFrame finalFrame2 = new KeyFrame(Duration.millis(SECONDS), e -> {
+                KeyFrame finalFrame2 = new KeyFrame(Duration.millis(getAnimSpeed()), e -> {
                     ans = t1.charAt(ifinal-2) + ans;
-//
                     answer.setText(ans);
-
                 });
                 finalTimeline2.getKeyFrames().addAll(finalFrame2);
                 squel.getChildren().addAll(finalTimeline2);
                 i1--;
                 j1--;
-
             }
             else{
                 if(dp2[i1-1][j1] > dp2[i1][j1-1]){
@@ -338,19 +387,34 @@ public class lcs {
                 else{
                     j1--;
                 }
-
             }
         }
+
+        // Set up animation control for LCS extraction
+        currentAnimation = squel;
+
         if (!squel.getChildren().isEmpty()) {
-            System.out.println("Starting animation sequence...");
+            System.out.println("Starting LCS extraction animation sequence...");
+            isAnimationRunning = true;
+            updatePauseButtonState();
+
+            squel.setOnFinished(e -> {
+                if(ans.equals("")){
+                    answer.setText("No LCS found");
+                }
+                isAnimationRunning = false;
+                isPaused = false;
+                updatePauseButtonState();
+            });
+
             squel.play();
-            System.out.println("animation sequence finished.");
-        }
-        if(ans.equals("")){
-            answer.setText("No LCS found");
+            System.out.println("LCS extraction animation sequence started.");
+        } else {
+            if(ans.equals("")){
+                answer.setText("No LCS found");
+            }
         }
     }
-
 
     private void styleAndAddCell(Label cell, GridPane grid, int col, int row) {
         cell.setPrefSize(CELL_WIDTH, CELL_HEIGHT);
@@ -360,7 +424,6 @@ public class lcs {
                 "-fx-background-color: #f9f9f9;");
         grid.add(cell, col, row);
     }
-
 
     private String extractColorFromStyle(String style, String key, String defaultColor) {
         if (style == null || style.isEmpty()) return defaultColor;
@@ -373,13 +436,12 @@ public class lcs {
         }
         return defaultColor;
     }
+
     private SequentialTransition createHighlightAnimation(Label label) {
         if (label == null) return new SequentialTransition();
 
-
         String originalStyle = label.getStyle();
         String baseStyle = originalStyle != null ? originalStyle : "";
-
 
         String bgColor = extractColorFromStyle(baseStyle, "-fx-background-color", "#f9f9f9");
         String borderColor = extractColorFromStyle(baseStyle, "-fx-border-color", "gray");
@@ -388,13 +450,11 @@ public class lcs {
         String highlightBg = "#ffcccb"; // Light red
         String highlightBorder = "darkred";
 
-
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(SECONDS), label);
+        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(getAnimSpeed()), label);
         scaleUp.setFromX(1.0);
         scaleUp.setFromY(1.0);
         scaleUp.setToX(1.15);
         scaleUp.setToY(1.15);
-
 
         scaleUp.setOnFinished(e -> label.setStyle(
                 baseStyle +
@@ -404,11 +464,9 @@ public class lcs {
                         " -fx-font-weight: bold;"
         ));
 
+        PauseTransition pause = new PauseTransition(Duration.millis(getAnimSpeed()));
 
-        PauseTransition pause = new PauseTransition(Duration.millis(SECONDS));
-
-
-        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(SECONDS), label);
+        ScaleTransition scaleDown = new ScaleTransition(Duration.millis(getAnimSpeed()), label);
         scaleDown.setFromX(1.15);
         scaleDown.setFromY(1.15);
         scaleDown.setToX(1.0);
@@ -416,20 +474,24 @@ public class lcs {
 
         scaleDown.setOnFinished(e -> label.setStyle(originalStyle));
 
-
         SequentialTransition sequence = new SequentialTransition();
         sequence.getChildren().addAll(scaleUp, pause, scaleDown);
         return sequence;
     }
+
     @FXML
     void returnHome(ActionEvent event) {
+        // Stop any running animation before returning home
+        if (currentAnimation != null) {
+            currentAnimation.stop();
+        }
+
         try {
             Parent homeScreenRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/org/example/dsa_simulator/Home-screen.fxml")));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(homeScreenRoot));
             stage.setTitle("DSA Simulator");
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

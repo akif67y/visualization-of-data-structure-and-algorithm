@@ -1,0 +1,57 @@
+/* --- Global Styles --- */
+.root {
+    -fx-font-family: 'Inter', 'System', sans-serif;
+    -fx-background-color: #f7f9fc; /* Light background */
+}
+
+/* --- Header Title --- */
+.main-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1d2939;
+}
+
+/* --- Section Titles (e.g., "Sorting Algorithms") --- */
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+    -fx-padding: 20px 0 10px 0; /* Space above and below */
+}
+
+/* --- Card Button Style --- */
+.card-button {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e0e5eb;
+    -fx-pref-height: 160px;
+    -fx-pref-width: 180px;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.card-button:hover {
+    -fx-border-color: #007aff; /* Blue accent on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 6);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.card-button .image-view {
+    -fx-padding-bottom: 10px; /* Space between icon and text */
+}
+
+/* --- ScrollPane Style --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}

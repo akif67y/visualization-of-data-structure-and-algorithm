@@ -12,14 +12,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(to bottom, #f0f2f5 0%, #e4e7eb 100%);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.linkedlist.LinkedListController">
+<AnchorPane prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: linear-gradient(to bottom, #f0f2f5 0%, #e4e7eb 100%);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.linkedlist.LinkedListController">
     <children>
         <!-- Control Panel -->
         <VBox alignment="TOP_CENTER" layoutX="18.4" layoutY="60.0" prefHeight="820.0" prefWidth="502.0" spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="60.0">
             <children>
 
                 <!-- Title (within control panel) -->
-                <Label text="Enhanced Linked List Visualizer" textFill="#2d3748">
+                <Label text="Linked List Visualizer" textFill="#2d3748">
                     <font>
                         <Font name="System Bold" size="22.0" />
                     </font>
