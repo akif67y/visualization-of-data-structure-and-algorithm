@@ -70,7 +70,7 @@ public class ChatController {
             @Override
             protected String call() throws Exception {
 
-                String apiKey = "***REMOVED***";
+                String apiKey = ""; // add your api key here
 
                 if (apiKey.isBlank()) {
                     throw new Exception("API Key is missing. Please get a key from Google AI Studio and add it to ChatController.java.");
