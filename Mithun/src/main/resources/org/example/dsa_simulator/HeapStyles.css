@@ -42,11 +42,6 @@
     -fx-text-fill: white;
 }
 .reset-button:hover { -fx-background-color: #c0392b; }
-.reset-button:disabled {
-    -fx-opacity: 1.0;
-    -fx-background-color: #e74c3c;
-    -fx-text-fill: white;
-}
 
 .icon-button {
     -fx-background-color: transparent;
@@ -66,19 +61,6 @@
     -fx-padding: 15;
 }
 
-/* --- Status Label --- */
-.status-pane {
-    -fx-background-color: #e8f4fd; /* Light blue background */
-    -fx-border-color: #b3d4fc;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
-    -fx-padding: 15;
-}
-.status-label {
-    -fx-font-size: 14px;
-    -fx-text-fill: #1d2939;
-}
-
 /* --- Main Pane for Visualization --- */
 .pane {
     -fx-background-color: white;
@@ -87,7 +69,7 @@
     -fx-border-radius: 12;
 }
 
-/* --- Text, Slider, ListView, TextArea --- */
+/* --- TextField & RadioButton --- */
 .text-field {
     -fx-background-radius: 8;
     -fx-border-color: #dcdfe4;
@@ -100,29 +82,6 @@
     -fx-border-width: 2px;
 }
 
-.slider .track {
-    -fx-background-color: #e9eef2;
-    -fx-pref-height: 8px;
-}
-.slider .thumb {
+.radio-button:selected .dot {
     -fx-background-color: #007aff;
-}
-
-.list-view {
-    -fx-background-color: white;
-    -fx-border-color: transparent;
-}
-.list-view .list-cell {
-    -fx-background-color: transparent; /* Removes alternating row shades */
-    -fx-padding: 4px 10px;
-}
-.list-view .list-cell:selected {
-    -fx-background-color: #007aff;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.text-area, .text-area .content {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
 }

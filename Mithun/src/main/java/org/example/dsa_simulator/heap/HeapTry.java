@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,9 +24,9 @@ import java.util.*;
 
 public class HeapTry {
 
-
-    private final List<Integer> heap;
-    private final List<Button> visualNodes;
+    // --- Using two parallel lists is more robust than a map (handles duplicate values) ---
+    private final List<Integer> heap; // The logical heap data
+    private final List<Button> visualNodes; // The visual representation (Buttons)
     private final List<Line> visualEdges;
 
     @FXML private TextField enqueueField;
@@ -40,14 +41,14 @@ public class HeapTry {
         visualEdges = new ArrayList<>();
     }
 
-
+    // --- FIX: The initialize() method is required for setting up the UI state reliably. ---
     @FXML
     public void initialize() {
-
+        // Set Max Heap as the default selection when the program starts.
         maxHeapRadio.setSelected(true);
     }
 
-
+    // --- Event Handlers ---
 
     @FXML
     void handleEnqueue(ActionEvent event) {
@@ -62,7 +63,7 @@ public class HeapTry {
 
             drawEdges();
 
-
+            // --- FIX: Correctly check which heap type is selected ---
             if (maxHeapRadio.isSelected()) {
                 animateMaxEnqueue();
             } else {
@@ -80,7 +81,7 @@ public class HeapTry {
             System.err.println("Heap is empty, cannot dequeue.");
             return;
         }
-
+        // --- FIX: Correctly check which heap type is selected ---
         if (maxHeapRadio.isSelected()) {
             animateMaxDequeue();
         } else {
@@ -105,7 +106,7 @@ public class HeapTry {
         clearScreen(null);
         heap.addAll(numbers);
 
-
+        // --- FIX: Correctly check which heap type is selected ---
         if (maxHeapRadio.isSelected()) {
             for (int i = (heap.size() / 2) - 1; i >= 0; i--) maxHeapify(i);
         } else {
@@ -127,9 +128,9 @@ public class HeapTry {
         List<Integer> numbers = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < 15; i++) numbers.add(random.nextInt(99) + 1);
-
+        // This makes the random numbers appear in the text field for clarity
         buildHeapField.setText(String.join(",", numbers.stream().map(Object::toString).toArray(String[]::new)));
-
+        // Call the buildHeap method to process the generated numbers
         buildHeap(event);
     }
 
@@ -142,7 +143,7 @@ public class HeapTry {
     }
 
 
-
+    // --- Animation Logic ---
 
     void animateMinEnqueue() {
         SequentialTransition sequentialAnimation = new SequentialTransition();
@@ -184,7 +185,7 @@ public class HeapTry {
         playAnimationWithFinalization(sequentialAnimation);
     }
 
-
+    // In your "Animation Logic" section
 
     private void animateMinDequeue() {
         SequentialTransition masterAnimation = new SequentialTransition();
@@ -192,27 +193,28 @@ public class HeapTry {
         masterAnimation.getChildren().add(createFadeOutAnimation(rootButton));
 
         if (heap.size() > 1) {
-
+            // --- START OF FIX ---
+            // 1. Before animating, find the specific edge connected to the last node.
             int lastNodeIndex = heap.size() - 1;
             Line edgeToRemove = null;
             if (lastNodeIndex > 0 && lastNodeIndex -1 < visualEdges.size()) {
-
+                // The edge for node `i` is at index `i-1` in our visualEdges list
                 edgeToRemove = visualEdges.get(lastNodeIndex - 1);
             }
 
             Button lastButton = visualNodes.get(lastNodeIndex);
             TranslateTransition moveToRoot = createMoveToRootAnimation(lastButton);
 
-
+            // 2. Add an action to the move animation to remove the dangling edge when it's done.
             if (edgeToRemove != null) {
-                final Line finalEdgeToRemove = edgeToRemove;
+                final Line finalEdgeToRemove = edgeToRemove; // Variable must be final for lambda
                 moveToRoot.setOnFinished(e -> {
                     canvasPane.getChildren().remove(finalEdgeToRemove);
-                    visualEdges.remove(finalEdgeToRemove);
+                    visualEdges.remove(finalEdgeToRemove); // Also remove from our tracking list
                 });
             }
             masterAnimation.getChildren().add(moveToRoot);
-
+            // --- END OF FIX ---
 
             setButtonColor(lastButton, Color.RED);
             heap.set(0, heap.getLast());
@@ -247,7 +249,8 @@ public class HeapTry {
         masterAnimation.getChildren().add(createFadeOutAnimation(rootButton));
 
         if (heap.size() > 1) {
-
+            // --- START OF FIX ---
+            // 1. Before animating, find the specific edge connected to the last node.
             int lastNodeIndex = heap.size() - 1;
             Line edgeToRemove = null;
             if (lastNodeIndex > 0 && lastNodeIndex - 1 < visualEdges.size()) {
@@ -257,16 +260,16 @@ public class HeapTry {
             Button lastButton = visualNodes.get(lastNodeIndex);
             TranslateTransition moveToRoot = createMoveToRootAnimation(lastButton);
 
-
+            // 2. Add an action to the move animation to remove the dangling edge when it's done.
             if (edgeToRemove != null) {
-                final Line finalEdgeToRemove = edgeToRemove;
+                final Line finalEdgeToRemove = edgeToRemove; // Variable must be final for lambda
                 moveToRoot.setOnFinished(e -> {
                     canvasPane.getChildren().remove(finalEdgeToRemove);
-                    visualEdges.remove(finalEdgeToRemove);
+                    visualEdges.remove(finalEdgeToRemove); // Also remove from our tracking list
                 });
             }
             masterAnimation.getChildren().add(moveToRoot);
-
+            // --- END OF FIX ---
 
             setButtonColor(lastButton, Color.RED);
             heap.set(0, heap.getLast());
@@ -295,7 +298,7 @@ public class HeapTry {
         playAnimationWithFinalization(masterAnimation);
     }
 
-
+    // --- Animation Helpers ---
 
     private ParallelTransition createSwapAnimation(int index1, int index2) {
         Button button1 = visualNodes.get(index1);
@@ -314,7 +317,7 @@ public class HeapTry {
         move2.setByY(-deltaY);
         ParallelTransition swapAnimation = new ParallelTransition(move1, move2);
 
-
+        // --- CHANGE: After this single swap, change yellow back to blue ---
         swapAnimation.setOnFinished(e -> {
             setButtonColor(otherButton, Color.LIGHTCYAN);
         });
@@ -354,7 +357,7 @@ public class HeapTry {
     }
 
 
-
+    // --- Heapify and Drawing Logic ---
 
     private void minHeapify(int i) {
         int smallest = i;
@@ -397,6 +400,8 @@ public class HeapTry {
 
     private Button createVisualNode(double x, double y, int value) {
         Button button = new Button(String.valueOf(value));
+        button.getStyleClass().clear();
+        button.setAlignment(Pos.CENTER);
         button.setTextFill(Color.DARKBLUE);
         button.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         double diameter = 50.0;
@@ -411,45 +416,50 @@ public class HeapTry {
     }
 
     private double[] calculateNodePosition(int index, int totalNodes) {
+        // totalNodes is no longer needed with this new logic, but we keep it for signature consistency.
+        double canvasWidth = canvasPane.getWidth();
 
-        double canvasWidth = 1500;
-        if (canvasWidth <= 0) canvasWidth = 1200;
+        System.out.println(canvasWidth);
+        if (canvasWidth <= 0) canvasWidth = 1200; // Use a reasonable default if pane is not ready
 
-
+        // Vertical positioning remains the same
         final double LEVEL_HEIGHT = 90.0;
         final double TOP_OFFSET = 60.0;
         int level = (int) (Math.log(index + 1) / Math.log(2));
         double y = TOP_OFFSET + level * LEVEL_HEIGHT;
 
+        // --- NEW HORIZONTAL POSITIONING LOGIC ---
 
-
-
+        // 1. Start with the root node's X-coordinate perfectly centered.
         double x = canvasWidth / 2.0;
 
-
+        // If we are calculating for the root, we're done.
         if (index == 0) {
             return new double[]{x, y};
         }
 
-
+        // 2. The horizontal gap between a parent and its direct child.
+        //    This gap is halved for each level you go down the tree.
+        //    We start with a large gap for the root's children (e.g., 1/4 of the canvas width).
         double horizontalGap = canvasWidth / 6;
 
-
+        // 3. To find the correct position, we trace the path from the current node UP to the root.
+        //    This tells us the sequence of left/right turns to get to the node.
         LinkedList<String> path = new LinkedList<>();
         int currentIndex = index;
         while (currentIndex > 0) {
             int parentIndex = (currentIndex - 1) / 2;
             if (currentIndex == 2 * parentIndex + 1) {
-                path.addFirst("left");
+                path.addFirst("left"); // This is a left child
             } else {
-                path.addFirst("right");
+                path.addFirst("right"); // This is a right child
             }
             currentIndex = parentIndex;
         }
 
-
+        // 4. Now, we follow the path from the (centered) root down, adjusting the X position at each level.
         for (int i = 0; i < path.size(); i++) {
-
+            // The gap shrinks by half at each level deeper into the tree
             double currentLevelGap = horizontalGap / (1 << i);
             if (path.get(i).equals("left")) {
                 x -= currentLevelGap;
@@ -460,7 +470,7 @@ public class HeapTry {
 
         return new double[]{x, y};
     }
-
+    // Add this helper method to your class
     private void setButtonColor(Button button, Color color) {
         double diameter = 50.0;
         button.setBackground(new Background(new BackgroundFill(color, new CornerRadii(diameter / 2.0), Insets.EMPTY)));

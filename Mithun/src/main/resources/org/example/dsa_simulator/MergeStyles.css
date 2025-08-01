@@ -38,10 +38,12 @@
 .secondary-button:hover { -fx-background-color: #d1d8de; }
 
 .reset-button {
-    -fx-background-color: #e74c3c;
-    -fx-text-fill: white;
+    -fx-background-color: #e74c3c; /* A strong, visible red */
+    -fx-text-fill: white;          /* White text for readability */
 }
-.reset-button:hover { -fx-background-color: #c0392b; }
+.reset-button:hover {
+    -fx-background-color: #c0392b; /* Darker red on hover */
+}
 .reset-button:disabled {
     -fx-opacity: 1.0;
     -fx-background-color: #e74c3c;
@@ -56,6 +58,15 @@
 }
 .icon-button:hover { -fx-background-color: #e9eef2; }
 
+/* ADDED: Styles to unify green/yellow buttons to the secondary gray theme */
+.green-button, .yellow-button {
+    -fx-background-color: #e9eef2;
+    -fx-text-fill: #333333;
+}
+.green-button:hover, .yellow-button:hover {
+    -fx-background-color: #d1d8de;
+}
+
 
 /* --- Control Panes & Inputs --- */
 .control-pane {
@@ -66,7 +77,7 @@
     -fx-padding: 15;
 }
 
-/* --- Status Label --- */
+/* --- Status Label - Highlighted for importance --- */
 .status-pane {
     -fx-background-color: #e8f4fd; /* Light blue background */
     -fx-border-color: #b3d4fc;
@@ -77,6 +88,7 @@
 .status-label {
     -fx-font-size: 14px;
     -fx-text-fill: #1d2939;
+    -fx-font-weight: normal;
 }
 
 /* --- Main Pane for Visualization --- */
@@ -87,7 +99,7 @@
     -fx-border-radius: 12;
 }
 
-/* --- Text, Slider, ListView, TextArea --- */
+/* --- TextField & Slider --- */
 .text-field {
     -fx-background-radius: 8;
     -fx-border-color: #dcdfe4;
@@ -106,23 +118,4 @@
 }
 .slider .thumb {
     -fx-background-color: #007aff;
-}
-
-.list-view {
-    -fx-background-color: white;
-    -fx-border-color: transparent;
-}
-.list-view .list-cell {
-    -fx-background-color: transparent; /* Removes alternating row shades */
-    -fx-padding: 4px 10px;
-}
-.list-view .list-cell:selected {
-    -fx-background-color: #007aff;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.text-area, .text-area .content {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
 }
