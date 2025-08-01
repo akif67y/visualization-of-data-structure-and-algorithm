@@ -9,81 +9,97 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Slider?>
 <AnchorPane prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.dynamicProgramming.lcs">
 
     <!-- Background styling via Pane -->
     <children>
         <Pane layoutX="-8.0" layoutY="-6.0" prefHeight="806.0" prefWidth="1508.0" style="-fx-background-color: #f8f9fa;">
-         <children>
-            <AnchorPane prefHeight="199.0" prefWidth="1508.0">
-               <children>
-                    <Label fx:id="comparison" layoutX="1105.0" layoutY="97.0" prefHeight="58.0" prefWidth="262.0" style="-fx-font-size: 13; -fx-text-fill: #7f8c8d; -fx-padding: 10; -fx-background-color: #ffffff; -fx-border-color: #dce0e4; -fx-border-width: 1; -fx-background-radius: 6;" text="Ready to compute..." wrapText="true" />
-            
-                    <!-- Header -->
-                    <Label layoutX="137.0" layoutY="15.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Longest Common Subsequence" textFill="#e4dddd">
-                        <font>
-                            <Font name="Segoe UI" />
-                        </font>
-                    </Label>
-                    <TextField fx:id="s1" layoutX="137.0" layoutY="53.0" onAction="#onString1Enter" prefWidth="250.0" promptText="Enter first string and press Enter">
-                        <style>
-                -fx-pref-height: 35px;
-                -fx-font-size: 14px;
-                -fx-background-radius: 8;
-                -fx-border-radius: 8;
-                -fx-border-color: #bdc3c7;
-                -fx-padding: 5 10;
-            </style>
-                    </TextField>
-            
-                    <!-- String 1 Input -->
-                    <Label layoutX="53.0" layoutY="61.0" style="-fx-font-size: 14; -fx-text-fill: #34495e;" text="String 1:" />
-                    <TextField fx:id="s2" layoutX="137.0" layoutY="99.0" onAction="#onString2Enter" prefWidth="250.0" promptText="Enter second string and press Enter">
-                        <style>
-                -fx-pref-height: 35px;
-                -fx-font-size: 14px;
-                -fx-background-radius: 8;
-                -fx-border-radius: 8;
-                -fx-border-color: #bdc3c7;
-                -fx-padding: 5 10;
-            </style>
-                    </TextField>
-            
-                    <!-- String 2 Input -->
-                    <Label layoutX="53.0" layoutY="107.0" style="-fx-font-size: 14; -fx-text-fill: #34495e;" text="String 2:" />
-            
-                    <!-- Action Buttons -->
-                    <Button layoutX="38.0" layoutY="147.0" onAction="#onGenerate" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;" text="Generate LCS Table">
-                        <font>
-                            <Font name="Segoe UI" />
-                        </font>
-                    </Button>
-            
-                    <Button layoutX="245.0" layoutY="147.0" onAction="#extractLcs" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;" text="Extract LCS">
-                        <font>
-                            <Font name="Segoe UI" />
-                        </font>
-                    </Button>
-                  <Button contentDisplay="GRAPHIC_ONLY" layoutX="27.0" layoutY="19.0" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
-                     <graphic>
-                        <ImageView fitHeight="27.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@icons/Back.png" />
-                           </image>
-                        </ImageView>
-                     </graphic></Button>
-            
-                    <!-- Results Panel -->
-                    <Label layoutX="701.0" layoutY="30.0" prefHeight="38.0" prefWidth="98.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Length of LCS:" />
-            
-                    <Label layoutX="1114.0" layoutY="32.0" prefHeight="35.0" prefWidth="84.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Comparison:" />
-            
-                    <Label alignment="CENTER" layoutX="720.0" layoutY="78.0" prefHeight="38.0" prefWidth="60.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="LCS:" textAlignment="CENTER" />
-                    <Label fx:id="answer" layoutX="815.0" layoutY="79.0" prefHeight="41.0" prefWidth="114.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" text="computing.." />
-                    <Label fx:id="resultLabel" layoutX="815.0" layoutY="30.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #e74c3c; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" text="computing.." />
-               </children>
-            </AnchorPane>
-         </children></Pane>
+            <children>
+                <AnchorPane prefHeight="199.0" prefWidth="1508.0">
+                    <children>
+                        <Label fx:id="comparison" layoutX="1105.0" layoutY="97.0" prefHeight="58.0" prefWidth="262.0" style="-fx-font-size: 13; -fx-text-fill: #7f8c8d; -fx-padding: 10; -fx-background-color: #ffffff; -fx-border-color: #dce0e4; -fx-border-width: 1; -fx-background-radius: 6;" text="Ready to compute..." wrapText="true" />
+
+                        <!-- Header -->
+                        <Label layoutX="137.0" layoutY="15.0" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Longest Common Subsequence" textFill="#e4dddd">
+                            <font>
+                                <Font name="Segoe UI" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="s1" layoutX="137.0" layoutY="53.0" onAction="#onString1Enter" prefWidth="250.0" promptText="Enter first string and press Enter">
+                            <style>
+                                -fx-pref-height: 35px;
+                                -fx-font-size: 14px;
+                                -fx-background-radius: 8;
+                                -fx-border-radius: 8;
+                                -fx-border-color: #bdc3c7;
+                                -fx-padding: 5 10;
+                            </style>
+                        </TextField>
+
+                        <!-- String 1 Input -->
+                        <Label layoutX="53.0" layoutY="61.0" style="-fx-font-size: 14; -fx-text-fill: #34495e;" text="String 1:" />
+                        <TextField fx:id="s2" layoutX="137.0" layoutY="99.0" onAction="#onString2Enter" prefWidth="250.0" promptText="Enter second string and press Enter">
+                            <style>
+                                -fx-pref-height: 35px;
+                                -fx-font-size: 14px;
+                                -fx-background-radius: 8;
+                                -fx-border-radius: 8;
+                                -fx-border-color: #bdc3c7;
+                                -fx-padding: 5 10;
+                            </style>
+                        </TextField>
+
+                        <!-- String 2 Input -->
+                        <Label layoutX="53.0" layoutY="107.0" style="-fx-font-size: 14; -fx-text-fill: #34495e;" text="String 2:" />
+
+                        <!-- Action Buttons -->
+                        <Button layoutX="38.0" layoutY="147.0" onAction="#onGenerate" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;" text="Generate LCS Table">
+                            <font>
+                                <Font name="Segoe UI" />
+                            </font>
+                        </Button>
+
+                        <Button layoutX="245.0" layoutY="147.0" onAction="#extractLcs" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;" text="Extract LCS">
+                            <font>
+                                <Font name="Segoe UI" />
+                            </font>
+                        </Button>
+
+                        <!-- Pause/Resume Button -->
+                        <Button fx:id="pauseResumeButton" layoutX="384.0" layoutY="147.0" onAction="#onPauseResume" disable="true" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 8;" text="Pause">
+                            <font>
+                                <Font name="Segoe UI" />
+                            </font>
+                        </Button>
+                        <!-- Speed Control Section -->
+                        <Label layoutX="420.0" layoutY="60.0" style="-fx-font-size: 14; -fx-text-fill: #34495e;" text="Animation Speed:" />
+                        <Slider fx:id="speedSlider" layoutX="420.0" layoutY="80.0" max="1000.0" min="50.0" prefWidth="200.0" value="200.0"
+                                style="-fx-pref-height: 20px;">
+                        </Slider>
+                        <Label fx:id="speedLabel" layoutX="630.0" layoutY="80.0" style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;" text="200ms" />
+                        <Label layoutX="420.0" layoutY="105.0" style="-fx-font-size: 11; -fx-text-fill: #95a5a6;" text="← Fast                                                      Slow →" />
+
+                        <Button contentDisplay="GRAPHIC_ONLY" layoutX="27.0" layoutY="19.0" mnemonicParsing="false" onAction="#returnHome" style="-fx-background-color: transparent;" text="Button">
+                            <graphic>
+                                <ImageView fitHeight="27.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@icons/Back.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic></Button>
+
+                        <!-- Results Panel -->
+                        <Label layoutX="701.0" layoutY="30.0" prefHeight="38.0" prefWidth="98.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Length of LCS:" />
+
+                        <Label layoutX="1114.0" layoutY="32.0" prefHeight="35.0" prefWidth="84.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="Comparison:" />
+
+                        <Label alignment="CENTER" layoutX="720.0" layoutY="78.0" prefHeight="38.0" prefWidth="60.0" style="-fx-font-size: 14; -fx-text-fill: #2c3e50;" text="LCS:" textAlignment="CENTER" />
+                        <Label fx:id="answer" layoutX="815.0" layoutY="79.0" prefHeight="41.0" prefWidth="114.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" text="computing.." />
+                        <Label fx:id="resultLabel" layoutX="815.0" layoutY="30.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #e74c3c; -fx-padding: 5 10; -fx-background-color: #ecf0f1; -fx-background-radius: 6; -fx-border-color: #bdc3c7; -fx-border-width: 1;" text="computing.." />
+                    </children>
+                </AnchorPane>
+            </children></Pane>
 
         <!-- Table Title -->
         <Label layoutX="50.0" layoutY="210.0" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="DP Table Visualization" />
