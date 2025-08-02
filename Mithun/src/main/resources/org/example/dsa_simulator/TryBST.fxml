@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1280.0" spacing="15.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.bst.TryBST">
+    <stylesheets>
+        <URL value="@BST_Styles.css" />
+    </stylesheets>
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#returnHome" styleClass="icon-button">
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@icons/Back.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Pane HBox.hgrow="ALWAYS" />
+                <Label styleClass="title-label" text="Binary Search Tree Visualizer" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <Pane prefWidth="60.0" />
+            </children>
+        </HBox>
+
+        <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+            <children>
+                <Pane fx:id="drawPane" styleClass="pane" HBox.hgrow="ALWAYS" />
+
+                <VBox minWidth="320.0" prefWidth="320.0" spacing="15.0">
+                    <VBox spacing="10.0" styleClass="control-pane">
+                        <children>
+                            <Label styleClass="section-title" text="Node Operations" />
+                            <TextField fx:id="valueTextField" promptText="Enter value (e.g., 50)" />
+                            <HBox spacing="10.0">
+                                <children>
+                                    <Button fx:id="insertButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#insert" styleClass="primary-button" text="Insert" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="searchButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#searchNode" styleClass="secondary-button" text="Search" HBox.hgrow="ALWAYS" />
+                                </children>
+                            </HBox>
+                            <Button fx:id="deleteButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#delete" styleClass="secondary-button" text="Delete" />
+                        </children>
+                    </VBox>
+
+                    <VBox spacing="10.0" styleClass="control-pane" VBox.vgrow="ALWAYS">
+                        <children>
+                            <Label styleClass="section-title" text="Tree Traversal" />
+                            <ComboBox fx:id="traversalTypeComboBox" maxWidth="1.7976931348623157E308" promptText="Choose Traversal Type" />
+                            <Button fx:id="traverseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#performTraversal" styleClass="secondary-button" text="Perform Traversal" />
+                        </children>
+                    </VBox>
+
+                    <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#clear" styleClass="reset-button" text="Clear Tree" />
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

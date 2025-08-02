@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1280.0" spacing="15.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.heap.HeapTry">
+    <stylesheets>
+        <URL value="@HeapStyles.css" />
+    </stylesheets>
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#returnHome" styleClass="icon-button">
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@icons/Back.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Pane HBox.hgrow="ALWAYS" />
+                <Label styleClass="title-label" text="Heap (Priority Queue) Visualizer" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <Pane prefWidth="60.0" />
+            </children>
+        </HBox>
+
+        <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+            <children>
+                <Pane fx:id="canvasPane" styleClass="pane" HBox.hgrow="ALWAYS" />
+
+                <VBox minWidth="320.0" prefWidth="320.0" spacing="15.0">
+                    <VBox spacing="10.0" styleClass="control-pane">
+                        <children>
+                            <Label styleClass="section-title" text="Heap Type" />
+                            <HBox spacing="20.0">
+                                <children>
+                                    <RadioButton fx:id="minHeapRadio" mnemonicParsing="false" text="Min Heap">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="heapTypeToggle" />
+                                        </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="maxHeapRadio" mnemonicParsing="false" text="Max Heap" toggleGroup="$heapTypeToggle" />
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+
+                    <VBox spacing="10.0" styleClass="control-pane">
+                        <children>
+                            <Label styleClass="section-title" text="Add / Remove" />
+                            <HBox spacing="10.0">
+                                <children>
+                                    <TextField fx:id="enqueueField" onAction="#handleEnqueue" promptText="Value" HBox.hgrow="ALWAYS" />
+                                    <Button onAction="#handleEnqueue" styleClass="primary-button" text="Enqueue" />
+                                </children>
+                            </HBox>
+                            <Button maxWidth="1.7976931348623157E308" onAction="#handleDequeue" styleClass="secondary-button" text="Dequeue" />
+                        </children>
+                    </VBox>
+
+                    <VBox spacing="10.0" styleClass="control-pane" VBox.vgrow="ALWAYS">
+                        <children>
+                            <Label styleClass="section-title" text="Build or Generate" />
+                            <TextField fx:id="buildHeapField" promptText="e.g., 3, 1, 2, 8, 5" />
+                            <Button maxWidth="1.7976931348623157E308" onAction="#buildHeap" styleClass="secondary-button" text="Build Heap from Input" />
+                            <Button fx:id="randomButton" maxWidth="1.7976931348623157E308" onAction="#randomButton" styleClass="secondary-button" text="Generate Random Heap" />
+                        </children>
+                    </VBox>
+
+                    <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" onAction="#clearScreen" styleClass="reset-button" text="Clear" />
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

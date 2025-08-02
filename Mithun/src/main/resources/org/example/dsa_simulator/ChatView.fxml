@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.ai.ChatController">
+    <children>
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" layoutY="0.0" prefHeight="60.0" style="-fx-background-color: white; -fx-background-radius: 0 0 15 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label text="🐼" style="-fx-font-size: 28px;">
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </Label>
+                <VBox alignment="CENTER_LEFT" spacing="2.0">
+                    <children>
+                        <Label text="Panda AI Assistant" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                        <Label text="Your friendly DSA learning companion" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" />
+                    </children>
+                    <HBox.margin>
+                        <Insets left="15.0" />
+                    </HBox.margin>
+                </VBox>
+            </children>
+        </HBox>
+
+        <!-- Chat message area -->
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutY="60.0" style="-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+            <content>
+                <VBox fx:id="chatBox" alignment="TOP_LEFT" spacing="15.0" style="-fx-background-color: #f0f2f5;">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <!-- Input area -->
+        <HBox alignment="CENTER" layoutY="620.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 15 15 0 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, -2);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <TextField fx:id="inputField" onAction="#handleSendMessage" prefHeight="45.0" promptText="Ask me about data structures and algorithms..." style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-color: #ddd; -fx-border-radius: 25; -fx-border-width: 1.5; -fx-font-size: 14px; -fx-padding: 12 20 12 20; -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </TextField>
+                <Button fx:id="sendButton" mnemonicParsing="false" onAction="#handleSendMessage" prefHeight="45.0" prefWidth="100.0" style="-fx-background-color: #0084ff; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-effect: dropshadow(gaussian, rgba(0,132,255,0.3), 6, 0, 0, 2);" text="Send">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Button>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </HBox>
+    </children>
+</AnchorPane>

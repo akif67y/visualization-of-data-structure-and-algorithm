@@ -1,0 +1,108 @@
+/* --- Global & Fonts --- */
+.root {
+    -fx-font-family: 'Inter', 'System', sans-serif;
+    -fx-background-color: #f7f9fc;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1d2939;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1d2939;
+}
+
+/* --- Buttons --- */
+.button {
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-pref-height: 40px;
+}
+.button:hover { -fx-opacity: 0.9; }
+
+.primary-button {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+}
+.primary-button:hover { -fx-background-color: #0056b3; }
+
+.secondary-button {
+    -fx-background-color: #e9eef2;
+    -fx-text-fill: #333333;
+}
+.secondary-button:hover { -fx-background-color: #d1d8de; }
+
+.reset-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+.reset-button:hover { -fx-background-color: #c0392b; }
+
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #dcdfe4;
+    -fx-border-radius: 8;
+    -fx-padding: 6;
+}
+.icon-button:hover { -fx-background-color: #e9eef2; }
+
+
+/* --- Control Panes & Inputs --- */
+.control-pane {
+    -fx-background-color: white;
+    -fx-border-color: #e0e5eb;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+}
+
+/* --- Main Pane for Visualization --- */
+.pane {
+    -fx-background-color: white;
+    -fx-border-color: #e0e5eb;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+/* --- TextField & ComboBox --- */
+.text-field {
+    -fx-background-radius: 8;
+    -fx-border-color: #dcdfe4;
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+    -fx-pref-height: 40px;
+}
+.text-field:focused {
+    -fx-border-color: #007aff;
+    -fx-border-width: 2px;
+}
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #dcdfe4;
+    -fx-border-radius: 8;
+    -fx-pref-height: 40px;
+}
+/* This ensures the text inside is always dark */
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333;
+}
+/* This styles the items in the popup list only */
+.combo-box-popup .list-cell {
+    -fx-background-color: white;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #f0f6ff;
+    -fx-text-fill: #333;
+}
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+}

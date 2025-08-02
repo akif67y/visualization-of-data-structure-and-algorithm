@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1200.0" spacing="15.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.dsa_simulator.ai.BSController">
+    <stylesheets>
+        <URL value="@bfs-styles.css" />
+    </stylesheets>
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="20.0">
+            <children>
+                <Button fx:id="returnButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#returnToHome" styleClass="icon-button" text="Return">
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@icons/Back.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Pane HBox.hgrow="ALWAYS" />
+                <Label text="Breadth-First Search (BFS) Visualization">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Pane HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
+
+        <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Pane fx:id="graphPane" onMouseClicked="#handleGraphPaneClick" VBox.vgrow="ALWAYS" />
+                        <VBox styleClass="control-pane" spacing="10.0">
+                            <children>
+                                <Label styleClass="section-title" text="Traversal Status" />
+                                <Label fx:id="visitedNodesLabel" text="Visited nodes will appear here..." wrapText="true" />
+                                <Label fx:id="queueText" text="Queue: []" wrapText="true" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <VBox minWidth="350.0" prefWidth="350.0" spacing="15.0">
+                    <children>
+                        <VBox styleClass="control-pane" spacing="15.0">
+                            <children>
+                                <Label styleClass="section-title" text="Controls" />
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                    <children>
+                                        <Label text="Mode:" />
+                                        <RadioButton fx:id="addNodeRadio" mnemonicParsing="false" selected="true" text="Add Nodes">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="modeToggleGroup" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="addEdgeRadio" mnemonicParsing="false" text="Add Edges" toggleGroup="$modeToggleGroup" />
+                                        <RadioButton fx:id="deleteRadio" mnemonicParsing="false" text="Delete" toggleGroup="$modeToggleGroup" />
+                                    </children>
+                                </HBox>
+                                <CheckBox fx:id="directedGraphCheckBox" mnemonicParsing="false" text="Directed Graph" />
+                                <TextField fx:id="getStartNode" promptText="Enter start node (e.g., A)" />
+                                <HBox spacing="10.0">
+                                    <children>
+                                        <Button fx:id="runBFSButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleBFS" styleClass="primary-button" text="Run BFS" HBox.hgrow="ALWAYS" />
+                                        <Button fx:id="resetButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleResetButtonAction" styleClass="secondary-button" text="Reset" HBox.hgrow="ALWAYS" />
+                                    </children>
+                                </HBox>
+                                <Button fx:id="deleteSelectedButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeleteSelectedAction" styleClass="secondary-button" text="Delete Selected" />
+                            </children>
+                        </VBox>
+
+                        <VBox styleClass="control-pane" spacing="10.0">
+                            <children>
+                                <Label styleClass="section-title" text="Draw from Text" />
+                                <Label text="Enter edges: NodeA NodeB (one per line)" textFill="#6c757d" />
+                                <TextArea fx:id="edgeInputArea" prefHeight="100.0" promptText="A B&#10;B C" />
+                                <Button fx:id="drawFromTextButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDrawGraph" styleClass="secondary-button" text="Draw Graph from Text" />
+                            </children>
+                        </VBox>
+
+                        <VBox VBox.vgrow="ALWAYS" styleClass="control-pane" spacing="10.0">
+                            <children>
+                                <Label styleClass="section-title" text="BFS Pseudocode" />
+                                <ListView fx:id="pseudocodeList" VBox.vgrow="ALWAYS" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+</VBox>

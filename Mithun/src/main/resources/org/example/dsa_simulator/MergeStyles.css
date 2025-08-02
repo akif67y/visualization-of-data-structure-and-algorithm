@@ -1,0 +1,121 @@
+/* --- Global & Fonts --- */
+.root {
+    -fx-font-family: 'Inter', 'System', sans-serif;
+    -fx-background-color: #f7f9fc;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1d2939;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1d2939;
+}
+
+/* --- Buttons --- */
+.button {
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-pref-height: 40px;
+}
+.button:hover { -fx-opacity: 0.9; }
+
+.primary-button {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+}
+.primary-button:hover { -fx-background-color: #0056b3; }
+
+.secondary-button {
+    -fx-background-color: #e9eef2;
+    -fx-text-fill: #333333;
+}
+.secondary-button:hover { -fx-background-color: #d1d8de; }
+
+.reset-button {
+    -fx-background-color: #e74c3c; /* A strong, visible red */
+    -fx-text-fill: white;          /* White text for readability */
+}
+.reset-button:hover {
+    -fx-background-color: #c0392b; /* Darker red on hover */
+}
+.reset-button:disabled {
+    -fx-opacity: 1.0;
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #dcdfe4;
+    -fx-border-radius: 8;
+    -fx-padding: 6;
+}
+.icon-button:hover { -fx-background-color: #e9eef2; }
+
+/* ADDED: Styles to unify green/yellow buttons to the secondary gray theme */
+.green-button, .yellow-button {
+    -fx-background-color: #e9eef2;
+    -fx-text-fill: #333333;
+}
+.green-button:hover, .yellow-button:hover {
+    -fx-background-color: #d1d8de;
+}
+
+
+/* --- Control Panes & Inputs --- */
+.control-pane {
+    -fx-background-color: white;
+    -fx-border-color: #e0e5eb;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+}
+
+/* --- Status Label - Highlighted for importance --- */
+.status-pane {
+    -fx-background-color: #e8f4fd; /* Light blue background */
+    -fx-border-color: #b3d4fc;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+}
+.status-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1d2939;
+    -fx-font-weight: normal;
+}
+
+/* --- Main Pane for Visualization --- */
+.pane {
+    -fx-background-color: white;
+    -fx-border-color: #e0e5eb;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+/* --- TextField & Slider --- */
+.text-field {
+    -fx-background-radius: 8;
+    -fx-border-color: #dcdfe4;
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+    -fx-pref-height: 40px;
+}
+.text-field:focused {
+    -fx-border-color: #007aff;
+    -fx-border-width: 2px;
+}
+
+.slider .track {
+    -fx-background-color: #e9eef2;
+    -fx-pref-height: 8px;
+}
+.slider .thumb {
+    -fx-background-color: #007aff;
+}
